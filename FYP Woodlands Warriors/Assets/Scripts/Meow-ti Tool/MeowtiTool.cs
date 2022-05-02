@@ -11,9 +11,17 @@ public class MeowtiTool : MonoBehaviour
     public TMP_InputField primaryInput;
 
     public CanvasGroup huhCanvas;
-    public CanvasGroup studioMixCanvas;
+    public CanvasGroup radioCommsCanvas;
     public CanvasGroup launchCodesCanvas;
     public CanvasGroup activeCanvas;
+
+    public AudioSource toolAudioSource;
+
+    [Header("Debug")]
+    public string pawzzleTypeOverride;
+
+    [Header("Apparatus Values")]
+    public int knifeValue;
 
     [Header("Huh? Configuration")]
     public TMP_Text huhText;
@@ -33,20 +41,34 @@ public class MeowtiTool : MonoBehaviour
     public int leftOrRightTable;
     public int huhValue;
 
-    [Header("Apparatus Values")]
-    public int knifeValue;
+    [Header("Radio Comms")]
+    string[] radioCommsWords = { "BEATS", "BELFRY", "BELLS", "BENIGN", "COMIC", "COMMIE", "COMMIT", "CULLS", "CURED", "CURRY", "RUINED", "RUSHES", "RUSSET", "RUSSIA", "RUSTIC", "RUSTY" };
+    int[] radioCommsFrequencies = { 619, 261, 173, 506, 092, 452, 369, 992, 142, 748, 338, 410, 028, 645, 100 };
+    public AudioClip[] radioAudioClips;
+
+    public string radioWord;
+    public int radioFrequency;
+    public AudioClip radioAudioClipToPlay;
+    public int audioPlayCount = 0;
+    bool isClipPlaying = false;
+
+    public TMP_Text radioCommText;
 
     // Start is called before the first frame update
     void Start()
     {
         huhCanvas.gameObject.SetActive(false);
-        //studioMixCanvas.gameObject.SetActive(false);
+        radioCommsCanvas.gameObject.SetActive(false);
         //launchCodesCanvas.gameObject.SetActive(false);
 
-        //currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, 3)];
+        currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, GameManagerScript.instance.PrimaryPawzzles.Length - 1)];  //Randomly generate the first pawzzle
+
+        if (pawzzleTypeOverride != null)  //Control which pawzzle gets generated (debug)
+        {
+            currentPawzzleType = pawzzleTypeOverride;
+        }
 
         knifeValue = 100;
-
         InitializePawzzle(currentPawzzleType);
     }
 
@@ -56,7 +78,7 @@ public class MeowtiTool : MonoBehaviour
         
     }
 
-    void InitializePawzzle(string PawzzleType)
+    void InitializePawzzle(string PawzzleType)  //Activate the pawzzle's respective canvas and pick a random answer for them
     {
         if (PawzzleType == "HUH?")
         {
@@ -65,13 +87,21 @@ public class MeowtiTool : MonoBehaviour
             huhCanvas.interactable = true;
             activeCanvas = huhCanvas;
         }
+
+        if (PawzzleType == "RADIOCOMMS")
+        {
+            InitializeRadioComms();
+            radioCommsCanvas.gameObject.SetActive(true);
+            huhCanvas.interactable = true;
+            activeCanvas = radioCommsCanvas;
+        }
     }
 
     void InitializeHuh()
     {
         //Pick from left or right table, this information is used in KNIFE pawzzle
         leftOrRightTable = Random.Range(0, 2);
-        int rng = Random.Range(0, huhLeftDisplays.Length + 1);
+        int rng = Random.Range(0, huhLeftDisplays.Length - 1);
 
         if (leftOrRightTable == 0)
         {
@@ -87,15 +117,89 @@ public class MeowtiTool : MonoBehaviour
 
         huhText.text = textToDisplay;  //Set the desired text to the display text
     }
-
-    public void SubmitPrimaryInput()
+    
+    void InitializeRadioComms()  //Pick random answer for radiocomms
     {
+        int rng = Random.Range(0, radioCommsWords.Length - 1);
+
+        radioWord = radioCommsWords[rng];
+        radioFrequency = radioCommsFrequencies[rng];
+        radioAudioClipToPlay = radioAudioClips[rng];
+    }
+
+
+    public void SubmitPrimaryInput()  //Player presses the submit button for primary pawzzle
+    {
+        int inputValue = int.Parse(primaryInput.text);
+
         if (currentPawzzleType == "HUH?")
         {
-            if (int.Parse(primaryInput.text) + huhValue == knifeValue)
+            if (inputValue + huhValue == knifeValue)
             {
-                Debug.Log("You got knife!");
+                SolvePrimaryPawzzle("KNIFE");
             }
         }
+
+        if (currentPawzzleType == "RADIOCOMMS")
+        {
+            if (radioFrequency > knifeValue)
+            {
+                if (radioFrequency - knifeValue == inputValue)
+                {
+                    SolvePrimaryPawzzle("KNIFE");
+                }
+            }
+
+            if (radioFrequency < knifeValue)
+            {
+                if (knifeValue + radioFrequency == inputValue)
+                {
+                    SolvePrimaryPawzzle("KNIFE");
+                }
+            }
+
+            if (radioFrequency == knifeValue)
+            {
+                if (inputValue == radioFrequency || inputValue == knifeValue)
+                {
+                    SolvePrimaryPawzzle("KNIFE");
+                }
+            }
+        }
+    }
+
+    void SolvePrimaryPawzzle(string desiredApparatus)
+    {
+        Debug.Log("Pawzzle solved! You accessed the " + desiredApparatus + ".");
+    }
+
+    //Pawzzle-specific button methods below
+
+    public void PlayRadioCommClip()
+    {
+        if (!isClipPlaying)
+        {
+            toolAudioSource.clip = radioAudioClipToPlay;
+            toolAudioSource.Play();
+            audioPlayCount++;
+
+            StartCoroutine(delayClip());
+        }
+        else
+        {
+            Debug.Log("Wait for the clip to finish playback");
+        }
+    }
+
+    IEnumerator delayClip()
+    {
+        isClipPlaying = true;
+        radioCommText.text = "PLAYING AUDIO...";
+        radioCommText.fontSize = 20;
+
+        yield return new WaitForSeconds(radioAudioClipToPlay.length);
+        isClipPlaying = false;
+        radioCommText.text = "PLAY AUDIO";
+        radioCommText.fontSize = 24;
     }
 }

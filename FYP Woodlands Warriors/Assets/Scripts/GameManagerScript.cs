@@ -6,7 +6,7 @@ public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript instance;
 
-    public string[] PrimaryPawzzles = { "HUH?", "STUDIOMIX", "LAUNCHCODES" };
+    public string[] PrimaryPawzzles = { "HUH?", "RADIOCOMMS", "LAUNCHCODES" };
     public string[] ApparatusPawzzles = { "KNIFE" };
 
     public bool isZoomed = false;
