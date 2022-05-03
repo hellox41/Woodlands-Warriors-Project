@@ -17,13 +17,13 @@ public class MeowtiTool : MonoBehaviour
 
     public AudioSource toolAudioSource;
 
-    [Header("Debug")]
+    [Header ("Debug")]
     public string pawzzleTypeOverride;
 
-    [Header("Apparatus Values")]
+    [Header ("Apparatus Values")]
     public int knifeValue;
 
-    [Header("Huh? Configuration")]
+    [Header ("Huh? Configuration")]
     public TMP_Text huhText;
     string[] huhLeftDisplays = { "HUH", "AYCH YUU AYCH", "THE LETTERS HUH", "THE LETTERS AYCH YUU AYCH", "JUST THE LETTERS H U H NO SPACES WORD", 
         "THE LETTERS A Y C H SPACE Y U U SPACE A Y C H THREE WORDS TWO SPACES", "THE LETTERS A Y C H SPACE Y U U SPACE A Y C H WORD WORD WORD SPACE SPACE", 
@@ -41,7 +41,7 @@ public class MeowtiTool : MonoBehaviour
     public int leftOrRightTable;
     public int huhValue;
 
-    [Header("Radio Comms")]
+    [Header ("Radio Comms")]
     string[] radioCommsWords = { "BEATS", "BELFRY", "BELLS", "BENIGN", "COMIC", "COMMIE", "COMMIT", "CULLS", "CURED", "CURRY", "RUINED", "RUSHES", "RUSSET", "RUSSIA", "RUSTIC", "RUSTY" };
     int[] radioCommsFrequencies = { 619, 261, 173, 506, 092, 452, 369, 992, 142, 748, 338, 410, 028, 645, 100 };
     public AudioClip[] radioAudioClips;
@@ -54,12 +54,29 @@ public class MeowtiTool : MonoBehaviour
 
     public TMP_Text radioCommText;
 
+    [Header ("Launch Codes")]
+                   //   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23   24   25
+    string[] chars = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+                       //  26  27   28   29   30   31   32   33   34   35   36   37   38   39   40   41   42   43   44   45   46   47   48   49   50   51
+                          "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
+    string[] displayChars = { null, null };
+    public TMP_Text launchCodesDisplay;
+    int stageNo;
+    bool isButtonPressed = false;
+    public float heldDuration = 0f;
+    public float heldTimer = 1f;
+    public string heldOrTapped = null;
+    int randomVal1;
+    int randomVal2;
+    bool launchedPreviousRockets = false;
+
+
     // Start is called before the first frame update
     void Start()
     {
         huhCanvas.gameObject.SetActive(false);
         radioCommsCanvas.gameObject.SetActive(false);
-        //launchCodesCanvas.gameObject.SetActive(false);
+        launchCodesCanvas.gameObject.SetActive(false);
 
         currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, GameManagerScript.instance.PrimaryPawzzles.Length - 1)];  //Randomly generate the first pawzzle
 
@@ -68,14 +85,19 @@ public class MeowtiTool : MonoBehaviour
             currentPawzzleType = pawzzleTypeOverride;
         }
 
+        randomVal1 = Random.Range(0, chars.Length - 1);
+        randomVal2 = Random.Range(0, chars.Length - 1);
+
         knifeValue = 100;
         InitializePawzzle(currentPawzzleType);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        if (isButtonPressed)
+        {
+            heldDuration += Time.deltaTime;
+        }
     }
 
     void InitializePawzzle(string PawzzleType)  //Activate the pawzzle's respective canvas and pick a random answer for them
@@ -92,8 +114,16 @@ public class MeowtiTool : MonoBehaviour
         {
             InitializeRadioComms();
             radioCommsCanvas.gameObject.SetActive(true);
-            huhCanvas.interactable = true;
+            radioCommsCanvas.interactable = true;
             activeCanvas = radioCommsCanvas;
+        }
+
+        if (PawzzleType == "LAUNCHCODES")
+        {
+            InitializeLaunchCodes();
+            launchCodesCanvas.gameObject.SetActive(true);
+            launchCodesCanvas.interactable = true;
+            activeCanvas = launchCodesCanvas;
         }
     }
 
@@ -125,6 +155,16 @@ public class MeowtiTool : MonoBehaviour
         radioWord = radioCommsWords[rng];
         radioFrequency = radioCommsFrequencies[rng];
         radioAudioClipToPlay = radioAudioClips[rng];
+    }
+
+    void InitializeLaunchCodes()
+    {
+        stageNo = 1;
+
+        displayChars[0] = chars[randomVal1];
+        displayChars[1] = chars[randomVal2];
+
+        launchCodesDisplay.text = displayChars[0] + displayChars[1];
     }
 
 
@@ -175,6 +215,8 @@ public class MeowtiTool : MonoBehaviour
 
     //Pawzzle-specific button methods below
 
+
+    //RADIOCOMMS
     public void PlayRadioCommClip()
     {
         if (!isClipPlaying)
@@ -201,5 +243,126 @@ public class MeowtiTool : MonoBehaviour
         isClipPlaying = false;
         radioCommText.text = "PLAY AUDIO";
         radioCommText.fontSize = 24;
+    }
+
+
+    //LAUNCHCODES
+    public void LaunchCodesPointerDown()
+    {
+        heldDuration = 0;
+        isButtonPressed = true;
+    }
+
+    public void LaunchCodesPointerUp()
+    {
+        isButtonPressed = false;
+
+        if (heldDuration >= heldTimer)
+        {
+            heldOrTapped = "Held";
+        }
+        else if (heldDuration < heldTimer)
+        {
+            heldOrTapped = "Tapped";
+        }
+
+        if (stageNo < 4)
+        {
+            CheckLaunchCodesPart1();
+        }
+    }
+
+    void CheckLaunchCodesPart1()
+    {
+
+        if ((displayChars[0] == displayChars[1]) || (randomVal1 - 26 == randomVal2) || (randomVal2 - 26 == randomVal1))  //Check if the letters are the same
+        {
+            CheckLaunch("Tapped");
+        }
+
+        else if ((randomVal1 - 1 == randomVal2) || (randomVal1 + 1 == randomVal2) || (randomVal2 + 1 == randomVal2) || (randomVal1 - 27 == randomVal2) || (randomVal1 - 25 == randomVal2)
+            || (randomVal2 - 27 == randomVal1) || (randomVal2 - 25 == randomVal1)) //If letters in consequetive order in alphabet
+        {
+            CheckLaunch("Held");
+        }
+
+        else if ((randomVal1 == 0 || randomVal1 == 4 || randomVal1 == 8 || randomVal1 == 14 || randomVal1 == 20)
+            || (randomVal2 == 0 || randomVal2 == 4 || randomVal2 == 8 || randomVal2 == 14 || randomVal2 == 20))  //If either letter is both a vowel and a capital letter
+        {
+            if (launchedPreviousRockets)
+            {
+                CheckLaunch("Held");
+            }
+
+            if (!launchedPreviousRockets)
+            {
+                CheckLaunch("Tapped");
+            }
+        }
+
+        else if (randomVal1 > 26 && randomVal2 > 26)  //If both letters are capital
+        {
+            CheckLaunch("Tap");
+        }
+
+        else if ((randomVal1 > 20 && randomVal1 < 26) || (randomVal2 > 20 && randomVal2 < 26) || (randomVal1 > 46) || (randomVal2 > 46))  // If either letter comes after the 20th letter
+        {
+            CheckLaunch("Held");
+        }
+
+        else if (randomVal1 < 4 || randomVal2 < 4 || (randomVal1 > 25 && randomVal1 < 30) || (randomVal2 > 25 && randomVal2 < 30))  //If either letter comes before the 5th letter
+        {
+            CheckLaunch("Tapped");
+        }
+
+        else  //Otherwise
+        {
+            if (launchedPreviousRockets)
+            {
+                CheckLaunch("Held");
+            }
+
+            if (!launchedPreviousRockets)
+            {
+                CheckLaunch("Tapped");
+            }
+        }
+
+        if (stageNo == 3)
+        {
+            Debug.Log("All stages complete!");
+        }
+
+        if (stageNo < 3)
+        {
+            Debug.Log("Proceeding to stage " + (stageNo + 1));
+            stageNo++;
+        }
+    }
+
+    void CheckLaunch(string success)
+    {
+        if (success == heldOrTapped)
+        {
+            if (heldOrTapped == "Tapped")
+            {
+                launchedPreviousRockets = true;
+            }
+
+            Debug.Log("Success!");
+        }
+
+        else if (success != heldOrTapped)
+        {
+            Debug.Log("You operated the rocket incorrectly!");
+        }
+
+        //Generate a different, random launch code
+        randomVal1 = Random.Range(0, chars.Length - 1);
+        randomVal2 = Random.Range(0, chars.Length - 1);
+        displayChars[0] = chars[randomVal1];
+        displayChars[1] = chars[randomVal2];
+
+        launchCodesDisplay.text = displayChars[0] + displayChars[1];
     }
 }
