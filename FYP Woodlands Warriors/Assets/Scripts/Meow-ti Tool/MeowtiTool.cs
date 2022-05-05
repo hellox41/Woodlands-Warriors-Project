@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 
 public class MeowtiTool : MonoBehaviour
@@ -10,12 +11,17 @@ public class MeowtiTool : MonoBehaviour
 
     public TMP_InputField primaryInput;
 
+    public CanvasGroup primaryToolCanvas;
     public CanvasGroup huhCanvas;
     public CanvasGroup radioCommsCanvas;
     public CanvasGroup launchCodesCanvas;
+
+    public CanvasGroup knifeCanvas;
     public CanvasGroup activeCanvas;
 
     public AudioSource toolAudioSource;
+
+    public bool isTyping = false;
 
     [Header ("Debug")]
     public string pawzzleTypeOverride;
@@ -23,6 +29,7 @@ public class MeowtiTool : MonoBehaviour
     [Header ("Apparatus Values")]
     public int knifeValue;
 
+    [Header("Primary Pawzzles")]
     [Header ("Huh? Configuration")]
     public TMP_Text huhText;
     string[] huhLeftDisplays = { "HUH", "AYCH YUU AYCH", "THE LETTERS HUH", "THE LETTERS AYCH YUU AYCH", "JUST THE LETTERS H U H NO SPACES WORD", 
@@ -69,6 +76,15 @@ public class MeowtiTool : MonoBehaviour
     int randomVal1;
     int randomVal2;
     bool launchedPreviousRockets = false;
+    int rocketsLaunched = 0;
+    public Button redButton;
+    public TMP_Text launchCount;
+
+
+    [Header("Apparatus Pawzzles")]
+    [Header("Knife")]
+    public TMP_InputField cmd;
+    public ScrollingText cmdScroll;
 
 
     // Start is called before the first frame update
@@ -78,9 +94,9 @@ public class MeowtiTool : MonoBehaviour
         radioCommsCanvas.gameObject.SetActive(false);
         launchCodesCanvas.gameObject.SetActive(false);
 
-        currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, GameManagerScript.instance.PrimaryPawzzles.Length - 1)];  //Randomly generate the first pawzzle
+        currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, GameManagerScript.instance.PrimaryPawzzles.Length)];  //Randomly generate the first pawzzle
 
-        if (pawzzleTypeOverride != null)  //Control which pawzzle gets generated (debug)
+        if (pawzzleTypeOverride != "")  //Control which pawzzle gets generated (debug)
         {
             currentPawzzleType = pawzzleTypeOverride;
         }
@@ -97,6 +113,13 @@ public class MeowtiTool : MonoBehaviour
         if (isButtonPressed)
         {
             heldDuration += Time.deltaTime;
+        }
+
+        if (cmd.isFocused && cmd.text != "" && Input.GetKeyDown(KeyCode.Return))
+        {
+            string userInput = cmd.text;
+
+            cmd.text = "";
         }
     }
 
@@ -124,6 +147,14 @@ public class MeowtiTool : MonoBehaviour
             launchCodesCanvas.gameObject.SetActive(true);
             launchCodesCanvas.interactable = true;
             activeCanvas = launchCodesCanvas;
+        }
+
+        if (PawzzleType == "KNIFE")
+        {
+            knifeCanvas.gameObject.SetActive(true);
+            knifeCanvas.interactable = true;
+            activeCanvas = knifeCanvas;
+            InitializeKnife();
         }
     }
 
@@ -166,14 +197,17 @@ public class MeowtiTool : MonoBehaviour
 
         launchCodesDisplay.text = displayChars[0] + displayChars[1];
     }
-
-
-    public void SubmitPrimaryInput()  //Player presses the submit button for primary pawzzle
+    
+    void InitializeKnife()
     {
-        int inputValue = int.Parse(primaryInput.text);
+        StartCoroutine(cmdScroll.ShowText());
+    }
 
+    public void SubmitInput()  //Player presses the submit button for primary pawzzle
+    {
         if (currentPawzzleType == "HUH?")
         {
+            int inputValue = int.Parse(primaryInput.text);
             if (inputValue + huhValue == knifeValue)
             {
                 SolvePrimaryPawzzle("KNIFE");
@@ -184,6 +218,7 @@ public class MeowtiTool : MonoBehaviour
         {
             if (radioFrequency > knifeValue)
             {
+                int inputValue = int.Parse(primaryInput.text);
                 if (radioFrequency - knifeValue == inputValue)
                 {
                     SolvePrimaryPawzzle("KNIFE");
@@ -192,6 +227,7 @@ public class MeowtiTool : MonoBehaviour
 
             if (radioFrequency < knifeValue)
             {
+                int inputValue = int.Parse(primaryInput.text);
                 if (knifeValue + radioFrequency == inputValue)
                 {
                     SolvePrimaryPawzzle("KNIFE");
@@ -200,17 +236,56 @@ public class MeowtiTool : MonoBehaviour
 
             if (radioFrequency == knifeValue)
             {
+                int inputValue = int.Parse(primaryInput.text);
                 if (inputValue == radioFrequency || inputValue == knifeValue)
                 {
                     SolvePrimaryPawzzle("KNIFE");
                 }
             }
         }
+
+        if (currentPawzzleType == "LAUNCHCODES")
+        {
+            int inputValue = int.Parse(primaryInput.text);
+            if ((rocketsLaunched == 0 && inputValue == knifeValue * 0.1) || (rocketsLaunched == 1 && inputValue == knifeValue) || (rocketsLaunched == 2 && inputValue == knifeValue * 1.5) ||
+                (rocketsLaunched == 3 && inputValue == knifeValue * 2))
+            {
+                SolvePrimaryPawzzle("KNIFE");
+            }
+        }
+
+        if (currentPawzzleType == "KNIFE")
+        {
+            SolveApparatusPawzzle("KNIFE");
+        }
     }
 
     void SolvePrimaryPawzzle(string desiredApparatus)
     {
         Debug.Log("Pawzzle solved! You accessed the " + desiredApparatus + ".");
+
+        InitializeApparatusPawzzle(desiredApparatus);
+    }
+
+    void InitializeApparatusPawzzle(string apparatusType)
+    {
+        activeCanvas.interactable = false;
+        activeCanvas.gameObject.SetActive(false);
+    }
+
+    void SolveApparatusPawzzle(string apparatusType)
+    {
+
+    }
+
+    public void StartTyping()
+    {
+        isTyping = true;
+    }
+
+    public void StopTyping()
+    {
+        isTyping = false;
     }
 
     //Pawzzle-specific button methods below
@@ -266,7 +341,7 @@ public class MeowtiTool : MonoBehaviour
             heldOrTapped = "Tapped";
         }
 
-        if (stageNo < 4)
+        if (stageNo <= 3)
         {
             CheckLaunchCodesPart1();
         }
@@ -274,14 +349,13 @@ public class MeowtiTool : MonoBehaviour
 
     void CheckLaunchCodesPart1()
     {
-
         if ((displayChars[0] == displayChars[1]) || (randomVal1 - 26 == randomVal2) || (randomVal2 - 26 == randomVal1))  //Check if the letters are the same
         {
             CheckLaunch("Tapped");
         }
 
-        else if ((randomVal1 - 1 == randomVal2) || (randomVal1 + 1 == randomVal2) || (randomVal2 + 1 == randomVal2) || (randomVal1 - 27 == randomVal2) || (randomVal1 - 25 == randomVal2)
-            || (randomVal2 - 27 == randomVal1) || (randomVal2 - 25 == randomVal1)) //If letters in consequetive order in alphabet
+        else if ((randomVal1 - 1 == randomVal2) || (randomVal1 + 1 == randomVal2) || (randomVal2 + 1 == randomVal2) || (randomVal1 - 26 == randomVal2) || (randomVal1 - 24 == randomVal2)
+            || (randomVal2 - 26 == randomVal1) || (randomVal2 - 24 == randomVal1)) //If letters in consequetive order in alphabet
         {
             CheckLaunch("Held");
         }
@@ -331,24 +405,27 @@ public class MeowtiTool : MonoBehaviour
         if (stageNo == 3)
         {
             Debug.Log("All stages complete!");
+            redButton.interactable = false;
         }
 
         if (stageNo < 3)
         {
-            Debug.Log("Proceeding to stage " + (stageNo + 1));
-            stageNo++;
+            Debug.Log("Proceeding to stage " + (stageNo + 1));  
         }
+        stageNo++;
     }
 
     void CheckLaunch(string success)
     {
+        if (heldOrTapped == "Tapped")
+        {
+            launchedPreviousRockets = true;
+            rocketsLaunched++;
+            launchCount.text = rocketsLaunched.ToString();
+        }
+
         if (success == heldOrTapped)
         {
-            if (heldOrTapped == "Tapped")
-            {
-                launchedPreviousRockets = true;
-            }
-
             Debug.Log("Success!");
         }
 
@@ -365,4 +442,8 @@ public class MeowtiTool : MonoBehaviour
 
         launchCodesDisplay.text = displayChars[0] + displayChars[1];
     }
+
+
+    //KNIFE
+
 }

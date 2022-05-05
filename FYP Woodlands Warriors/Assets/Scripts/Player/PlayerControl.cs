@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 public class PlayerControl : MonoBehaviour
 {
-    public GameObject meowtiTool;
+    public GameObject meowtiToolGO;
+
+    public MeowtiTool meowtiTool;
 
     public CanvasGroup toolCanvas;
 
@@ -31,12 +33,13 @@ public class PlayerControl : MonoBehaviour
             {
                 //Zoom in on the meow-ti tool, enable cursor and tool canvas.
 
-                meowtiTool.transform.localPosition = toolZoomPos;
-                meowtiTool.transform.localRotation = Quaternion.Euler(toolZoomEuler);
+                meowtiToolGO.transform.localPosition = toolZoomPos;
+                meowtiToolGO.transform.localRotation = Quaternion.Euler(toolZoomEuler);
                 playerView.fieldOfView = 45;
                 toolCanvas.interactable = true;
+                meowtiTool.activeCanvas.interactable = true;
                 Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true; 
+                Cursor.visible = true;
                 GameManagerScript.instance.isZoomed = true;
             }
 
@@ -44,13 +47,17 @@ public class PlayerControl : MonoBehaviour
             {
                 //Zoom out of the meow-ti tool, disable cursor and tool canvas.
 
-                meowtiTool.transform.localPosition = toolOriginalPos;
-                meowtiTool.transform.localRotation = Quaternion.Euler(toolOriginalEuler);
-                playerView.fieldOfView = 70;
-                toolCanvas.interactable = false;
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                GameManagerScript.instance.isZoomed = false;
+                if (!meowtiTool.isTyping)
+                {
+                    meowtiToolGO.transform.localPosition = toolOriginalPos;
+                    meowtiToolGO.transform.localRotation = Quaternion.Euler(toolOriginalEuler);
+                    playerView.fieldOfView = 70;
+                    toolCanvas.interactable = false;
+                    meowtiTool.activeCanvas.interactable = false;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                    GameManagerScript.instance.isZoomed = false;
+                }
             }
         }
     }
