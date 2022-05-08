@@ -79,9 +79,12 @@ public class MeowtiTool : MonoBehaviour
     int rocketsLaunched = 0;
     public Button redButton;
     public TMP_Text launchCount;
+    int casualties;
 
 
     [Header("Apparatus Pawzzles")]
+    public string primaryPawzzleType;
+
     [Header("Knife")]
     public TMP_InputField cmd;
     public ScrollingText cmdScroll;
@@ -106,6 +109,7 @@ public class MeowtiTool : MonoBehaviour
 
         knifeValue = 100;
         InitializePawzzle(currentPawzzleType);
+        primaryPawzzleType = currentPawzzleType;
     }
 
     private void Update()
@@ -117,9 +121,7 @@ public class MeowtiTool : MonoBehaviour
 
         if (cmd.isFocused && cmd.text != "" && Input.GetKeyDown(KeyCode.Return))
         {
-            string userInput = cmd.text;
-
-            cmd.text = "";
+            Debug.Log(SolveKnife());
         }
     }
 
@@ -200,7 +202,7 @@ public class MeowtiTool : MonoBehaviour
     
     void InitializeKnife()
     {
-        StartCoroutine(cmdScroll.ShowText());
+        cmdScroll.Show("Meowcrosoft Weendows" + "\n \n" + "C:\\MeowtiTool\\KNIFE>");
     }
 
     public void SubmitInput()  //Player presses the submit button for primary pawzzle
@@ -250,13 +252,9 @@ public class MeowtiTool : MonoBehaviour
             if ((rocketsLaunched == 0 && inputValue == knifeValue * 0.1) || (rocketsLaunched == 1 && inputValue == knifeValue) || (rocketsLaunched == 2 && inputValue == knifeValue * 1.5) ||
                 (rocketsLaunched == 3 && inputValue == knifeValue * 2))
             {
+                casualties = inputValue;
                 SolvePrimaryPawzzle("KNIFE");
             }
-        }
-
-        if (currentPawzzleType == "KNIFE")
-        {
-            SolveApparatusPawzzle("KNIFE");
         }
     }
 
@@ -271,6 +269,14 @@ public class MeowtiTool : MonoBehaviour
     {
         activeCanvas.interactable = false;
         activeCanvas.gameObject.SetActive(false);
+
+        if (apparatusType == "KNIFE")
+        {
+            knifeCanvas.gameObject.SetActive(true);
+            knifeCanvas.interactable = true;
+            activeCanvas = knifeCanvas;
+            InitializeKnife();
+        }
     }
 
     void SolveApparatusPawzzle(string apparatusType)
@@ -445,5 +451,77 @@ public class MeowtiTool : MonoBehaviour
 
 
     //KNIFE
+    public string SolveKnife()
+    {
+        if (primaryPawzzleType == "HUH?") //If primary was Huh? and...
+        {
+            if (leftOrRightTable == 0) //table chosen was on the left
+            {
+                if (cmd.text == "spread(1, 3);")
+                {
+                    return "CUT/SLICE";
+                }
 
+                if (cmd.text == "Slice( 0,1)")
+                {
+                    return "SPREAD";
+                }
+            }
+
+            if (leftOrRightTable == 1) //table chosen was on the right
+            {
+                if (cmd.text == "spread(3, 5);")
+                {
+                    return "CUT/SLICE";
+                }
+
+                if (cmd.text == "Slice( 1,0)")
+                {
+                    return "SPREAD";
+                }
+            }
+        }
+
+        if (primaryPawzzleType == "RADIOCOMMS") //If primary pawzzle was Radio Comms...
+        {
+            int firstFreqDigit = ((radioFrequency % 1000) - (radioFrequency % 100)) / 100;
+
+            if (cmd.text == "spread(" + audioPlayCount + ", 7);")
+            {
+                return "CUT/SLICE";
+            }
+
+            if (cmd.text == "Slice( " + firstFreqDigit + ",2)")
+            {
+                return "SPREAD";
+            }
+
+            return null;
+        }
+
+        if (primaryPawzzleType == "LAUNCHCODES")
+        {
+            int firstCasDigit = ((casualties % 1000) - (casualties % 100)) / 100;
+
+            if (firstCasDigit == 0)
+            {
+                firstCasDigit = ((casualties % 100) - (casualties % 10)) / 10;
+            }
+
+            int lastCasDigit = casualties % 10;
+            if (cmd.text == "spread(" + rocketsLaunched + ", " + (3 - rocketsLaunched) + ");")
+            {
+                return "CUT/SLICE";
+            }
+
+            if (cmd.text == "Slice( " + firstCasDigit + "," + lastCasDigit + ")")
+            {
+                return "SPREAD";
+            }
+
+            return null;
+        }
+
+        else return null;
+    }
 }

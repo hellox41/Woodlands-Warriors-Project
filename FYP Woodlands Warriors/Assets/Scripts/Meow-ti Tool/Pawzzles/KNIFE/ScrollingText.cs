@@ -5,13 +5,25 @@ using TMPro;
 
 public class ScrollingText : MonoBehaviour
 {
-    public float scrollSpeed;
+    public float scrollSpeed;  //Smaller the scroll speed, the faster.
 
-    public string currentText;
+    private string currentText;
+    public string textToShow;
 
-    public TMP_InputField text;
+    public TMP_Text text;
 
-    public IEnumerator ShowText()  //wipes text and displays text at a rate of 10 words per second
+    public void Show(string text)
+    {
+        currentText = text;
+        StartCoroutine(ShowText());
+    }
+
+    public void Stop()
+    {
+        StopAllCoroutines();
+    }
+
+    private IEnumerator ShowText()  //wipes text and displays text at a rate of 10 words per second
     {
         text.text = "";
         foreach (char c in currentText.ToCharArray())
