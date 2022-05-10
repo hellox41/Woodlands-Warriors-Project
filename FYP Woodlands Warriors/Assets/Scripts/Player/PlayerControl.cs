@@ -10,6 +10,7 @@ public class PlayerControl : MonoBehaviour
     public MeowtiTool meowtiTool;
 
     public CanvasGroup toolCanvas;
+    public CanvasGroup UICanvas;
 
     public Camera playerView;
 
@@ -37,6 +38,7 @@ public class PlayerControl : MonoBehaviour
                 meowtiToolGO.transform.localRotation = Quaternion.Euler(toolZoomEuler);
                 playerView.fieldOfView = 45;
                 toolCanvas.interactable = true;
+                UICanvas.gameObject.SetActive(false);
                 meowtiTool.activeCanvas.interactable = true;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
@@ -53,6 +55,7 @@ public class PlayerControl : MonoBehaviour
                     meowtiToolGO.transform.localRotation = Quaternion.Euler(toolOriginalEuler);
                     playerView.fieldOfView = 70;
                     toolCanvas.interactable = false;
+                    UICanvas.gameObject.SetActive(true);
                     meowtiTool.activeCanvas.interactable = false;
                     Cursor.lockState = CursorLockMode.Locked;
                     Cursor.visible = false;
