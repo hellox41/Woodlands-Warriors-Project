@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class PlayerControl : MonoBehaviour
 {
     public GameObject meowtiToolGO;
+    public GameObject radialMenu;
 
     public MeowtiTool meowtiTool;
 
@@ -18,6 +19,12 @@ public class PlayerControl : MonoBehaviour
     public Vector3 toolZoomEuler;
     public Vector3 toolOriginalPos;
     public Vector3 toolOriginalEuler;
+
+    public bool isMousingOverInteractible = false;
+    [SerializeField] float interactDistance = 50f;
+
+    RaycastHit raycastHit;
+    Outline outline = null;
 
     // Start is called before the first frame update
     void Start()
@@ -63,5 +70,53 @@ public class PlayerControl : MonoBehaviour
                 }
             }
         }
+
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, interactDistance))
+        {
+            if (raycastHit.transform.GetComponent<Interactable>() != null)
+            {
+                isMousingOverInteractible = true;
+
+                outline = raycastHit.transform.GetComponent<Outline>();
+                if (!outline.enabled)
+                {
+                    outline.enabled = true;
+                }
+            }
+
+            else if (raycastHit.transform.GetComponent<Interactable>() == null)
+            {
+                outline.enabled = false;
+                isMousingOverInteractible = false;
+            }
+        }
+
+        if (Vector3.Distance(transform.position, outline.transform.position) > 1.75)
+        {
+            outline.enabled = false;
+            isMousingOverInteractible = false;
+        }
+
+        if (Input.GetMouseButtonDown(1) && isMousingOverInteractible && !GameManagerScript.instance.isInteracting)
+        {
+            GameManagerScript.instance.isInteracting = true;
+            radialMenu.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        if (Input.GetMouseButtonUp(1) && GameManagerScript.instance.isInteracting)
+        {
+            GameManagerScript.instance.isInteracting = false;
+            radialMenu.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+
+    public void Prepare(string prepType)
+    {
+        prepType = "CUT/SLICE";
+        Debug.Log("Preparing the " + outline.GetComponent<Food>().foodType + " via " + prepType);
     }
 }

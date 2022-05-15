@@ -10,6 +10,7 @@ public class GameManagerScript : MonoBehaviour
     public string[] ApparatusPawzzles = { "KNIFE" };
 
     public bool isZoomed = false;
+    public bool isInteracting = false;
     private void Awake()
     {
         if (instance == null)
