@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using Random = UnityEngine.Random;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System;
 using TMPro;
 
 public class MeowtiTool : MonoBehaviour
@@ -12,8 +14,8 @@ public class MeowtiTool : MonoBehaviour
     public TMP_InputField primaryInput;
 
     public CanvasGroup primaryToolCanvas;
-    public CanvasGroup huhCanvas;
-    public CanvasGroup radioCommsCanvas;
+    public CanvasGroup eighteenCarrotCanvas;
+    public CanvasGroup radioCafeCanvas;
     public CanvasGroup launchCodesCanvas;
 
     public CanvasGroup knifeCanvas;
@@ -29,40 +31,41 @@ public class MeowtiTool : MonoBehaviour
     [Header ("Debug")]
     public string pawzzleTypeOverride;
 
-    [Header ("Apparatus Values")]
-    public int knifeValue;
+    [Header("Apparatus Nouns")]
+    public string[] possibleApparatusNouns = { "MONKEY", "CARROT", "GRANDMA", "CHICKEN", "BANANA", "POTATO", "SOTONG" };
+    string knifeNoun;   //index 0
+    string skilletNoun; //index 1
+    public TMP_Text apparatusNounsText;
 
-    [Header("Primary Pawzzles")]
-    [Header ("Huh? Configuration")]
-    public TMP_Text huhText;
-    string[] huhLeftDisplays = { "HUH", "AYCH YUU AYCH", "THE LETTERS HUH", "THE LETTERS AYCH YUU AYCH", "JUST THE LETTERS H U H NO SPACES WORD", 
-        "THE LETTERS A Y C H SPACE Y U U SPACE A Y C H THREE WORDS TWO SPACES", "THE LETTERS A Y C H SPACE Y U U SPACE A Y C H WORD WORD WORD SPACE SPACE", 
-        "THE WORD HUH 3 LETTERS", "THE WORD HUH LETTER LETTER LETTER", "I CAN'T SPELL IT OUT NO FUNNY STUFF", "A Y C H SPACE Y U U SPACE A Y C H", "THE WORDS AYCH YUU AYCH", 
-        "THE LETTERS H U H FROM THE ALPHABET" };
+    [Header ("18 Carrot Configuration")]
+    public TMP_Text eighteenCarrotText;
+    string[] eighteenCarrotLeftDisplays = { "CARROT", "CARET", "THE WORD CARROT", "SEE EH AR AR OH TEE WORDS ONLY", "KAY AR AR EE TEE", "CARROT SYMBOL", 
+        "JUST THE WORD CARROT", "CARET VEGETABLE BUT THE WORD ^ IS GOLD THEN THE SECOND CARAT IS THE SYMBOL", 
+        "CARET WITH AN A", "KARAT", "THE WORD LIKE THE GOLD CARROT BUT THE CARET IS THE VEGETABLE", "K A Y SPACE A Y SPACE A R SPACE E E SPACE T E E", "K A Y  A Y  A R  E E  T E E", };
 
-    string[] huhRightDisplays = { "AGE YOU AGE", "THE LETTERS A G E SPACE Y O U SPACE A G E", "THE LETTERS H U H NO SPACES ONE WORD", "THE WORDS I CAN'T SPELL IT OUT ELEVEN WORDS IN TOTAL",
-        "I CAN'T SPELL IT OUT", "NO IT LITERALLY SAYS I CAN'T SPELL IT OUT", "I CAN'T SPELL IT OUT WORDS ONLY", "I CAN'T SPELL OUT THE WORDS BUT THE DISPLAY IS HUH", "THE WORD HUH",
-        "THE WORD HUH TREE LETTERS LIKE THE PLANT WORDS ONLY", "A G E SPACE Y O U SPACE A G E", "THE WORDS AGE YOU AGE", "AGE YOU AGE AS IN HOW OLD ARE YOU THAT AGE" };
+    string[] eighteenCarrotRightDisplays = { "CARAT", "^", "THE LETTERS C A R R O T ONE WORD", "SEE EH AR AR OH TEE",
+        "KAY AY AR EE TEE LETTERS ONLY", "CARROT SYMBOL TWO WORDS", "SEE EH AR AY OH TEE", "CARROT VEGETABLE", "LITERALLY JUST THE WORD CARROT LIKE THE VEGETABLE",
+        "CARROT WITH AN E", "S E E SPACE E H SPACE A R SPACE A R SPACE O H SPACE T E E ALL WORDS THIRTEEN LETTERS IN TOTAL", "KAY AY AR EE TEE NINE WORDS IN TOTAL", 
+        "^ TWO WORDS" };
 
-    int[] huhLeftValues = { 62, 10, 43, 71, 100, 6, 21, 37, 50, 4, 14, 9, 92 };
-    int[] huhRightValues = { 18, 0, 69, 85, 79, 47, 81, 64, 19, 46, 3, 5, 90 };
+    string[] eighteenCarrotLeftAdjectives = { "COLD", "HOT", "STINKY", "COMPLEX", "RAW", "FLYING", "THICK", "BURNT", "ARTIFICIAL", "FRIED", "BOILED", "BLACK", "WHOLE" };
+    string[] eighteenCarrotRightAdjectives= { "SMELLY", "SPICY", "SMALL", "SCARY", "FROZEN", "BROWN", "ROTTEN", "STRANGE", "JUICY", "FIERY", "HOLY", "HEAVY", "SEXY" };
 
     public string textToDisplay;
     public int leftOrRightTable;
-    public int huhValue;
+    public string eighteenCarrotAdjective;
 
-    [Header ("Radio Comms")]
-    string[] radioCommsWords = { "BEATS", "BELFRY", "BELLS", "BENIGN", "COMIC", "COMMIE", "COMMIT", "CULLS", "CURED", "CURRY", "RUINED", "RUSHES", "RUSSET", "RUSSIA", "RUSTIC", "RUSTY" };
-    int[] radioCommsFrequencies = { 619, 261, 173, 506, 092, 452, 369, 992, 142, 748, 338, 410, 028, 645, 100 };
+    [Header ("Radio Cafe")]
+    string[] radioCafeWords = { "SMALL", "SMART", "COATED", "BENDY", "BEEFY", "TASTY", "CORNED", "SPICY", "TACKY", "SPIKY", "SMOKY", "RUSTY", "CURED", "CORKED", "ROAST", "CURRY"};
     public AudioClip[] radioAudioClips;
 
     public string radioWord;
-    public int radioFrequency;
+
     public AudioClip radioAudioClipToPlay;
     public int audioPlayCount = 0;
     bool isClipPlaying = false;
 
-    public TMP_Text radioCommText;
+    public TMP_Text radioCafeText;
 
     [Header ("Launch Codes")]
                    //   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23   24   25
@@ -98,8 +101,8 @@ public class MeowtiTool : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        huhCanvas.gameObject.SetActive(false);
-        radioCommsCanvas.gameObject.SetActive(false);
+        eighteenCarrotCanvas.gameObject.SetActive(false);
+        radioCafeCanvas.gameObject.SetActive(false);
         launchCodesCanvas.gameObject.SetActive(false);
 
         currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, GameManagerScript.instance.PrimaryPawzzles.Length)];  //Randomly generate the first pawzzle
@@ -112,7 +115,12 @@ public class MeowtiTool : MonoBehaviour
         randomVal1 = Random.Range(0, chars.Length - 1);
         randomVal2 = Random.Range(0, chars.Length - 1);
 
-        knifeValue = 100;
+        for (int i = 0; i < 2; i++)  //Initialize apparatus nouns
+        {
+            InitializeNoun(i);
+        }
+        apparatusNounsText.text = "APPARATUS NOUNS \n \n KNIFE - " + knifeNoun + "\n SKILLET - " + skilletNoun; 
+
         InitializePawzzle(currentPawzzleType);
         primaryPawzzleType = currentPawzzleType;
     }
@@ -135,22 +143,49 @@ public class MeowtiTool : MonoBehaviour
         }
     }
 
-    void InitializePawzzle(string PawzzleType)  //Activate the pawzzle's respective canvas and pick a random answer for them
+    void RemoveElement<T>(ref T[] arr, int index)
     {
-        if (PawzzleType == "HUH?")
+        for (int i = index; i < arr.Length - 1; i++)
         {
-            InitializeHuh();
-            huhCanvas.gameObject.SetActive(true);
-            huhCanvas.interactable = true;
-            activeCanvas = huhCanvas;
+            arr[i] = arr[i + 1];
         }
 
-        if (PawzzleType == "RADIOCOMMS")
+        Array.Resize(ref arr, arr.Length - 1);
+    }
+
+    void InitializeNoun(int apparatusIndex)
+    {
+        int rng = Random.Range(0, possibleApparatusNouns.Length - 1);
+
+        if (apparatusIndex == 0)
         {
-            InitializeRadioComms();
-            radioCommsCanvas.gameObject.SetActive(true);
-            radioCommsCanvas.interactable = true;
-            activeCanvas = radioCommsCanvas;
+            knifeNoun = possibleApparatusNouns[rng];
+        }
+
+        else if(apparatusIndex == 1)
+        {
+            skilletNoun = possibleApparatusNouns[rng];
+        }
+
+        RemoveElement(ref possibleApparatusNouns, rng);
+    }
+
+    void InitializePawzzle(string PawzzleType)  //Activate the pawzzle's respective canvas and pick a random answer for them
+    {
+        if (PawzzleType == "18CARROT")
+        {
+            Initialize18Carrot();
+            eighteenCarrotCanvas.gameObject.SetActive(true);
+            eighteenCarrotCanvas.interactable = true;
+            activeCanvas = eighteenCarrotCanvas;
+        }
+
+        if (PawzzleType == "RADIOCAFE")
+        {
+            InitializeRadioCafe();
+            radioCafeCanvas.gameObject.SetActive(true);
+            radioCafeCanvas.interactable = true;
+            activeCanvas = radioCafeCanvas;
         }
 
         if (PawzzleType == "LAUNCHCODES")
@@ -178,33 +213,32 @@ public class MeowtiTool : MonoBehaviour
         }
     }
 
-    void InitializeHuh()
+    void Initialize18Carrot()
     {
         //Pick from left or right table, this information is used in KNIFE pawzzle
         leftOrRightTable = Random.Range(0, 2);
-        int rng = Random.Range(0, huhLeftDisplays.Length - 1);
+        int rng = Random.Range(0, eighteenCarrotLeftDisplays.Length - 1);
 
         if (leftOrRightTable == 0)
         {
-            textToDisplay = huhLeftDisplays[rng]; //Set the desired text to a random text on the left
-            huhValue = huhLeftValues[rng];
+            textToDisplay = eighteenCarrotLeftDisplays[rng]; //Set the desired text to a random text on the left
+            eighteenCarrotAdjective = eighteenCarrotLeftAdjectives[rng];
         }
 
         else if(leftOrRightTable == 1)
         {
-            textToDisplay = huhRightDisplays[rng]; //Set the desired text to a random text on the right
-            huhValue = huhRightValues[rng];
+            textToDisplay = eighteenCarrotRightDisplays[rng]; //Set the desired text to a random text on the right
+            eighteenCarrotAdjective = eighteenCarrotRightAdjectives[rng];
         }
 
-        huhText.text = textToDisplay;  //Set the desired text to the display text
+        eighteenCarrotText.text = textToDisplay;  //Set the desired text to the display text
     }
     
-    void InitializeRadioComms()  //Pick random answer for radiocomms
+    void InitializeRadioCafe()  //Pick random answer for radiocafe
     {
-        int rng = Random.Range(0, radioCommsWords.Length - 1);
+        int rng = Random.Range(0, radioCafeWords.Length - 1);
 
-        radioWord = radioCommsWords[rng];
-        radioFrequency = radioCommsFrequencies[rng];
+        radioWord = radioCafeWords[rng];
         radioAudioClipToPlay = radioAudioClips[rng];
     }
 
@@ -230,46 +264,23 @@ public class MeowtiTool : MonoBehaviour
 
     public void SubmitInput()  //Player presses the submit button for primary pawzzle
     {
-        if (currentPawzzleType == "HUH?")
+        if (currentPawzzleType == "18CARROT")
         {
-            int inputValue = int.Parse(primaryInput.text);
-            if (inputValue + huhValue == knifeValue)
+            if (primaryInput.text == eighteenCarrotAdjective + " " + knifeNoun)
             {
                 SolvePrimaryPawzzle("KNIFE");
             }
         }
 
-        if (currentPawzzleType == "RADIOCOMMS")
+        if (currentPawzzleType == "RADIOCAFE")
         {
-            if (radioFrequency > knifeValue)
+            if (primaryInput.text == radioWord + " " + knifeNoun)
             {
-                int inputValue = int.Parse(primaryInput.text);
-                if (radioFrequency - knifeValue == inputValue)
-                {
-                    SolvePrimaryPawzzle("KNIFE");
-                }
-            }
-
-            if (radioFrequency < knifeValue)
-            {
-                int inputValue = int.Parse(primaryInput.text);
-                if (knifeValue + radioFrequency == inputValue)
-                {
-                    SolvePrimaryPawzzle("KNIFE");
-                }
-            }
-
-            if (radioFrequency == knifeValue)
-            {
-                int inputValue = int.Parse(primaryInput.text);
-                if (inputValue == radioFrequency || inputValue == knifeValue)
-                {
-                    SolvePrimaryPawzzle("KNIFE");
-                }
+                SolvePrimaryPawzzle("KNIFE");
             }
         }
 
-        if (currentPawzzleType == "LAUNCHCODES")
+        /*if (currentPawzzleType == "LAUNCHCODES")
         {
             int inputValue = int.Parse(primaryInput.text);
             if ((rocketsLaunched == 0 && inputValue == knifeValue * 0.1) || (rocketsLaunched == 1 && inputValue == knifeValue) || (rocketsLaunched == 2 && inputValue == knifeValue * 1.5) ||
@@ -278,7 +289,7 @@ public class MeowtiTool : MonoBehaviour
                 casualties = inputValue;
                 SolvePrimaryPawzzle("KNIFE");
             }
-        }
+        }*/
     }
 
     void SolvePrimaryPawzzle(string desiredApparatus)
@@ -328,7 +339,7 @@ public class MeowtiTool : MonoBehaviour
     //Pawzzle-specific button methods below
 
 
-    //RADIOCOMMS
+    //RADIOCAFE
     public void PlayRadioCommClip()
     {
         if (!isClipPlaying)
@@ -348,13 +359,13 @@ public class MeowtiTool : MonoBehaviour
     IEnumerator delayClip()
     {
         isClipPlaying = true;
-        radioCommText.text = "PLAYING AUDIO...";
-        radioCommText.fontSize = 20;
+        radioCafeText.text = "PLAYING AUDIO...";
+        radioCafeText.fontSize = 20;
 
         yield return new WaitForSeconds(radioAudioClipToPlay.length);
         isClipPlaying = false;
-        radioCommText.text = "PLAY AUDIO";
-        radioCommText.fontSize = 24;
+        radioCafeText.text = "PLAY AUDIO";
+        radioCafeText.fontSize = 24;
     }
 
 
@@ -501,7 +512,7 @@ public class MeowtiTool : MonoBehaviour
     //KNIFE
     public string SolveKnife()
     {
-        if (primaryPawzzleType == "HUH?") //If primary was Huh? and...
+        if (primaryPawzzleType == "18CARROT") //If primary was 18 Carrot and...
         {
             if (leftOrRightTable == 0) //table chosen was on the left
             {
@@ -530,19 +541,19 @@ public class MeowtiTool : MonoBehaviour
             }
         }
 
-        if (primaryPawzzleType == "RADIOCOMMS") //If primary pawzzle was Radio Comms...
+        if (primaryPawzzleType == "RADIOCAFE") //If primary pawzzle was Radio Comms...
         {
-            int firstFreqDigit = ((radioFrequency % 1000) - (radioFrequency % 100)) / 100;
+            //int firstFreqDigit = ((radioFrequency % 1000) - (radioFrequency % 100)) / 100;
 
             if (cmd.text == "spread(" + audioPlayCount + ", 7);")
             {
                 return "CUT/SLICE";
             }
 
-            if (cmd.text == "Slice( " + firstFreqDigit + ",2)")
+            /*if (cmd.text == "Slice( " + firstFreqDigit + ",2)")
             {
                 return "SPREAD";
-            }
+            }*/
 
             return null;
         }
