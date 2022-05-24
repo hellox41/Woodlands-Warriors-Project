@@ -257,11 +257,6 @@ public class MeowtiTool : MonoBehaviour
         cmdScroll.Show("Meowcrosoft Weendows" + "\n \n" + "C:\\MeowtiTool\\KNIFE>");
     }
 
-    void InitializeStove()
-    {
-
-    }
-
     public void SubmitInput()  //Player presses the submit button for primary pawzzle
     {
         if (currentPawzzleType == "18CARROT")
@@ -294,36 +289,8 @@ public class MeowtiTool : MonoBehaviour
 
     void SolvePrimaryPawzzle(string desiredApparatus)
     {
-        Debug.Log("Pawzzle solved! You accessed the " + desiredApparatus + ".");
-
-        InitializeApparatusPawzzle(desiredApparatus);
-    }
-
-    void InitializeApparatusPawzzle(string apparatusType)
-    {
-        activeCanvas.interactable = false;
-        activeCanvas.gameObject.SetActive(false);
-
-        if (apparatusType == "KNIFE")
-        {
-            knifeCanvas.gameObject.SetActive(true);
-            knifeCanvas.interactable = true;
-            activeCanvas = knifeCanvas;
-            InitializeKnife();
-        }
-
-        if (apparatusType == "STOVE")
-        {
-            stoveCanvas.gameObject.SetActive(true);
-            stoveCanvas.interactable = true;
-            activeCanvas = stoveCanvas;
-            InitializeStove();
-        }
-    }
-
-    void SolveApparatusPawzzle(string apparatusType)
-    {
-
+        GameManagerScript.instance.accessedApparatus = desiredApparatus;
+        Debug.Log("Pawzzle solved! You accessed the " + desiredApparatus + ".");     
     }
 
     public void StartTyping()

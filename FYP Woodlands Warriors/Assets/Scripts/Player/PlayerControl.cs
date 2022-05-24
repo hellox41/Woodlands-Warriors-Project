@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class PlayerControl : MonoBehaviour
 {
     public GameObject meowtiToolGO;
-    public GameObject radialMenu;
+    public GameObject radialMenuGO;
+    public RadialMenu radialMenu;
 
     public MeowtiTool meowtiTool;
 
@@ -24,7 +25,8 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] float interactDistance = 50f;
 
     RaycastHit raycastHit;
-    Outline outline = null;
+    public Outline outline = null;
+    public Interactable interactable = null;
 
     // Start is called before the first frame update
     void Start()
@@ -84,14 +86,14 @@ public class PlayerControl : MonoBehaviour
                 }
             }
 
-            else if (raycastHit.transform.GetComponent<Interactable>() == null)
+            else if (raycastHit.transform.GetComponent<Interactable>() == null && outline != null)
             {
                 outline.enabled = false;
                 isMousingOverInteractible = false;
             }
         }
 
-        if (Vector3.Distance(transform.position, outline.transform.position) > 1.75)
+        if (outline != null && Vector3.Distance(transform.position, outline.transform.position) > 1.75) 
         {
             outline.enabled = false;
             isMousingOverInteractible = false;
@@ -99,24 +101,31 @@ public class PlayerControl : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1) && isMousingOverInteractible && !GameManagerScript.instance.isInteracting)
         {
+            interactable = outline.GetComponent<Interactable>();
             GameManagerScript.instance.isInteracting = true;
-            radialMenu.SetActive(true);
+
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            GameManagerScript.instance.interactedFood = outline.GetComponent<Food>();
+
+            radialMenu.CheckPickupButton(interactable.isPickup);
+            radialMenuGO.SetActive(true);
         }
 
         if (Input.GetMouseButtonUp(1) && GameManagerScript.instance.isInteracting)
         {
-            GameManagerScript.instance.isInteracting = false;
-            radialMenu.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            HideRadialMenu();
         }
     }
 
-    public void Prepare(string prepType)
+    public void HideRadialMenu()
     {
-        prepType = "CUT/SLICE";
-        Debug.Log("Preparing the " + outline.GetComponent<Food>().foodType + " via " + prepType);
+        GameManagerScript.instance.isInteracting = false;
+        ;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        GameManagerScript.instance.interactedFood = null;
+
+        radialMenuGO.SetActive(false);
     }
 }

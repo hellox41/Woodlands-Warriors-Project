@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
+    public string objectName;
+    public bool isPickup;
     Outline outline;
     // Start is called before the first frame update
     void Start()

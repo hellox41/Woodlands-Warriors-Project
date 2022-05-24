@@ -16,11 +16,12 @@ public class MeowtiToolInteraction : MonoBehaviour
     public Food desiredFood;
     public Condiment condiment;
     public Spread spread;
+    public Orders orders;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        orders = GameObject.Find("StageHandler").GetComponent<Orders>();   
     }
 
     // Update is called once per frame
@@ -36,7 +37,7 @@ public class MeowtiToolInteraction : MonoBehaviour
                 {
                     desiredFood = hit.transform.GetComponent<Food>();
 
-                    if (!desiredFood.isPrepared)
+                    if (!orders.isPrepared)
                     {
                         PrepareFood();
                     }
@@ -51,22 +52,23 @@ public class MeowtiToolInteraction : MonoBehaviour
         }
     }
 
-    void PrepareFood()
+    public void PrepareFood()
     {
         if (desiredFood.foodType == "Bread")
         {
+            KayaToastPrep kayaToastPrep = GameObject.Find("StageHandler").GetComponent<KayaToastPrep>();
             if (currentApparatusType == "KNIFE")
             {
-                if (currentActionType == "CUT/SLICE" && !desiredFood.isBreadCut)  //Cut the bread
+                if (currentActionType == "CUT/SLICE" && !kayaToastPrep.isBreadCut)  //Cut the bread
                 {
                     desiredFood.gameObject.transform.localScale -= new Vector3(2f, 2f, 2f);
-                    desiredFood.isBreadCut = true;
+                    kayaToastPrep.isBreadCut = true;
                 }
 
                 if (currentActionType == "SPREAD")  //Spreading method
                 {
-                    spread = desiredFood.gameObject.GetComponentInChildren<Spread>();
-                    if (!desiredFood.isBreadSpreadKaya && !desiredFood.isBreadSpreadButter)  //If the bread is plain
+                    spread = kayaToastPrep.gameObject.GetComponentInChildren<Spread>();
+                    if (!kayaToastPrep.isBreadSpreadKaya && !kayaToastPrep.isBreadSpreadButter)  //If the bread is plain
                     {
                         spread.mr.enabled = true;
 
@@ -74,27 +76,27 @@ public class MeowtiToolInteraction : MonoBehaviour
                         {
                             spread.gameObject.SetActive(true);
                             spread.UpdateSpread("Butter");
-                            desiredFood.isBreadSpreadButter = true;
+                            kayaToastPrep.isBreadSpreadButter = true;
                         }
 
                         if (currentCondiment == "Kaya") //Spreading butter on plain bread
                         {
                             spread.gameObject.SetActive(true);
                             spread.UpdateSpread("Kaya");
-                            desiredFood.isBreadSpreadKaya = true;
+                            kayaToastPrep.isBreadSpreadKaya = true;
                         }
                     }
 
-                    if ((desiredFood.isBreadSpreadButter && currentCondiment == "Kaya") || (desiredFood.isBreadSpreadKaya && currentCondiment == "Butter")) //Combining spreads
+                    if ((kayaToastPrep.isBreadSpreadButter && currentCondiment == "Kaya") || (kayaToastPrep.isBreadSpreadKaya && currentCondiment == "Butter")) //Combining spreads
                     {
                         spread.UpdateSpread("Kaya and Butter");
-                        desiredFood.isBreadSpreadButter = true;
-                        desiredFood.isBreadSpreadKaya = true;
+                        kayaToastPrep.isBreadSpreadButter = true;
+                        kayaToastPrep.isBreadSpreadKaya = true;
                     }
                 }
             }
 
-            desiredFood.CheckIfCooked();
+            orders.CheckIfCooked();
         }
     }
 }
