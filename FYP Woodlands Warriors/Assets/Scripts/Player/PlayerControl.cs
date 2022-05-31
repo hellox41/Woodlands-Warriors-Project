@@ -22,11 +22,14 @@ public class PlayerControl : MonoBehaviour
     public Vector3 toolOriginalEuler;
 
     public bool isMousingOverInteractible = false;
+    bool isMousingOverContainer = false;
     [SerializeField] float interactDistance = 50f;
 
     RaycastHit raycastHit;
     public Outline outline = null;
     public Interactable interactable = null;
+    public Inventory inventory;
+    private Container container;
 
     // Start is called before the first frame update
     void Start()
@@ -49,8 +52,7 @@ public class PlayerControl : MonoBehaviour
                 toolCanvas.interactable = true;
                 UICanvas.gameObject.SetActive(false);
                 meowtiTool.activeCanvas.interactable = true;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+                GameManagerScript.instance.ChangeCursorLockedState(false);
                 GameManagerScript.instance.isZoomed = true;
             }
 
@@ -66,10 +68,24 @@ public class PlayerControl : MonoBehaviour
                     toolCanvas.interactable = false;
                     UICanvas.gameObject.SetActive(true);
                     meowtiTool.activeCanvas.interactable = false;
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
+                    GameManagerScript.instance.ChangeCursorLockedState(true);
                     GameManagerScript.instance.isZoomed = false;
                 }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))  //Pause the game
+        {
+            if (GameManagerScript.instance.isGamePaused)
+            {
+                Time.timeScale = 1f;
+                GameManagerScript.instance.isGamePaused = false;
+            }
+
+            else
+            {
+                Time.timeScale = 0f;
+                GameManagerScript.instance.isGamePaused = true;
             }
         }
 
@@ -91,21 +107,27 @@ public class PlayerControl : MonoBehaviour
                 outline.enabled = false;
                 isMousingOverInteractible = false;
             }
+
+            if (raycastHit.transform.GetComponent<Container>() != null && isMousingOverInteractible)
+            {
+                isMousingOverContainer = true;
+                container = raycastHit.transform.GetComponent<Container>();
+            }
         }
 
         if (outline != null && Vector3.Distance(transform.position, outline.transform.position) > 1.75) 
         {
             outline.enabled = false;
             isMousingOverInteractible = false;
+            isMousingOverContainer = false;
         }
 
-        if (Input.GetMouseButtonDown(1) && isMousingOverInteractible && !GameManagerScript.instance.isInteracting)
+        if (Input.GetMouseButtonDown(1) && isMousingOverInteractible && !GameManagerScript.instance.isInteracting)  //Bring up radial menu by right-clicking
         {
             interactable = outline.GetComponent<Interactable>();
             GameManagerScript.instance.isInteracting = true;
 
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            GameManagerScript.instance.ChangeCursorLockedState(false);
             GameManagerScript.instance.interactedFood = outline.GetComponent<Food>();
 
             radialMenu.CheckPickupButton(interactable.isPickup);
@@ -116,16 +138,24 @@ public class PlayerControl : MonoBehaviour
         {
             HideRadialMenu();
         }
+
+        if (Input.GetKeyDown(KeyCode.F) && isMousingOverContainer && !GameManagerScript.instance.isInteracting && inventory.currentItemHeld.GetComponent<Food>() != null)
+        {
+            PlaceFood();
+        }
     }
 
     public void HideRadialMenu()
     {
         GameManagerScript.instance.isInteracting = false;
-        ;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        GameManagerScript.instance.ChangeCursorLockedState(true);
         GameManagerScript.instance.interactedFood = null;
 
         radialMenuGO.SetActive(false);
+    }
+
+    void PlaceFood()
+    {
+        
     }
 }

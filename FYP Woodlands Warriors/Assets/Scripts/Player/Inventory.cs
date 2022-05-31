@@ -5,8 +5,8 @@ using System;
 
 public class Inventory : MonoBehaviour
 {
-    public int maxItems = 3;
-    public int currentItems = 1;
+    private int maxItems = 3;
+    private int currentItems = 1;
 
     public List<GameObject> itemsHeld = new List<GameObject>();
     public GameObject currentItemHeld;
@@ -20,7 +20,7 @@ public class Inventory : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var d = Input.GetAxis("Mouse ScrollWheel");
+        var d = Input.GetAxis("Mouse ScrollWheel");  //Swapping between items in inventory
         if (currentItems > 1)
         {
             if (d > 0f) //scroll up
@@ -60,7 +60,6 @@ public class Inventory : MonoBehaviour
                     currentItemHeld = itemsHeld[index - 1];
                     currentItemHeld.SetActive(true);
                 }
-
             }
         }
     }
@@ -76,7 +75,15 @@ public class Inventory : MonoBehaviour
         {
             itemsHeld.Add(objToAdd);
             currentItems = itemsHeld.Count;
-            Debug.Log("Added the " + objToAdd);
+            Debug.Log("Picked up the " + objToAdd);
+        }
+    }
+
+    public void RemoveItem(GameObject objToRemove)
+    {
+        if (objToRemove != GameObject.Find("Meow-ti Tool"))
+        {
+            itemsHeld.Remove(objToRemove);
         }
     }
 }

@@ -10,13 +10,14 @@ using TMPro;
 public class MeowtiTool : MonoBehaviour
 {
     public string currentPawzzleType;
+    public string currentPawzzleAdjective;
 
     public TMP_InputField primaryInput;
 
     public CanvasGroup primaryToolCanvas;
     public CanvasGroup eighteenCarrotCanvas;
     public CanvasGroup radioCafeCanvas;
-    public CanvasGroup launchCodesCanvas;
+    public CanvasGroup vitaminsCanvas;
 
     public CanvasGroup knifeCanvas;
     public CanvasGroup stoveCanvas;
@@ -55,6 +56,8 @@ public class MeowtiTool : MonoBehaviour
     public int leftOrRightTable;
     public string eighteenCarrotAdjective;
 
+    [Space]
+
     [Header ("Radio Cafe")]
     string[] radioCafeWords = { "SMALL", "SMART", "COATED", "BENDY", "BEEFY", "TASTY", "CORNED", "SPICY", "TACKY", "SPIKY", "SMOKY", "RUSTY", "CURED", "CORKED", "ROAST", "CURRY"};
     public AudioClip[] radioAudioClips;
@@ -67,27 +70,15 @@ public class MeowtiTool : MonoBehaviour
 
     public TMP_Text radioCafeText;
 
-    [Header ("Launch Codes")]
-                   //   0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19   20   21   22   23   24   25
-    string[] chars = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-                       //  26  27   28   29   30   31   32   33   34   35   36   37   38   39   40   41   42   43   44   45   46   47   48   49   50   51
-                          "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
-    string[] displayChars = { null, null };
-    public TMP_Text launchCodesDisplay;
-    int stageNo;
-    bool isButtonPressed = false;
-    public float heldDuration = 0f;
-    public float heldTimer = 1f;
-    public string heldOrTapped = null;
-    int randomVal1;
-    int randomVal2;
-    bool launchedPreviousRockets = false;
-    public int rocketsLaunched = 0;
-    public Button redButton;
-    public TMP_Text launchCount;
-    int casualties;
-    string correctButtonType;
+    [Space]
 
+    [Header("Vitamins")]
+    string[] vitaminFoods = { "MILK", "CITRUS", "EGGS", "BELL PEPPER", "FISH", "BROCCOLI", "BREAD", "SEAWEED", "CAROT" };
+    [SerializeField] List<string> vitaminsPresent = new List<string>();
+    [SerializeField] List<string> vitaminsToAdd = new List<string>();
+    string vitaminFood1;
+    string vitaminFood2;
+    public TMP_Text vitaminsText;
 
     [Header("Apparatus Pawzzles")]
     public string primaryPawzzleType;
@@ -103,7 +94,7 @@ public class MeowtiTool : MonoBehaviour
     {
         eighteenCarrotCanvas.gameObject.SetActive(false);
         radioCafeCanvas.gameObject.SetActive(false);
-        launchCodesCanvas.gameObject.SetActive(false);
+        vitaminsCanvas.gameObject.SetActive(false);
 
         currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, GameManagerScript.instance.PrimaryPawzzles.Length)];  //Randomly generate the first pawzzle
 
@@ -111,9 +102,6 @@ public class MeowtiTool : MonoBehaviour
         {
             currentPawzzleType = pawzzleTypeOverride;
         }
-
-        randomVal1 = Random.Range(0, chars.Length - 1);
-        randomVal2 = Random.Range(0, chars.Length - 1);
 
         for (int i = 0; i < 2; i++)  //Initialize apparatus nouns
         {
@@ -127,11 +115,6 @@ public class MeowtiTool : MonoBehaviour
 
     private void Update()
     {
-        if (isButtonPressed)
-        {
-            heldDuration += Time.deltaTime;
-        }
-
         if (isTyping && cmd.text != "" && Input.GetKeyDown(KeyCode.Return))
         {
             if (SolveKnife() != null)
@@ -143,7 +126,7 @@ public class MeowtiTool : MonoBehaviour
         }
     }
 
-    void RemoveElement<T>(ref T[] arr, int index)
+    void RemoveElement<T>(ref T[] arr, int index)  //Remove an element from an array and resize the array
     {
         for (int i = index; i < arr.Length - 1; i++)
         {
@@ -153,7 +136,7 @@ public class MeowtiTool : MonoBehaviour
         Array.Resize(ref arr, arr.Length - 1);
     }
 
-    void InitializeNoun(int apparatusIndex)
+    void InitializeNoun(int apparatusIndex)  //Create nouns for the kitchen apparatus on level start
     {
         int rng = Random.Range(0, possibleApparatusNouns.Length - 1);
 
@@ -188,12 +171,12 @@ public class MeowtiTool : MonoBehaviour
             activeCanvas = radioCafeCanvas;
         }
 
-        if (PawzzleType == "LAUNCHCODES")
+        if (PawzzleType == "VITAMINS")
         {
-            InitializeLaunchCodes();
-            launchCodesCanvas.gameObject.SetActive(true);
-            launchCodesCanvas.interactable = true;
-            activeCanvas = launchCodesCanvas;
+            InitializeVitamins();
+            vitaminsCanvas.gameObject.SetActive(true);
+            vitaminsCanvas.interactable = true;
+            activeCanvas = vitaminsCanvas;
         }
 
         if (PawzzleType == "KNIFE")
@@ -222,13 +205,13 @@ public class MeowtiTool : MonoBehaviour
         if (leftOrRightTable == 0)
         {
             textToDisplay = eighteenCarrotLeftDisplays[rng]; //Set the desired text to a random text on the left
-            eighteenCarrotAdjective = eighteenCarrotLeftAdjectives[rng];
+            currentPawzzleAdjective = eighteenCarrotLeftAdjectives[rng];
         }
 
         else if(leftOrRightTable == 1)
         {
             textToDisplay = eighteenCarrotRightDisplays[rng]; //Set the desired text to a random text on the right
-            eighteenCarrotAdjective = eighteenCarrotRightAdjectives[rng];
+            currentPawzzleAdjective = eighteenCarrotRightAdjectives[rng];
         }
 
         eighteenCarrotText.text = textToDisplay;  //Set the desired text to the display text
@@ -238,18 +221,90 @@ public class MeowtiTool : MonoBehaviour
     {
         int rng = Random.Range(0, radioCafeWords.Length - 1);
 
-        radioWord = radioCafeWords[rng];
+        currentPawzzleAdjective = radioCafeWords[rng];
         radioAudioClipToPlay = radioAudioClips[rng];
     }
 
-    void InitializeLaunchCodes()  //Pick random code for launch codes
+    void InitializeVitamins()  //Pick two random foods for vitamins and assign the vitamins
     {
-        stageNo = 1;
+        for (int i = 0; i < 2; i++)
+        {
+            int rng = Random.Range(0, vitaminFoods.Length - 1);
 
-        displayChars[0] = chars[randomVal1];
-        displayChars[1] = chars[randomVal2];
+            if (i == 0)
+            {
+                vitaminFood1 = vitaminFoods[rng];
+            }
 
-        launchCodesDisplay.text = displayChars[0] + displayChars[1];
+            else if (i == 1)
+            {
+                vitaminFood2 = vitaminFoods[rng];
+            }
+
+            RemoveElement(ref vitaminFoods, rng);
+        }
+
+        vitaminsText.text = vitaminFood1 + ", " + vitaminFood2;
+
+        if (vitaminFood1 == "MILK" || vitaminFood2 == "MILK")
+        {
+            vitaminsToAdd.Add("A"); vitaminsToAdd.Add("Bs");
+        }
+
+        if (vitaminFood1 == "CITRUS" || vitaminFood2 == "CITRUS")
+        {
+            vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("C");
+        }
+
+        if (vitaminFood1 == "CITRUS" || vitaminFood2 == "CITRUS")
+        {
+            vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("C");
+        }
+
+        if (vitaminFood1 == "EGGS" || vitaminFood2 == "EGGS")
+        {
+            vitaminsToAdd.Add("A"); vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("K");
+        }
+
+        if (vitaminFood1 == "BELL PEPPER" || vitaminFood2 == "BELL PEPPER")
+        {
+            vitaminsToAdd.Add("A"); vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("C"); vitaminsToAdd.Add("E");
+        }
+
+        if (vitaminFood1 == "FISH" || vitaminFood2 == "FISH")
+        {
+            vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("D");
+        }
+
+        if (vitaminFood1 == "BROCCOLI" || vitaminFood2 == "BROCCOLI")
+        {
+            vitaminsToAdd.Add("A"); vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("D"); vitaminsToAdd.Add("E"); vitaminsToAdd.Add("K");
+        }
+
+        if (vitaminFood1 == "BREAD" || vitaminFood2 == "BREAD")
+        {
+            vitaminsToAdd.Add("Bs");
+        }
+
+        if (vitaminFood1 == "SEAWEED" || vitaminFood2 == "SEAWEED")
+        {
+            vitaminsToAdd.Add("A"); vitaminsToAdd.Add("C"); vitaminsToAdd.Add("E");
+        }
+
+        if (vitaminFood1 == "CARROT" || vitaminFood2 == "CARROT")
+        {
+            vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("C"); vitaminsToAdd.Add("K");
+        }
+
+        for (int i = 0; i < vitaminsToAdd.Count; i++)
+        {
+            if (!vitaminsPresent.Contains(vitaminsToAdd[i]))
+            {
+                vitaminsPresent.Add(vitaminsToAdd[i]);
+            }
+        }
+
+        AssignVitaminsAdjective();
     }
     
     void InitializeKnife()  //Start scrolling text for knife
@@ -259,32 +314,15 @@ public class MeowtiTool : MonoBehaviour
 
     public void SubmitInput()  //Player presses the submit button for primary pawzzle
     {
-        if (currentPawzzleType == "18CARROT")
+        if (primaryInput.text == currentPawzzleAdjective + " " + knifeNoun)  //If correct
         {
-            if (primaryInput.text == eighteenCarrotAdjective + " " + knifeNoun)
-            {
-                SolvePrimaryPawzzle("KNIFE");
-            }
+            SolvePrimaryPawzzle("KNIFE");
         }
 
-        if (currentPawzzleType == "RADIOCAFE")
+        else if (primaryInput.text != currentPawzzleAdjective + " " + knifeNoun)  //If wrong
         {
-            if (primaryInput.text == radioWord + " " + knifeNoun)
-            {
-                SolvePrimaryPawzzle("KNIFE");
-            }
+            GameManagerScript.instance.ErrorMade();
         }
-
-        /*if (currentPawzzleType == "LAUNCHCODES")
-        {
-            int inputValue = int.Parse(primaryInput.text);
-            if ((rocketsLaunched == 0 && inputValue == knifeValue * 0.1) || (rocketsLaunched == 1 && inputValue == knifeValue) || (rocketsLaunched == 2 && inputValue == knifeValue * 1.5) ||
-                (rocketsLaunched == 3 && inputValue == knifeValue * 2.5))
-            {
-                casualties = inputValue;
-                SolvePrimaryPawzzle("KNIFE");
-            }
-        }*/
     }
 
     void SolvePrimaryPawzzle(string desiredApparatus)
@@ -336,145 +374,67 @@ public class MeowtiTool : MonoBehaviour
     }
 
 
-    //LAUNCHCODES
-    public void LaunchCodesPointerDown()
+    //VITAMINS
+    void AssignVitaminsAdjective()
     {
-        heldDuration = 0;
-        isButtonPressed = true;
-    }
-
-    public void LaunchCodesPointerUp()
-    {
-        isButtonPressed = false;
-
-        if (heldDuration >= heldTimer)
+        if (CheckVitamins("Bs", 1))  //Bs absent in either foods
         {
-            heldOrTapped = "Held";
-        }
-        else if (heldDuration < heldTimer)
-        {
-            heldOrTapped = "Tapped";
+            currentPawzzleAdjective = "WEEDY";
         }
 
-        if (stageNo <= 3)
+        else if (CheckVitamins("C", 2)) //C present in both foods
         {
-            CheckLaunchCodesPart1();
-        }
-    }
-
-    void CheckLaunchCodesPart1()
-    {
-        if ((displayChars[0] == displayChars[1]) || (randomVal1 - 26 == randomVal2) || (randomVal2 - 26 == randomVal1))  //Check if the letters are the same
-        {
-            correctButtonType = "Tapped";
-            CheckLaunch();
+            currentPawzzleAdjective = "MOSSY";
         }
 
-        else if ((randomVal1 - 1 == randomVal2) || (randomVal1 + 1 == randomVal2) || (randomVal2 + 1 == randomVal2) || (randomVal1 - 27 == randomVal2) || (randomVal1 - 25 == randomVal2)
-            || (randomVal2 - 27 == randomVal1) || (randomVal2 - 25 == randomVal1)) //If letters in consequetive order in alphabet
+        else if (vitaminsPresent.Contains("D") || vitaminsPresent.Contains("K"))  //D or K present in either foods
         {
-            correctButtonType = "Held";
-            CheckLaunch();
+            currentPawzzleAdjective = "BLIND";
         }
 
-        else if ((randomVal1 == 0 || randomVal1 == 4 || randomVal1 == 8 || randomVal1 == 14 || randomVal1 == 20)
-            || (randomVal2 == 0 || randomVal2 == 4 || randomVal2 == 8 || randomVal2 == 14 || randomVal2 == 20))  //If either letter is both a vowel and a capital letter
+        else if (!vitaminsPresent.Contains("A")) //A absent in both foods
         {
-            if (launchedPreviousRockets)
-            {
-                correctButtonType = "Held";
-                CheckLaunch();
-            }
-
-            if (!launchedPreviousRockets)
-            {
-                correctButtonType = "Tapped";
-                CheckLaunch();
-            }
+            currentPawzzleAdjective = "AROMATIC";
         }
 
-        else if (randomVal1 > 26 && randomVal2 > 26)  //If both letters are capital
+        else if ((vitaminFood1 == "BELL PEPPER" && vitaminFood2 == "BROCCOLI") ||(vitaminFood1 == "BROCCOLI" && vitaminFood2 == "BELL PEPPER"))
         {
-            correctButtonType = "Tapped";
-            CheckLaunch();
+            currentPawzzleAdjective = "STARCHY";
         }
 
-        else if ((randomVal1 > 20 && randomVal1 < 26) || (randomVal2 > 20 && randomVal2 < 26) || (randomVal1 > 46) || (randomVal2 > 46))  // If either letter comes after the 20th letter
+        else if (vitaminsPresent.Contains("C"))
         {
-            correctButtonType = "Held";
-            CheckLaunch();
+            currentPawzzleAdjective = "TANGY";
         }
 
-        else if (randomVal1 < 4 || randomVal2 < 4 || (randomVal1 > 25 && randomVal1 < 30) || (randomVal2 > 25 && randomVal2 < 30))  //If either letter comes before the 5th letter
+        else
         {
-            correctButtonType = "Tapped";
-            CheckLaunch();
-        }
-
-        else  //Otherwise
-        {
-            if (launchedPreviousRockets)
-            {
-                correctButtonType = "Held";
-                CheckLaunch();
-            }
-
-            if (!launchedPreviousRockets)
-            {
-                correctButtonType = "Tapped";
-                CheckLaunch();
-            }
-        }
-
-        if (stageNo == 3)
-        {
-            Debug.Log("All stages complete!");
-            redButton.interactable = false;
-        }
-
-        if (stageNo < 3)
-        {
-            Debug.Log("Proceeding to stage " + (stageNo + 1));  
-        }
-        stageNo++;
-    }
-
-    void CheckLaunch()
-    {
-        if (heldOrTapped == "Tapped")
-        {
-            launchedPreviousRockets = true;
-            rocketsLaunched++;
-            launchCount.text = rocketsLaunched.ToString();
-        }
-
-        if (correctButtonType == heldOrTapped)
-        {
-            Debug.Log("Success!");
-        }
-
-        else if (correctButtonType != heldOrTapped)
-        {
-            Debug.Log("You operated the rocket incorrectly!");
-        }
-
-        //Generate a different, random launch code
-        if (stageNo < 3)
-        {
-            randomVal1 = Random.Range(0, chars.Length - 1);
-            randomVal2 = Random.Range(0, chars.Length - 1);
-            displayChars[0] = chars[randomVal1];
-            displayChars[1] = chars[randomVal2];
-
-            launchCodesDisplay.text = displayChars[0] + displayChars[1];
-        }
-
-        if (stageNo == 3)
-        {
-            launchCodesDisplay.text = "";
+            currentPawzzleAdjective = "MUNDANE";
         }
     }
 
+    bool CheckVitamins(string vitamin,int numberOfChecks)
+    {
+        int numberOfOccurences = 0;
+
+        for (int i = 0; i < vitaminsToAdd.Count; i++)
+        {
+            if (vitaminsToAdd[i] == vitamin)
+            {
+                numberOfOccurences++;
+            }
+        }
+
+        if (numberOfOccurences == numberOfChecks)
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
 
     //KNIFE
     public string SolveKnife()
@@ -521,29 +481,6 @@ public class MeowtiTool : MonoBehaviour
             {
                 return "SPREAD";
             }*/
-
-            return null;
-        }
-
-        if (primaryPawzzleType == "LAUNCHCODES")
-        {
-            int firstCasDigit = ((casualties % 1000) - (casualties % 100)) / 100;
-
-            if (firstCasDigit == 0)
-            {
-                firstCasDigit = ((casualties % 100) - (casualties % 10)) / 10;
-            }
-
-            int lastCasDigit = casualties % 10;
-            if (cmd.text == "spread(" + rocketsLaunched + ", " + (3 - rocketsLaunched) + ");")
-            {
-                return "CUT/SLICE";
-            }
-
-            if (cmd.text == "Slice( " + firstCasDigit + "," + lastCasDigit + ")")
-            {
-                return "SPREAD";
-            }
 
             return null;
         }

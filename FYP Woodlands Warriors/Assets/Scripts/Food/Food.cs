@@ -7,6 +7,12 @@ public class Food : MonoBehaviour
     //Possible food types: Bread, Butter, Kaya
     public string foodType;
 
+    //Transform points for the camera to transition to when preparing food
+    public Transform camTransitionTransform1;
+    public Transform camTransitionTransform2;
+    public Transform camTransitionTransform3;
+    public Transform camTransitionTransform4;
+
     // Start is called before the first frame update
     void Start()
     {
