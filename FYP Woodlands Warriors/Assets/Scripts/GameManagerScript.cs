@@ -21,7 +21,6 @@ public class GameManagerScript : MonoBehaviour
     public bool isZoomed = false;
     public bool isInteracting = false;
     public bool isPreparing = false;
-    public bool isGamePaused = false;
 
     public Food interactedFood;
 

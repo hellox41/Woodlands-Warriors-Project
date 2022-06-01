@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class RadialMenu : MonoBehaviour
 {
@@ -14,9 +15,15 @@ public class RadialMenu : MonoBehaviour
     Orders orders;
     public GameObject pickupButton;
     public GameObject inventoryGO;
+    public GameObject prepUIGO;
+
+    public TMP_Text prepTypeText;
 
     Camera mainCamera;
     CamTransition camTransition;
+
+    private string prepFood;
+    private string prepType;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +42,6 @@ public class RadialMenu : MonoBehaviour
         {
             pickupButton.SetActive(false);
         }
-
     }
 
     public void RadialMenuButtonClicked(string buttonType)
@@ -53,24 +59,32 @@ public class RadialMenu : MonoBehaviour
             playerControl.outline.enabled = false;
             playerControl.outline = null;
         }
+
+        playerControl.HideRadialMenu();
     }
 
     void PrepSetup(string apparatusType, string foodType)
     {
+
         camTransition = mainCamera.GetComponent<CamTransition>();
 
         if (foodType == "BREAD")
         {
+            prepFood = GameManagerScript.instance.interactedFood.GetComponent<Bread>().breadType + " Bread";
             if (apparatusType == "KNIFE")
             {
                 if (orders.currentStage == 1)
                 {
                     Debug.Log("Initiate cutting bread cooking event");
+                    prepType = "Slicing Edges";
                     camTransition.MoveCamera(GameManagerScript.instance.interactedFood.GetComponent<Food>().camTransitionTransform1);
-                    orders.kayaToastPrep.CutBread();
+                    orders.kayaToastPrep.CutBread();                   
                 }
             }
         }
+
+        prepTypeText.text = prepFood + ", " + prepType;
+        prepUIGO.SetActive(true);
     }
 
 

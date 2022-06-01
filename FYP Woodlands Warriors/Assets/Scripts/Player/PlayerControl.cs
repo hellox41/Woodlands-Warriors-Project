@@ -14,6 +14,8 @@ public class PlayerControl : MonoBehaviour
     public CanvasGroup toolCanvas;
     public CanvasGroup UICanvas;
 
+    public Transform raycastPointTransform;
+
     public Camera playerView;
 
     public Vector3 toolZoomPos;
@@ -74,22 +76,12 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))  //Pause the game
+        if (Input.GetKeyDown(KeyCode.Escape) && GameManagerScript.instance.isPreparing)  //Get out of prep 
         {
-            if (GameManagerScript.instance.isGamePaused)
-            {
-                Time.timeScale = 1f;
-                GameManagerScript.instance.isGamePaused = false;
-            }
-
-            else
-            {
-                Time.timeScale = 0f;
-                GameManagerScript.instance.isGamePaused = true;
-            }
+            playerView.GetComponent<CamTransition>().MoveCamera(raycastPointTransform);
         }
 
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, interactDistance))
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, interactDistance) && !GameManagerScript.instance.isPreparing)
         {
             if (raycastHit.transform.GetComponent<Interactable>() != null)
             {
@@ -122,7 +114,7 @@ public class PlayerControl : MonoBehaviour
             isMousingOverContainer = false;
         }
 
-        if (Input.GetMouseButtonDown(1) && isMousingOverInteractible && !GameManagerScript.instance.isInteracting)  //Bring up radial menu by right-clicking
+        if (Input.GetMouseButtonDown(1) && isMousingOverInteractible && !GameManagerScript.instance.isInteracting && !GameManagerScript.instance.isPreparing)  //Bring up radial menu by right-clicking
         {
             interactable = outline.GetComponent<Interactable>();
             GameManagerScript.instance.isInteracting = true;

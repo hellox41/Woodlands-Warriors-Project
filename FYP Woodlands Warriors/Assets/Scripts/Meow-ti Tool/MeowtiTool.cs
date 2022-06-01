@@ -256,11 +256,6 @@ public class MeowtiTool : MonoBehaviour
             vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("C");
         }
 
-        if (vitaminFood1 == "CITRUS" || vitaminFood2 == "CITRUS")
-        {
-            vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("C");
-        }
-
         if (vitaminFood1 == "EGGS" || vitaminFood2 == "EGGS")
         {
             vitaminsToAdd.Add("A"); vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("K");
