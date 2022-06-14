@@ -24,14 +24,18 @@ public class PlayerControl : MonoBehaviour
     public Vector3 toolOriginalEuler;
 
     public bool isMousingOverInteractible = false;
-    bool isMousingOverContainer = false;
+    public bool isMousingOverContainer = false;
+
     [SerializeField] float interactDistance = 50f;
 
     RaycastHit raycastHit;
+
     public Outline outline = null;
+    private Outline previousOutline = null;
+
     public Interactable interactable = null;
+
     public Inventory inventory;
-    private Container container;
 
     // Start is called before the first frame update
     void Start()
@@ -83,57 +87,113 @@ public class PlayerControl : MonoBehaviour
 
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, interactDistance) && !GameManagerScript.instance.isPreparing)
         {
-            if (raycastHit.transform.GetComponent<Interactable>() != null)
+            if (raycastHit.transform.GetComponent<Interactable>() != null)  //If mousing over interactable item,
             {
                 isMousingOverInteractible = true;
+                GameManagerScript.instance.interactedItem = raycastHit.transform.gameObject;
 
                 outline = raycastHit.transform.GetComponent<Outline>();
-                if (!outline.enabled)
+
+                if (previousOutline == null)
+                {
+                    previousOutline = outline;
+                }
+
+                if (!outline.enabled)  //Enable outline
                 {
                     outline.enabled = true;
                 }
             }
 
-            else if (raycastHit.transform.GetComponent<Interactable>() == null && outline != null)
+            if (raycastHit.transform.GetComponent<Interactable>() == null && outline != null)  //If looking at nothing, remove all variables
             {
                 outline.enabled = false;
+                outline = null;
                 isMousingOverInteractible = false;
+
+                if (radialMenuGO.activeInHierarchy)
+                {
+                    HideRadialMenu();
+                }
             }
 
-            if (raycastHit.transform.GetComponent<Container>() != null && isMousingOverInteractible)
+            if (raycastHit.transform.GetComponent<Container>() != null && isMousingOverInteractible)  //If looking at container, 
             {
                 isMousingOverContainer = true;
-                container = raycastHit.transform.GetComponent<Container>();
+                GameManagerScript.instance.container = raycastHit.transform.GetComponent<Container>();
+
+                if (inventory.currentItemHeld.GetComponent<Food>() != null)  //Show placement preview if holding food
+                {
+                    GameManagerScript.instance.container.ShowPreview();
+                    GameManagerScript.instance.isPlaceable = true;
+                }
+            }
+
+            if (raycastHit.transform.GetComponent<Container>() == null && isMousingOverContainer)  //Remove placement preview after looking away 
+            {
+                isMousingOverContainer = false;
+
+                if (inventory.currentItemHeld.GetComponent<Food>() != null && GameManagerScript.instance.container.isShowingPreview)
+                {
+                    Destroy(GameManagerScript.instance.container.previewedFood);
+                    GameManagerScript.instance.container.isShowingPreview = false;
+                }
             }
         }
 
-        if (outline != null && Vector3.Distance(transform.position, outline.transform.position) > 1.75) 
+        if (raycastHit.transform == null)  //Remove variables if not looking at anything
         {
-            outline.enabled = false;
+            if (outline != null)             
+            {
+                outline.enabled = false;
+            }
+
+            if (GameManagerScript.instance.container != null && GameManagerScript.instance.container.isShowingPreview)
+            {
+                Destroy(GameManagerScript.instance.container.previewedFood);
+                GameManagerScript.instance.container.isShowingPreview = false;
+            }
+
             isMousingOverInteractible = false;
             isMousingOverContainer = false;
+
+            GameManagerScript.instance.isPlaceable = false;
+        }
+
+        if (previousOutline != null && outline != null && previousOutline != outline)
+        {
+            if (previousOutline.GetComponent<Container>() != null && previousOutline.GetComponent<Container>().isShowingPreview)
+            {
+                Destroy(previousOutline.GetComponent<Container>());
+                previousOutline.GetComponent<Container>().isShowingPreview = false;
+            }
+            previousOutline.enabled = false;
+            previousOutline = outline;
         }
 
         if (Input.GetMouseButtonDown(1) && isMousingOverInteractible && !GameManagerScript.instance.isInteracting && !GameManagerScript.instance.isPreparing)  //Bring up radial menu by right-clicking
         {
             interactable = outline.GetComponent<Interactable>();
-            GameManagerScript.instance.isInteracting = true;
 
-            GameManagerScript.instance.ChangeCursorLockedState(false);
-            GameManagerScript.instance.interactedFood = outline.GetComponent<Food>();
+            if (interactable.CheckCurrentlyInteractable())
+            {
+                GameManagerScript.instance.isInteracting = true;
 
-            radialMenu.CheckPickupButton(interactable.isPickup);
-            radialMenuGO.SetActive(true);
+                GameManagerScript.instance.ChangeCursorLockedState(false);
+                GameManagerScript.instance.interactedFood = outline.GetComponent<Food>();
+
+                radialMenu.CheckPrepareButton(interactable.isPreparable);
+                radialMenu.CheckPickupButton(interactable.isPickup);
+                radialMenu.CheckPlaceButton(GameManagerScript.instance.isPlaceable);
+
+                radialMenuGO.SetActive(true);
+            }
         }
 
-        if (Input.GetMouseButtonUp(1) && GameManagerScript.instance.isInteracting)
+        if (Input.GetMouseButtonUp(1) && GameManagerScript.instance.isInteracting)  //Hide radial menu when right click is released
         {
             HideRadialMenu();
-        }
-
-        if (Input.GetKeyDown(KeyCode.F) && isMousingOverContainer && !GameManagerScript.instance.isInteracting && inventory.currentItemHeld.GetComponent<Food>() != null)
-        {
-            PlaceFood();
+            interactable = null;
         }
     }
 
@@ -144,10 +204,5 @@ public class PlayerControl : MonoBehaviour
         GameManagerScript.instance.interactedFood = null;
 
         radialMenuGO.SetActive(false);
-    }
-
-    void PlaceFood()
-    {
-        
     }
 }

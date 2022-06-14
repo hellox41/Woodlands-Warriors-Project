@@ -21,44 +21,47 @@ public class Inventory : MonoBehaviour
     void Update()
     {
         var d = Input.GetAxis("Mouse ScrollWheel");  //Swapping between items in inventory
-        if (currentItems > 1)
+
+        if (!GameManagerScript.instance.isInteracting)
         {
-            if (d > 0f) //scroll up
+            if (currentItems > 1)
             {
-                int index = itemsHeld.IndexOf(currentItemHeld);
-
-                if (index == itemsHeld.Count - 1)
+                if (d > 0f) //scroll up
                 {
-                    currentItemHeld.SetActive(false);
-                    currentItemHeld = itemsHeld[0];
-                    currentItemHeld.SetActive(true);
+                    int index = itemsHeld.IndexOf(currentItemHeld);
+
+                    if (index == itemsHeld.Count - 1)
+                    {
+                        currentItemHeld.SetActive(false);
+                        currentItemHeld = itemsHeld[0];
+                        currentItemHeld.SetActive(true);
+                    }
+
+                    else if (index != itemsHeld.Count - 1)
+                    {
+                        currentItemHeld.SetActive(false);
+                        currentItemHeld = itemsHeld[index + 1];
+                        currentItemHeld.SetActive(true);
+                    }
                 }
 
-                else if (index != itemsHeld.Count - 1)
+                if (d < 0f) //scroll down
                 {
-                    currentItemHeld.SetActive(false);
-                    currentItemHeld = itemsHeld[index + 1];
-                    currentItemHeld.SetActive(true);
-                }
+                    int index = itemsHeld.IndexOf(currentItemHeld);
 
-            }
+                    if (index == 0)
+                    {
+                        currentItemHeld.SetActive(false);
+                        currentItemHeld = itemsHeld[itemsHeld.Count - 1];
+                        currentItemHeld.SetActive(true);
+                    }
 
-            if (d < 0f) //scroll down
-            {
-                int index = itemsHeld.IndexOf(currentItemHeld);
-
-                if (index == 0)
-                {
-                    currentItemHeld.SetActive(false);
-                    currentItemHeld = itemsHeld[itemsHeld.Count - 1];
-                    currentItemHeld.SetActive(true);
-                }
-
-                else if (index > 0)
-                {
-                    currentItemHeld.SetActive(false);
-                    currentItemHeld = itemsHeld[index - 1];
-                    currentItemHeld.SetActive(true);
+                    else if (index > 0)
+                    {
+                        currentItemHeld.SetActive(false);
+                        currentItemHeld = itemsHeld[index - 1];
+                        currentItemHeld.SetActive(true);
+                    }
                 }
             }
         }
@@ -73,6 +76,14 @@ public class Inventory : MonoBehaviour
 
         if (currentItems < maxItems)
         {
+            objToAdd.layer = LayerMask.NameToLayer("Holding");
+            
+            foreach(Transform child in objToAdd.transform)
+            {
+                child.gameObject.layer = LayerMask.NameToLayer("Holding");
+            }
+
+            objToAdd.SetActive(false);
             itemsHeld.Add(objToAdd);
             currentItems = itemsHeld.Count;
             Debug.Log("Picked up the " + objToAdd);
@@ -84,6 +95,45 @@ public class Inventory : MonoBehaviour
         if (objToRemove != GameObject.Find("Meow-ti Tool"))
         {
             itemsHeld.Remove(objToRemove);
+            objToRemove.layer = LayerMask.NameToLayer("Default");
+
+            int index = itemsHeld.IndexOf(currentItemHeld);
+
+            if (index == itemsHeld.Count - 1)
+            {
+                currentItemHeld.SetActive(false);
+                currentItemHeld = itemsHeld[0];
+                currentItemHeld.SetActive(true);
+            }
+
+            else if (index != itemsHeld.Count - 1)
+            {
+                currentItemHeld.SetActive(false);
+                currentItemHeld = itemsHeld[index + 1];
+                currentItemHeld.SetActive(true);
+            }
+
+            Destroy(objToRemove);
+        }
+    }
+
+    void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        if (obj == null)
+        {
+            return;
+        }
+
+        obj.layer = newLayer;
+
+        foreach(Transform child in obj.transform)
+        {
+            if (child == null)
+            {
+                continue;
+            }
+
+            SetLayerRecursively(child.gameObject, newLayer);
         }
     }
 }

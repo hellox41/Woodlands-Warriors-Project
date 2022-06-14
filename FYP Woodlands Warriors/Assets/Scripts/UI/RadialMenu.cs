@@ -5,6 +5,7 @@ using TMPro;
 
 public class RadialMenu : MonoBehaviour
 {
+    [SerializeField] Stove stove;
     public string buttonType;
 
     public Food food;
@@ -13,7 +14,14 @@ public class RadialMenu : MonoBehaviour
     public MeowtiToolInteraction meowtiToolInteraction;
 
     Orders orders;
+
+    [Space]
+
+
+    [Header("Radial Menu Buttons")]
+    public GameObject prepareButton;
     public GameObject pickupButton;
+    public GameObject placeButton;
     public GameObject inventoryGO;
     public GameObject prepUIGO;
 
@@ -38,9 +46,36 @@ public class RadialMenu : MonoBehaviour
         {
             pickupButton.SetActive(true);
         }
+
         else
         {
             pickupButton.SetActive(false);
+        }
+    }
+
+    public void CheckPlaceButton(bool isPlace)
+    {
+        if (isPlace)
+        {
+            placeButton.SetActive(true);
+        }
+
+        else
+        {
+            placeButton.SetActive(false);
+        }
+    }
+
+    public void CheckPrepareButton(bool isPreparable)
+    {
+        if (isPreparable)
+        {
+            prepareButton.SetActive(true);
+        }
+
+        else
+        {
+            prepareButton.SetActive(false);
         }
     }
 
@@ -48,34 +83,38 @@ public class RadialMenu : MonoBehaviour
     {
         if (buttonType == "PREPARE")
         {
-            PrepSetup(GameManagerScript.instance.accessedApparatus, GameManagerScript.instance.interactedFood.foodType);
+            PrepSetup();
         }
 
         if (buttonType == "PICKUP")
         {
             Pickup();
-            playerControl.HideRadialMenu();
-            playerControl.interactable = null;
-            playerControl.outline.enabled = false;
-            playerControl.outline = null;
+        }
+
+        if (buttonType == "PLACE")
+        {
+            Place();
         }
 
         playerControl.HideRadialMenu();
+        playerControl.interactable = null;
+        GameManagerScript.instance.container = null;
+        playerControl.outline.enabled = false;
+        playerControl.outline = null;
     }
 
-    void PrepSetup(string apparatusType, string foodType)
+    void PrepSetup()
     {
-
+        string objectName = GameManagerScript.instance.interactedItem.GetComponent<Interactable>().objectName;
         camTransition = mainCamera.GetComponent<CamTransition>();
 
-        if (foodType == "BREAD")
+        if (objectName == "bread")  //Cutting bread
         {
             prepFood = GameManagerScript.instance.interactedFood.GetComponent<Bread>().breadType + " Bread";
-            if (apparatusType == "KNIFE")
+            if (GameManagerScript.instance.accessedApparatus == "KNIFE")
             {
                 if (orders.currentStage == 1)
                 {
-                    Debug.Log("Initiate cutting bread cooking event");
                     prepType = "Slicing Edges";
                     camTransition.MoveCamera(GameManagerScript.instance.interactedFood.GetComponent<Food>().camTransitionTransform1);
                     orders.kayaToastPrep.CutBread();                   
@@ -83,23 +122,50 @@ public class RadialMenu : MonoBehaviour
             }
         }
 
-        prepTypeText.text = prepFood + ", " + prepType;
-        prepUIGO.SetActive(true);
-    }
-
-
-
-    public void Pickup()  //Add an item to the player's inventory
-    {
-        GameManagerScript.instance.playerInventory.AddItem(GameManagerScript.instance.interactedFood.gameObject);
-        GameManagerScript.instance.interactedFood.gameObject.transform.parent = inventoryGO.transform;
-        GameManagerScript.instance.interactedFood.transform.localPosition = new Vector3(0.264f, -0.1479999f, 0.26f);
-
-        if (GameManagerScript.instance.interactedFood.GetComponent<Rigidbody>() != null)
+        if (objectName == "stove")
         {
-            GameManagerScript.instance.interactedFood.GetComponent<Rigidbody>().isKinematic = true;
+            Stove stove = GameManagerScript.instance.interactedItem.GetComponent<Stove>();
+
+            if (stove.isLaden && stove.ladenItem.name == "Skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "BREAD")
+            {
+                prepType = "Toasting Bread";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Stove>().camTransitionTransform1);
+                Debug.Log("Toasting da bread");
+            }
         }
 
-        GameManagerScript.instance.interactedFood.gameObject.SetActive(false);
+        if (GameManagerScript.instance.interactedFood.foodType != null && GameManagerScript.instance.accessedApparatus != null)
+        {
+            prepTypeText.text = prepFood + ", " + prepType;
+            prepUIGO.SetActive(true);
+        }
+    }
+
+    public void Pickup()  //Add an item to the player's inventory and set the item's transform to holding pos and rot
+    {
+        GameManagerScript.instance.playerInventory.AddItem(GameManagerScript.instance.interactedItem);
+
+        GameManagerScript.instance.interactedItem.transform.parent = inventoryGO.transform;
+        GameManagerScript.instance.interactedItem.transform.localPosition = GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingPos;
+        GameManagerScript.instance.interactedItem.transform.localEulerAngles = GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingRot;
+
+        if (GameManagerScript.instance.interactedItem.GetComponent<Rigidbody>() != null)
+        {
+            GameManagerScript.instance.interactedItem.GetComponent<Rigidbody>().isKinematic = true;
+        }
+
+        if (GameManagerScript.instance.interactedItem.GetComponent<Outline>() != null && GameManagerScript.instance.interactedItem.GetComponent<Outline>().enabled)
+        {
+            GameManagerScript.instance.interactedItem.GetComponent<Outline>().enabled = false;
+        }
+
+        GameManagerScript.instance.interactedItem.gameObject.SetActive(false);
+        stove.OnTriggerExit(GameManagerScript.instance.interactedItem.GetComponent<Collider>());
+    }
+
+    public void Place()
+    {
+        GameManagerScript.instance.container.Contain(GameManagerScript.instance.playerInventory.currentItemHeld);
+        GameManagerScript.instance.playerInventory.RemoveItem(GameManagerScript.instance.playerInventory.currentItemHeld);
     }
 }

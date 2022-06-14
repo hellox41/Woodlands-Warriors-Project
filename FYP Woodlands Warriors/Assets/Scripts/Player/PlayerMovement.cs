@@ -7,6 +7,8 @@ public class PlayerMovement : MonoBehaviour
     public CharacterController charController;
 
     public float moveSpeed = 5f;
+
+    public bool isSprinting = false;
     // Start is called before the first frame update
     void Start()
     {

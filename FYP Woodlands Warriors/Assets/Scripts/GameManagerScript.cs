@@ -21,8 +21,13 @@ public class GameManagerScript : MonoBehaviour
     public bool isZoomed = false;
     public bool isInteracting = false;
     public bool isPreparing = false;
+    public bool isPlaceable = false;
 
     public Food interactedFood;
+
+    public GameObject interactedItem;
+
+    public Container container;
 
     public Inventory playerInventory;
     private void Awake()
@@ -48,7 +53,6 @@ public class GameManagerScript : MonoBehaviour
         if (levelNo == 1)
         {
             ordersLeft = 3;
-            
         }
     }
 
