@@ -17,7 +17,7 @@ public class Container : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        placePoint = GetComponentInChildren<Transform>();
+
     }
 
     // Update is called once per frame
@@ -31,7 +31,7 @@ public class Container : MonoBehaviour
         if (!isShowingPreview)
         {
             previewedFood = Instantiate(GameManagerScript.instance.playerInventory.currentItemHeld, placePoint.position, placePoint.rotation);
-            previewedFood.transform.parent = transform;
+            //previewedFood.transform.parent = transform;
 
             previewedFood.layer = LayerMask.NameToLayer("Ignore Raycast");
 
@@ -46,6 +46,12 @@ public class Container : MonoBehaviour
         }
     }
 
+    public void HidePreview()
+    {
+        Destroy(previewedFood);
+        isShowingPreview = false;
+    }
+
     public void Contain(GameObject itemToContain)
     {
         Destroy(previewedFood);
@@ -53,7 +59,7 @@ public class Container : MonoBehaviour
 
         itemContained.layer = LayerMask.NameToLayer("Ignore Raycast");
         itemContained.transform.parent = transform;
-
+        this.itemContained = itemContained;
         isContainingItem = true;
     }
 }

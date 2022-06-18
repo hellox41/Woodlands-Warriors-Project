@@ -9,10 +9,12 @@ public class Stove : MonoBehaviour
     public GameObject ladenItem;
 
     public Transform camTransitionTransform1;
+
+    Container stoveContainer;
     // Start is called before the first frame update
     void Start()
     {
-        
+        stoveContainer = GetComponentInChildren<Container>();   
     }
 
     // Update is called once per frame
@@ -27,6 +29,7 @@ public class Stove : MonoBehaviour
         {
             isLaden = true;
             ladenItem = other.gameObject;
+            stoveContainer.isContainingItem = true;
         }
     }
 
@@ -36,6 +39,7 @@ public class Stove : MonoBehaviour
         {
             isLaden = false;
             ladenItem = null;
+            stoveContainer.isContainingItem = false;
         }
     }
 }

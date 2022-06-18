@@ -83,6 +83,7 @@ public class Inventory : MonoBehaviour
                 child.gameObject.layer = LayerMask.NameToLayer("Holding");
             }
 
+            objToAdd.GetComponent<Interactable>().isInInventory = true;
             objToAdd.SetActive(false);
             itemsHeld.Add(objToAdd);
             currentItems = itemsHeld.Count;

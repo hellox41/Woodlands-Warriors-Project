@@ -73,12 +73,14 @@ public class MeowtiTool : MonoBehaviour
     [Space]
 
     [Header("Vitamins")]
-    string[] vitaminFoods = { "MILK", "CITRUS", "EGGS", "BELL PEPPER", "FISH", "BROCCOLI", "BREAD", "SEAWEED", "CAROT" };
+    string[] vitaminFoods = { "MILK", "CITRUS", "EGGS", "BELL PEPPER", "FISH", "BROCCOLI", "BREAD", "SEAWEED", "CARROT" };
+    [SerializeField] Sprite[] vitaminImages;
+    [SerializeField] Image vitaminImage1;
+    [SerializeField] Image vitaminImage2;
     [SerializeField] List<string> vitaminsPresent = new List<string>();
     [SerializeField] List<string> vitaminsToAdd = new List<string>();
     string vitaminFood1;
     string vitaminFood2;
-    public TMP_Text vitaminsText;
 
     [Header("Apparatus Pawzzles")]
     public string primaryPawzzleType;
@@ -88,6 +90,7 @@ public class MeowtiTool : MonoBehaviour
     public ScrollingText cmdScroll;
     public string knifeActionType;
 
+    //PAWZZLE SYSTEM BREAKDOWN: Start(): Pick a random pawzzle from the List<> of pawzzles in GameManagerScript, then initialize apparatus nouns and the chosen pawzzle type.
 
     // Start is called before the first frame update
     void Start()
@@ -115,15 +118,7 @@ public class MeowtiTool : MonoBehaviour
 
     private void Update()
     {
-        if (isTyping && cmd.text != "" && Input.GetKeyDown(KeyCode.Return))
-        {
-            if (SolveKnife() != null)
-            {
-                cmdScroll.Show(SolveKnife() + " METHOD SUCCESSFULLY ACCESSED.");
-                meowtiToolInteraction.currentApparatusType = "KNIFE";
-                meowtiToolInteraction.currentActionType = SolveKnife();
-            }
-        }
+
     }
 
     void RemoveElement<T>(ref T[] arr, int index)  //Remove an element from an array and resize the array
@@ -186,14 +181,6 @@ public class MeowtiTool : MonoBehaviour
             activeCanvas = knifeCanvas;
             InitializeKnife();
         }
-
-        if (PawzzleType == "STOVE")
-        {
-            stoveCanvas.gameObject.SetActive(true);
-            stoveCanvas.interactable = true;
-            activeCanvas = stoveCanvas;
-            InitializeKnife();
-        }
     }
 
     void Initialize18Carrot()
@@ -227,25 +214,29 @@ public class MeowtiTool : MonoBehaviour
 
     void InitializeVitamins()  //Pick two random foods for vitamins and assign the vitamins
     {
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 2; i++)  //Pick 2 foods, assigning them to variables and images, then remove them from the list of possible foods when picked.
         {
             int rng = Random.Range(0, vitaminFoods.Length - 1);
 
             if (i == 0)
             {
                 vitaminFood1 = vitaminFoods[rng];
+                vitaminImage1.sprite = vitaminImages[rng];
+                vitaminImage1.SetNativeSize();
             }
 
             else if (i == 1)
             {
                 vitaminFood2 = vitaminFoods[rng];
+                vitaminImage2.sprite = vitaminImages[rng];
+                vitaminImage2.SetNativeSize();
             }
 
             RemoveElement(ref vitaminFoods, rng);
+            RemoveElement(ref vitaminImages, rng);
         }
 
-        vitaminsText.text = vitaminFood1 + ", " + vitaminFood2;
-
+        //Add vitamin types of the chosen foods to a list for later
         if (vitaminFood1 == "MILK" || vitaminFood2 == "MILK")
         {
             vitaminsToAdd.Add("A"); vitaminsToAdd.Add("Bs");
@@ -291,7 +282,7 @@ public class MeowtiTool : MonoBehaviour
             vitaminsToAdd.Add("Bs"); vitaminsToAdd.Add("C"); vitaminsToAdd.Add("K");
         }
 
-        for (int i = 0; i < vitaminsToAdd.Count; i++)
+        for (int i = 0; i < vitaminsToAdd.Count; i++)  //Add the vitamin types to a list where there are only 1 vitamin present for each vitamin
         {
             if (!vitaminsPresent.Contains(vitaminsToAdd[i]))
             {
@@ -392,17 +383,17 @@ public class MeowtiTool : MonoBehaviour
             currentPawzzleAdjective = "AROMATIC";
         }
 
-        else if ((vitaminFood1 == "BELL PEPPER" && vitaminFood2 == "BROCCOLI") ||(vitaminFood1 == "BROCCOLI" && vitaminFood2 == "BELL PEPPER"))
+        else if ((vitaminFood1 == "BELL PEPPER" && vitaminFood2 == "BROCCOLI") ||(vitaminFood1 == "BROCCOLI" && vitaminFood2 == "BELL PEPPER"))  //Bs and E present in both foods
         {
             currentPawzzleAdjective = "STARCHY";
         }
 
-        else if (vitaminsPresent.Contains("C"))
+        else if (vitaminsPresent.Contains("C"))  //C present in either foods
         {
             currentPawzzleAdjective = "TANGY";
         }
 
-        else
+        else  //(no other requirement)
         {
             currentPawzzleAdjective = "MUNDANE";
         }

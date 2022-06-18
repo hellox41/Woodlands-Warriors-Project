@@ -85,7 +85,7 @@ public class PlayerControl : MonoBehaviour
             playerView.GetComponent<CamTransition>().MoveCamera(raycastPointTransform);
         }
 
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, interactDistance) && !GameManagerScript.instance.isPreparing)
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, interactDistance) && !GameManagerScript.instance.isPreparing)  //Raycasting
         {
             if (raycastHit.transform.GetComponent<Interactable>() != null)  //If mousing over interactable item,
             {
@@ -117,12 +117,13 @@ public class PlayerControl : MonoBehaviour
                 }
             }
 
-            if (raycastHit.transform.GetComponent<Container>() != null && isMousingOverInteractible)  //If looking at container, 
+            if (raycastHit.transform.GetComponent<Container>() != null)  //If looking at container, 
             {
                 isMousingOverContainer = true;
-                GameManagerScript.instance.container = raycastHit.transform.GetComponent<Container>();
+                GameManagerScript.instance.container = raycastHit.transform.GetComponent<Container>();  //Assign container variable in game manager script
 
-                if (inventory.currentItemHeld.GetComponent<Food>() != null)  //Show placement preview if holding food
+                //Show placement preview if holding pickup/placeable item, and if container is not already containing another item
+                if (inventory.currentItemHeld.GetComponent<Interactable>() != null && inventory.currentItemHeld.GetComponent<Interactable>().isPickup && !raycastHit.transform.GetComponent<Container>().isContainingItem)
                 {
                     GameManagerScript.instance.container.ShowPreview();
                     GameManagerScript.instance.isPlaceable = true;
@@ -133,9 +134,9 @@ public class PlayerControl : MonoBehaviour
             {
                 isMousingOverContainer = false;
 
-                if (inventory.currentItemHeld.GetComponent<Food>() != null && GameManagerScript.instance.container.isShowingPreview)
+                if (inventory.currentItemHeld.GetComponent<Interactable>().isPickup && GameManagerScript.instance.container.isShowingPreview)
                 {
-                    Destroy(GameManagerScript.instance.container.previewedFood);
+                    GameManagerScript.instance.container.HidePreview();
                     GameManagerScript.instance.container.isShowingPreview = false;
                 }
             }
@@ -148,9 +149,9 @@ public class PlayerControl : MonoBehaviour
                 outline.enabled = false;
             }
 
-            if (GameManagerScript.instance.container != null && GameManagerScript.instance.container.isShowingPreview)
+            if (GameManagerScript.instance.container != null && GameManagerScript.instance.container.isShowingPreview)  //Hide the preview
             {
-                Destroy(GameManagerScript.instance.container.previewedFood);
+                GameManagerScript.instance.container.HidePreview();
                 GameManagerScript.instance.container.isShowingPreview = false;
             }
 
@@ -160,14 +161,14 @@ public class PlayerControl : MonoBehaviour
             GameManagerScript.instance.isPlaceable = false;
         }
 
-        if (previousOutline != null && outline != null && previousOutline != outline)
+        if (previousOutline != null && outline != null && previousOutline != outline)  //If looking from container to container, disable previous container's outline
         {
             if (previousOutline.GetComponent<Container>() != null && previousOutline.GetComponent<Container>().isShowingPreview)
             {
-                Destroy(previousOutline.GetComponent<Container>());
-                previousOutline.GetComponent<Container>().isShowingPreview = false;
+                previousOutline.GetComponent<Container>().HidePreview();
             }
             previousOutline.enabled = false;
+            GameManagerScript.instance.container = null;
             previousOutline = outline;
         }
 

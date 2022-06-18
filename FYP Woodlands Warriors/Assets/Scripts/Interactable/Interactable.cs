@@ -7,6 +7,7 @@ public class Interactable : MonoBehaviour
     public string objectName;
     public bool isPreparable;
     public bool isPickup;
+    public bool isInInventory = false;
 
     Outline outline;
 
@@ -28,6 +29,6 @@ public class Interactable : MonoBehaviour
             return false;
         }
 
-        return true;
+        else return true;
     }
 }

@@ -124,7 +124,7 @@ public class RadialMenu : MonoBehaviour
 
         if (objectName == "stove")
         {
-            Stove stove = GameManagerScript.instance.interactedItem.GetComponent<Stove>();
+            Stove stove = GameManagerScript.instance.interactedItem.transform.parent.GetComponent<Stove>();
 
             if (stove.isLaden && stove.ladenItem.name == "Skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "BREAD")
             {
