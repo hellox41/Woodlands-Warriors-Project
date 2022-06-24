@@ -28,10 +28,12 @@ public class PlayerControl : MonoBehaviour
 
     [SerializeField] float interactDistance = 50f;
 
-    RaycastHit raycastHit;
+    RaycastHit normalRaycastHit;
+    RaycastHit cookingRaycastHit;
 
     public Outline outline = null;
-    private Outline previousOutline = null;
+    private Outline prevOutline = null;  //Outline for prep buttons
+    private Outline previousOutline = null;  //Outline for interactable objects
 
     public Interactable interactable = null;
 
@@ -85,14 +87,15 @@ public class PlayerControl : MonoBehaviour
             playerView.GetComponent<CamTransition>().MoveCamera(raycastPointTransform);
         }
 
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out raycastHit, interactDistance) && !GameManagerScript.instance.isPreparing)  //Raycasting
+        //Non-cooking raycasting
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out normalRaycastHit, interactDistance) && !GameManagerScript.instance.isPreparing)
         {
-            if (raycastHit.transform.GetComponent<Interactable>() != null)  //If mousing over interactable item,
+            if (normalRaycastHit.transform.GetComponent<Interactable>() != null)  //If mousing over interactable item,
             {
                 isMousingOverInteractible = true;
-                GameManagerScript.instance.interactedItem = raycastHit.transform.gameObject;
+                GameManagerScript.instance.interactedItem = normalRaycastHit.transform.gameObject;
 
-                outline = raycastHit.transform.GetComponent<Outline>();
+                outline = normalRaycastHit.transform.GetComponent<Outline>();
 
                 if (previousOutline == null)
                 {
@@ -105,7 +108,7 @@ public class PlayerControl : MonoBehaviour
                 }
             }
 
-            if (raycastHit.transform.GetComponent<Interactable>() == null && outline != null)  //If looking at nothing, remove all variables
+            if (normalRaycastHit.transform.GetComponent<Interactable>() == null && outline != null)  //If looking at nothing, remove all variables
             {
                 outline.enabled = false;
                 outline = null;
@@ -117,24 +120,27 @@ public class PlayerControl : MonoBehaviour
                 }
             }
 
-            if (raycastHit.transform.GetComponent<Container>() != null)  //If looking at container, 
+            if (normalRaycastHit.transform.GetComponent<Container>() != null)  //If looking at container, 
             {
                 isMousingOverContainer = true;
-                GameManagerScript.instance.container = raycastHit.transform.GetComponent<Container>();  //Assign container variable in game manager script
+                GameManagerScript.instance.container = normalRaycastHit.transform.GetComponent<Container>();  //Assign container variable in game manager script
 
                 //Show placement preview if holding pickup/placeable item, and if container is not already containing another item
-                if (inventory.currentItemHeld.GetComponent<Interactable>() != null && inventory.currentItemHeld.GetComponent<Interactable>().isPickup && !raycastHit.transform.GetComponent<Container>().isContainingItem)
+                if (inventory.currentItemHeld.GetComponent<Interactable>() != null && inventory.currentItemHeld.GetComponent<Interactable>().isPickup && !normalRaycastHit.transform.GetComponent<Container>().isContainingItem)
                 {
-                    GameManagerScript.instance.container.ShowPreview();
-                    GameManagerScript.instance.isPlaceable = true;
+                    if (inventory.currentItemHeld.name != "Meow-ti Tool")
+                    {
+                        GameManagerScript.instance.container.ShowPreview();
+                        GameManagerScript.instance.isPlaceable = true;
+                    }
                 }
             }
 
-            if (raycastHit.transform.GetComponent<Container>() == null && isMousingOverContainer)  //Remove placement preview after looking away 
+            if (normalRaycastHit.transform.GetComponent<Container>() == null && isMousingOverContainer)  //Remove placement preview after looking away 
             {
                 isMousingOverContainer = false;
 
-                if (inventory.currentItemHeld.GetComponent<Interactable>().isPickup && GameManagerScript.instance.container.isShowingPreview)
+                if (inventory.currentItemHeld.GetComponent<Interactable>() != null && inventory.currentItemHeld.GetComponent<Interactable>().isPickup && GameManagerScript.instance.container.isShowingPreview)
                 {
                     GameManagerScript.instance.container.HidePreview();
                     GameManagerScript.instance.container.isShowingPreview = false;
@@ -142,7 +148,7 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        if (raycastHit.transform == null)  //Remove variables if not looking at anything
+        if (normalRaycastHit.transform == null)  //Remove variables if not looking at anything
         {
             if (outline != null)             
             {
@@ -161,15 +167,47 @@ public class PlayerControl : MonoBehaviour
             GameManagerScript.instance.isPlaceable = false;
         }
 
-        if (previousOutline != null && outline != null && previousOutline != outline)  //If looking from container to container, disable previous container's outline
+        if (previousOutline != null && outline != null && previousOutline != outline)  //If looking from container to container, disable previous container's outline and update variables
         {
             if (previousOutline.GetComponent<Container>() != null && previousOutline.GetComponent<Container>().isShowingPreview)
             {
                 previousOutline.GetComponent<Container>().HidePreview();
             }
+
+            //Show placement preview if holding pickup/placeable item, and if container is not already containing another item
+            if (inventory.currentItemHeld.GetComponent<Interactable>() != null && inventory.currentItemHeld.GetComponent<Interactable>().isPickup)
+            {
+                if (!normalRaycastHit.transform.GetComponent<Container>().isContainingItem)
+                {
+                    GameManagerScript.instance.container.ShowPreview();
+                    GameManagerScript.instance.isPlaceable = true;
+                }
+
+                else if (normalRaycastHit.transform.GetComponent<Container>().isContainingItem)
+                {
+                    GameManagerScript.instance.isPlaceable = false;
+                }
+            }
             previousOutline.enabled = false;
             GameManagerScript.instance.container = null;
             previousOutline = outline;
+        }
+
+        //Toggle outline on interactable objects in cursor raycast (in ingredient prep)
+        if (GameManagerScript.instance.isPreparing && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out cookingRaycastHit, interactDistance))
+        {
+
+            if (cookingRaycastHit.transform.GetComponent<Interactable>() != null && cookingRaycastHit.transform.GetComponent<Interactable>().isRaycastButton)
+            {
+                prevOutline = cookingRaycastHit.transform.GetComponent<Outline>();
+                prevOutline.enabled = true;
+            }
+
+            else if ((cookingRaycastHit.transform.GetComponent<Interactable>() == null || !cookingRaycastHit.transform.GetComponent<Interactable>().isRaycastButton) && prevOutline != null)
+            {
+                prevOutline.enabled = false;
+                prevOutline = null;
+            }
         }
 
         if (Input.GetMouseButtonDown(1) && isMousingOverInteractible && !GameManagerScript.instance.isInteracting && !GameManagerScript.instance.isPreparing)  //Bring up radial menu by right-clicking
@@ -196,6 +234,7 @@ public class PlayerControl : MonoBehaviour
             HideRadialMenu();
             interactable = null;
         }
+
     }
 
     public void HideRadialMenu()

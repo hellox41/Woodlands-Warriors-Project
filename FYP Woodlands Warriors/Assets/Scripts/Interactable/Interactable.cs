@@ -7,6 +7,7 @@ public class Interactable : MonoBehaviour
     public string objectName;
     public bool isPreparable;
     public bool isPickup;
+    public bool isRaycastButton;
     public bool isInInventory = false;
 
     Outline outline;
@@ -24,7 +25,7 @@ public class Interactable : MonoBehaviour
 
     public bool CheckCurrentlyInteractable()
     {
-        if (!isPreparable && !isPickup && !GameManagerScript.instance.isPlaceable)
+        if (!isPreparable && !isPickup && !GameManagerScript.instance.isPlaceable && !isRaycastButton)
         {
             return false;
         }

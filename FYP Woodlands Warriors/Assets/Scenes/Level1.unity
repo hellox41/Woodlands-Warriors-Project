@@ -1114,7 +1114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3149b49efddb264a9c726e078f8093d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stove: {fileID: 0}
+  stove: {fileID: 5244120637761509714}
   buttonType: 
   food: {fileID: 0}
   playerControl: {fileID: 128036491}
@@ -1151,16 +1151,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 392280520}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.00020389}
+  m_LocalPosition: {x: 0, y: 0, z: 0.00011024}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 577628962}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 257, y: 0.0026436}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 802.2006, y: -444.1}
+  m_SizeDelta: {x: 231.47086, y: 344}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &392280522
 MonoBehaviour:
@@ -1180,7 +1180,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0389cb6c18c04b04685e2fd755c46cdf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 564fbae7f20f81848938f6c6b279242c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1243,7 +1243,7 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: b363821139471d9469e62402a9077bfb,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: b363821139471d9469e62402a9077bfb,
         type: 3}
@@ -1654,13 +1654,14 @@ MonoBehaviour:
   isBreadSpreadButter: 0
   isBreadSpreadKaya: 0
   breadType: 
-  prepCanvas: {fileID: 467111870}
+  cutCanvas: {fileID: 467111870}
   cutButtons:
   - {fileID: 46762051}
   - {fileID: 781933796}
   - {fileID: 1751857349}
   - {fileID: 1568745351}
   - {fileID: 1832709805}
+  powerButton: {fileID: 7878508089415924310}
 --- !u!4 &507823037
 Transform:
   m_ObjectHideFlags: 0
@@ -1789,6 +1790,7 @@ GameObject:
   - component: {fileID: 577628962}
   - component: {fileID: 577628964}
   - component: {fileID: 577628963}
+  - component: {fileID: 577628965}
   m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
@@ -1853,6 +1855,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 577628961}
   m_CullTransparentMesh: 0
+--- !u!114 &577628965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577628961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 200
+    m_Right: 200
+    m_Top: 5
+    m_Bottom: 5
+  m_ChildAlignment: 4
+  m_Spacing: 145.81
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
+  m_ChildScaleWidth: 1
+  m_ChildScaleHeight: 1
 --- !u!1 &658414630
 GameObject:
   m_ObjectHideFlags: 0
@@ -3557,6 +3584,7 @@ GameObject:
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
   - component: {fileID: 963194230}
+  - component: {fileID: 963194231}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3666,6 +3694,22 @@ MonoBehaviour:
   playerGO: {fileID: 128036484}
   inventoryGO: {fileID: 819168271}
   prepUIGO: {fileID: 1036244095}
+--- !u!114 &963194231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 307
+  m_MaxRayIntersections: 0
 --- !u!1 &964000813
 GameObject:
   m_ObjectHideFlags: 0
@@ -4071,7 +4115,7 @@ GameObject:
   - component: {fileID: 1093591548}
   - component: {fileID: 1093591549}
   m_Layer: 0
-  m_Name: Point Light (1)
+  m_Name: Input Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4178,16 +4222,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1104695968}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.00015558}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 577628962}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -205.13, y: -0}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 370.32764, y: -444.1}
+  m_SizeDelta: {x: 340.65524, y: 381}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1104695970
 MonoBehaviour:
@@ -4236,12 +4280,12 @@ GameObject:
   - component: {fileID: 1111859825}
   - component: {fileID: 1111859826}
   m_Layer: 0
-  m_Name: Point Light
+  m_Name: Stove Indicator Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1111859825
 Transform:
   m_ObjectHideFlags: 0
@@ -4263,7 +4307,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1111859824}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
@@ -4560,7 +4604,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1186561573
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4704,7 +4748,7 @@ GameObject:
   - component: {fileID: 1256993175}
   - component: {fileID: 1256993174}
   m_Layer: 0
-  m_Name: Light
+  m_Name: Stove Indicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4718,7 +4762,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1256993172}
   m_LocalRotation: {x: 0.70710576, y: -0, z: -0, w: 0.70710784}
-  m_LocalPosition: {x: 0.605, y: 0.0027, z: 0.818}
+  m_LocalPosition: {x: 0.605, y: 0.0027, z: 0.907}
   m_LocalScale: {x: 0.05982524, y: 0.086799085, z: 0.020383028}
   m_Children:
   - {fileID: 1111859825}
@@ -5363,7 +5407,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1364667375}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.42, z: 0}
+  m_LocalPosition: {x: 0, y: 0.427, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9123591595315637059}
@@ -5836,7 +5880,7 @@ GameObject:
   - component: {fileID: 1555283985}
   - component: {fileID: 1555283986}
   m_Layer: 0
-  m_Name: Point Light
+  m_Name: Display Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6068,13 +6112,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1570460181}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.0011}
+  m_LocalRotation: {x: -0.70710677, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.019, z: -0.0011}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2908244721313919600}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: 0}
 --- !u!1 &1581440688
 GameObject:
   m_ObjectHideFlags: 0
@@ -7835,13 +7879,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1967985176}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.165, z: 2.729}
+  m_LocalRotation: {x: 0.000000018012217, y: 0.9811263, z: -0.19336815, w: 0.0000002676154}
+  m_LocalPosition: {x: 0, y: 0.986, z: 2.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 9123591595315637059}
   m_RootOrder: 7
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 22.299002, y: 180.00002, z: 0}
 --- !u!1 &2116594751
 GameObject:
   m_ObjectHideFlags: 0
@@ -8310,7 +8354,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -4318229177764901281, guid: 1568b8cd59c69f6408ff9dd2e5d55f76, type: 3}
+  - {fileID: 2100000, guid: 966f92232e26d6747a2d55013362a693, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -8511,7 +8555,7 @@ PrefabInstance:
     - target: {fileID: 8004611065706438145, guid: bba5436db8762914daefe926a80cbd92,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8004611065706438145, guid: bba5436db8762914daefe926a80cbd92,
         type: 3}
@@ -8583,9 +8627,10 @@ MonoBehaviour:
   objectName: skillet
   isPreparable: 0
   isPickup: 1
+  isRaycastButton: 0
   isInInventory: 0
-  holdingPos: {x: 0.388, y: -0.226, z: 0.576}
-  holdingRot: {x: -103.562, y: 14.974, z: 260.32}
+  holdingPos: {x: 0.319, y: -0.201, z: 0.568}
+  holdingRot: {x: 7.169, y: -91.12601, z: 11.814}
 --- !u!114 &2163822333650059365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8598,7 +8643,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMode: 0
+  outlineMode: 1
   outlineColor: {r: 1, g: 0, b: 0, a: 1}
   outlineWidth: 10
   precomputeOutline: 0
@@ -8612,12 +8657,12 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2163822333650059363}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 3
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 2534964839176971238, guid: 1568b8cd59c69f6408ff9dd2e5d55f76, type: 3}
+  m_Mesh: {fileID: -8126021196279472615, guid: 83f97be8d6e1ad04894f7c20850e9bb8, type: 3}
 --- !u!114 &2163822333650059367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8677,14 +8722,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2163822333650059363}
-  m_LocalRotation: {x: -0.70710576, y: -0, z: -0, w: 0.70710784}
-  m_LocalPosition: {x: 0.032, y: 1.212, z: -2.144}
-  m_LocalScale: {x: 28, y: 28, z: 28}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.021, y: 1.165, z: -2.145}
+  m_LocalScale: {x: 0.27000007, y: 0.27, z: 0.27}
   m_Children:
   - {fileID: 1570460182}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: -90.00001, y: 0, z: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &3285857073501229195
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8864,7 +8909,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isLaden: 0
   ladenItem: {fileID: 0}
-  camTransitionTransform1: {fileID: 0}
+  camTransitionTransform1: {fileID: 1967985177}
+  stoveContainer: {fileID: 0}
+  isPoweredOn: 0
+  stoveTimeElapsed: 0
+  stoveLightMat: {fileID: 2100000, guid: 882b77c2ae684ba43866d276c610199a, type: 2}
+  stoveIndicatorLight: {fileID: 1111859826}
+  stoveLightColor:
+  - Purple
+  - Pink
+  - Red
+  currentStoveLightColorName: 
+  purpleColor: {r: 0.74919415, g: 0, b: 1, a: 0}
+  pinkColor: {r: 1, g: 0, b: 0.78316975, a: 0}
+  originalColor: {r: 0.21960786, g: 0.23529413, b: 0.25882354, a: 0}
 --- !u!4 &5260912705560682415
 Transform:
   m_ObjectHideFlags: 0
@@ -8926,7 +8984,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2163822333650059363}
-  m_Mesh: {fileID: 2534964839176971238, guid: 1568b8cd59c69f6408ff9dd2e5d55f76, type: 3}
+  m_Mesh: {fileID: -8126021196279472615, guid: 83f97be8d6e1ad04894f7c20850e9bb8, type: 3}
 --- !u!23 &6839480092853365202
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -9064,6 +9122,7 @@ MonoBehaviour:
   objectName: stove
   isPreparable: 1
   isPickup: 0
+  isRaycastButton: 0
   isInInventory: 0
   holdingPos: {x: 0, y: 0, z: 0}
   holdingRot: {x: 0, y: 0, z: 0}
@@ -9092,7 +9151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMode: 0
+  outlineMode: 1
   outlineColor: {r: 1, g: 0, b: 0, a: 1}
   outlineWidth: 10
   precomputeOutline: 0
@@ -9160,7 +9219,7 @@ GameObject:
   - component: {fileID: 7186162289228455994}
   - component: {fileID: 6918605779321039346}
   - component: {fileID: 6839480092853365202}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: knob
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9217,13 +9276,95 @@ GameObject:
   - component: {fileID: 291609214107443178}
   - component: {fileID: 7881655834974513260}
   - component: {fileID: 3285857073501229195}
-  m_Layer: 0
-  m_Name: on
+  - component: {fileID: 7878508089415924315}
+  - component: {fileID: 7878508089415924312}
+  - component: {fileID: 7878508089415924314}
+  - component: {fileID: 7878508089415924311}
+  m_Layer: 2
+  m_Name: power
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7878508089415924311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7878508089415924310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 5244120637761509714}
+          m_MethodName: ToggleStovePower
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &7878508089415924312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7878508089415924310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 0, b: 0, a: 1}
+  outlineWidth: 10
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+--- !u!65 &7878508089415924314
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7878508089415924310}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.001613444, y: 0.00020152953, z: 0.0016208421}
+  m_Center: {x: 2.910383e-11, y: 0.00000002242086, z: -0.0000016203555}
+--- !u!114 &7878508089415924315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7878508089415924310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b08535f8914f86429f3dedf5b7cb972, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectName: stovePower
+  isPreparable: 0
+  isPickup: 0
+  isRaycastButton: 1
+  isInInventory: 0
+  holdingPos: {x: 0, y: 0, z: 0}
+  holdingRot: {x: 0, y: 0, z: 0}
 --- !u!33 &7881655834974513260
 MeshFilter:
   m_ObjectHideFlags: 0

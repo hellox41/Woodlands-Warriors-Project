@@ -37,7 +37,7 @@ public class Container : MonoBehaviour
 
             if (previewedFood.GetComponent<Collider>() != null)
             {
-                previewedFood.GetComponent<Collider>().isTrigger = true;
+                previewedFood.GetComponent<Collider>().enabled = false;
             }
             Color previewColor = previewedFood.GetComponent<MeshRenderer>().material.color;
             previewColor.a = previewAlpha;
@@ -57,7 +57,16 @@ public class Container : MonoBehaviour
         Destroy(previewedFood);
         GameObject itemContained = Instantiate(itemToContain, placePoint.position, placePoint.rotation);
 
-        itemContained.layer = LayerMask.NameToLayer("Ignore Raycast");
+        if (itemContained.GetComponent<Container>() != null)
+        {
+            itemContained.layer = LayerMask.NameToLayer("Default");
+        }
+
+        else if (itemContained.GetComponent<Container>() == null)
+        {
+            itemContained.layer = LayerMask.NameToLayer("Ignore Raycast");
+        }
+
         itemContained.transform.parent = transform;
         this.itemContained = itemContained;
         isContainingItem = true;

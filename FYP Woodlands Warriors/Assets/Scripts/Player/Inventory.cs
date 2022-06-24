@@ -43,6 +43,8 @@ public class Inventory : MonoBehaviour
                         currentItemHeld = itemsHeld[index + 1];
                         currentItemHeld.SetActive(true);
                     }
+
+                    CheckPlaceable();
                 }
 
                 if (d < 0f) //scroll down
@@ -62,8 +64,23 @@ public class Inventory : MonoBehaviour
                         currentItemHeld = itemsHeld[index - 1];
                         currentItemHeld.SetActive(true);
                     }
+
+                    CheckPlaceable();
                 }
             }
+        }
+    }
+
+    void CheckPlaceable()
+    {
+        if (currentItemHeld.name != "Meow-ti Tool")
+        {
+            GameManagerScript.instance.isPlaceable = true;
+        }
+
+        else if (currentItemHeld.name == "Meow-ti Tool")
+        {
+            GameManagerScript.instance.isPlaceable = false;
         }
     }
 

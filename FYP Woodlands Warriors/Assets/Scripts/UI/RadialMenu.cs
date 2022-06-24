@@ -126,15 +126,16 @@ public class RadialMenu : MonoBehaviour
         {
             Stove stove = GameManagerScript.instance.interactedItem.transform.parent.GetComponent<Stove>();
 
-            if (stove.isLaden && stove.ladenItem.name == "Skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "BREAD")
+            if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "BREAD")
             {
+                prepFood = stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Bread>().breadType + " Bread";
                 prepType = "Toasting Bread";
-                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Stove>().camTransitionTransform1);
-                Debug.Log("Toasting da bread");
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponentInParent<Stove>().camTransitionTransform1);
+                orders.kayaToastPrep.ToastBread();
             }
         }
 
-        if (GameManagerScript.instance.interactedFood.foodType != null && GameManagerScript.instance.accessedApparatus != null)
+        if (GameManagerScript.instance.interactedItem != null && GameManagerScript.instance.accessedApparatus != null)
         {
             prepTypeText.text = prepFood + ", " + prepType;
             prepUIGO.SetActive(true);
@@ -149,23 +150,33 @@ public class RadialMenu : MonoBehaviour
         GameManagerScript.instance.interactedItem.transform.localPosition = GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingPos;
         GameManagerScript.instance.interactedItem.transform.localEulerAngles = GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingRot;
 
+        //Disable picked up object's rigidbody
         if (GameManagerScript.instance.interactedItem.GetComponent<Rigidbody>() != null)
         {
             GameManagerScript.instance.interactedItem.GetComponent<Rigidbody>().isKinematic = true;
         }
 
+        //Disable picked up object's outline
         if (GameManagerScript.instance.interactedItem.GetComponent<Outline>() != null && GameManagerScript.instance.interactedItem.GetComponent<Outline>().enabled)
         {
             GameManagerScript.instance.interactedItem.GetComponent<Outline>().enabled = false;
         }
 
         GameManagerScript.instance.interactedItem.gameObject.SetActive(false);
-        stove.OnTriggerExit(GameManagerScript.instance.interactedItem.GetComponent<Collider>());
+
+        //Remove laden item from stove
+        if (GameManagerScript.instance.interactedItem == stove.ladenItem)
+        {
+            stove.isLaden = false;
+            stove.ladenItem = null;
+            stove.stoveContainer.isContainingItem = false;
+        }
     }
 
     public void Place()
     {
         GameManagerScript.instance.container.Contain(GameManagerScript.instance.playerInventory.currentItemHeld);
         GameManagerScript.instance.playerInventory.RemoveItem(GameManagerScript.instance.playerInventory.currentItemHeld);
+        GameManagerScript.instance.isPlaceable = false;
     }
 }

@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!GameManagerScript.instance.isZoomed && !GameManagerScript.instance.isPreparing)
         {
@@ -25,7 +25,7 @@ public class PlayerMovement : MonoBehaviour
 
             Vector3 move = transform.right * x + transform.forward * z;
 
-            charController.Move(move * moveSpeed * Time.deltaTime);
+            charController.Move(move * moveSpeed * Time.fixedDeltaTime);
         }
     }
 }

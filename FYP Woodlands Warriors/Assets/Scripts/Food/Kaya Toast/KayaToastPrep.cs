@@ -16,14 +16,18 @@ public class KayaToastPrep : MonoBehaviour
 
     public string breadType;
 
-    [Header("Prep Values")]
-    public Canvas prepCanvas;
+    [Header("Cut Prep Values")]
+    public Canvas cutCanvas;
     public GameObject[] cutButtons;
 
+    [Space]
+
+    [Header("Toasting Prep Values")]
+    public GameObject powerButton;
 
     public void CutBread()  //Cutting minigame
     {
-        prepCanvas.gameObject.SetActive(true);
+        cutCanvas.gameObject.SetActive(true);
     }
 
     public void OnCutButtonPressed(int buttonIndex)
@@ -33,12 +37,17 @@ public class KayaToastPrep : MonoBehaviour
         if (buttonIndex == 4)
         {
             isBreadCut = true;
-            prepCanvas.gameObject.SetActive(false);
+            cutCanvas.gameObject.SetActive(false);
         }
 
         else
         {
             cutButtons[buttonIndex + 1].SetActive(true);
         }
+    }
+
+    public void ToastBread()  //Toasting minigame
+    {
+        powerButton.layer = LayerMask.NameToLayer("Default");
     }
 }
