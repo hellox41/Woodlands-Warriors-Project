@@ -14,6 +14,10 @@ public class KayaToastPrep : MonoBehaviour
     public bool isBreadSpreadButter = false;
     public bool isBreadSpreadKaya = false;
 
+    public bool isBeingToasted = false;
+
+    public float toastedTime = 0f;
+
     public string breadType;
 
     [Header("Cut Prep Values")]
@@ -25,6 +29,10 @@ public class KayaToastPrep : MonoBehaviour
     [Header("Toasting Prep Values")]
     public GameObject powerButton;
 
+    private void Update()
+    {
+        
+    }
     public void CutBread()  //Cutting minigame
     {
         cutCanvas.gameObject.SetActive(true);

@@ -66,6 +66,7 @@ public class GameManagerScript : MonoBehaviour
     {
         strikes++;
 
+        Debug.Log("A mistake was made!");
         if (strikes == 3)
         {
             Debug.Log("You failed the level!");

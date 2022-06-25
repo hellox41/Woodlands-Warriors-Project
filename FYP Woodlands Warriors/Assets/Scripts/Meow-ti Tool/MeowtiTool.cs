@@ -14,6 +14,11 @@ public class MeowtiTool : MonoBehaviour
 
     public TMP_InputField primaryInput;
 
+    public TMP_Text currentApparatusLabel;
+
+    public GameObject accessedPanel;
+    public GameObject inputPanel;
+
     public CanvasGroup primaryToolCanvas;
     public CanvasGroup eighteenCarrotCanvas;
     public CanvasGroup radioCafeCanvas;
@@ -34,8 +39,9 @@ public class MeowtiTool : MonoBehaviour
 
     [Header("Apparatus Nouns")]
     public string[] possibleApparatusNouns = { "MONKEY", "CARROT", "GRANDMA", "CHICKEN", "BANANA", "POTATO", "SOTONG" };
+    List<string> apparatusNouns = new List<string>();
     string knifeNoun;   //index 0
-    string skilletNoun; //index 1
+    string spatulaNoun; //index 1
     public TMP_Text apparatusNounsText;
 
     [Header ("18 Carrot Configuration")]
@@ -82,14 +88,6 @@ public class MeowtiTool : MonoBehaviour
     string vitaminFood1;
     string vitaminFood2;
 
-    [Header("Apparatus Pawzzles")]
-    public string primaryPawzzleType;
-
-    [Header("Knife")]
-    public TMP_InputField cmd;
-    public ScrollingText cmdScroll;
-    public string knifeActionType;
-
     //PAWZZLE SYSTEM BREAKDOWN: Start(): Pick a random pawzzle from the List<> of pawzzles in GameManagerScript, then initialize apparatus nouns and the chosen pawzzle type.
 
     // Start is called before the first frame update
@@ -110,10 +108,9 @@ public class MeowtiTool : MonoBehaviour
         {
             InitializeNoun(i);
         }
-        apparatusNounsText.text = "APPARATUS NOUNS \n \n KNIFE - " + knifeNoun + "\n SKILLET - " + skilletNoun; 
+        apparatusNounsText.text = "APPARATUS NOUNS \n \n KNIFE - " + knifeNoun + "\n SPATULA - " + spatulaNoun; 
 
         InitializePawzzle(currentPawzzleType);
-        primaryPawzzleType = currentPawzzleType;
     }
 
     private void Update()
@@ -142,9 +139,10 @@ public class MeowtiTool : MonoBehaviour
 
         else if(apparatusIndex == 1)
         {
-            skilletNoun = possibleApparatusNouns[rng];
+            spatulaNoun = possibleApparatusNouns[rng];
         }
 
+        apparatusNouns.Add(possibleApparatusNouns[rng]);
         RemoveElement(ref possibleApparatusNouns, rng);
     }
 
@@ -172,14 +170,6 @@ public class MeowtiTool : MonoBehaviour
             vitaminsCanvas.gameObject.SetActive(true);
             vitaminsCanvas.interactable = true;
             activeCanvas = vitaminsCanvas;
-        }
-
-        if (PawzzleType == "KNIFE")
-        {
-            knifeCanvas.gameObject.SetActive(true);
-            knifeCanvas.interactable = true;
-            activeCanvas = knifeCanvas;
-            InitializeKnife();
         }
     }
 
@@ -292,22 +282,37 @@ public class MeowtiTool : MonoBehaviour
 
         AssignVitaminsAdjective();
     }
-    
-    void InitializeKnife()  //Start scrolling text for knife
-    {
-        cmdScroll.Show("Meowcrosoft Weendows" + "\n \n" + "C:\\MeowtiTool\\KNIFE>");
-    }
 
     public void SubmitInput()  //Player presses the submit button for primary pawzzle
     {
-        if (primaryInput.text == currentPawzzleAdjective + " " + knifeNoun)  //If correct
+        bool isSolved = false;
+        for (int i = 0; i < apparatusNouns.Count; i++)  
         {
-            SolvePrimaryPawzzle("KNIFE");
-        }
+            if (primaryInput.text == currentPawzzleAdjective + " " + apparatusNouns[i]) //If correct
+            {
+                if (apparatusNouns[i] == knifeNoun)  //Solving for knife
+                {
+                    SolvePrimaryPawzzle("KNIFE");
+                }
 
-        else if (primaryInput.text != currentPawzzleAdjective + " " + knifeNoun)  //If wrong
-        {
-            GameManagerScript.instance.ErrorMade();
+                if (apparatusNouns[i] == spatulaNoun)
+                {
+                    SolvePrimaryPawzzle("SPATULA");
+                }
+
+                isSolved = true;
+                inputPanel.SetActive(false);
+
+                currentApparatusLabel.text = GameManagerScript.instance.accessedApparatus;
+                accessedPanel.SetActive(true);
+                break;
+            }
+
+            if (primaryInput.text != currentPawzzleAdjective + " " + apparatusNouns[i] && i == apparatusNouns.Count - 1 && !isSolved)  //If wrong
+            {
+                GameManagerScript.instance.ErrorMade();
+                break;
+            }
         }
     }
 
@@ -325,6 +330,17 @@ public class MeowtiTool : MonoBehaviour
     public void StopTyping()
     {
         isTyping = false;
+    }
+
+    public void RevertApparatus()
+    {
+        GameManagerScript.instance.accessedApparatus = null;
+        activeCanvas.gameObject.SetActive(false);
+        accessedPanel.SetActive(false);
+        inputPanel.SetActive(true);
+
+        currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, GameManagerScript.instance.PrimaryPawzzles.Length)];  //Randomly generate another pawzzle
+        InitializePawzzle(currentPawzzleType);  //Initialize the generated pawzzle
     }
 
     //Pawzzle-specific button methods below
@@ -420,57 +436,5 @@ public class MeowtiTool : MonoBehaviour
         {
             return false;
         }
-    }
-
-    //KNIFE
-    public string SolveKnife()
-    {
-        if (primaryPawzzleType == "18CARROT") //If primary was 18 Carrot and...
-        {
-            if (leftOrRightTable == 0) //table chosen was on the left
-            {
-                if (cmd.text == "spread(1, 3);")
-                {
-                    return "CUT/SLICE";
-                }
-
-                if (cmd.text == "Slice( 0,1)")
-                {
-                    return "SPREAD";
-                }
-            }
-
-            if (leftOrRightTable == 1) //table chosen was on the right
-            {
-                if (cmd.text == "spread(3, 5);")
-                {
-                    return "CUT/SLICE";
-                }
-
-                if (cmd.text == "Slice( 1,0)")
-                {
-                    return "SPREAD";
-                }
-            }
-        }
-
-        if (primaryPawzzleType == "RADIOCAFE") //If primary pawzzle was Radio Comms...
-        {
-            //int firstFreqDigit = ((radioFrequency % 1000) - (radioFrequency % 100)) / 100;
-
-            if (cmd.text == "spread(" + audioPlayCount + ", 7);")
-            {
-                return "CUT/SLICE";
-            }
-
-            /*if (cmd.text == "Slice( " + firstFreqDigit + ",2)")
-            {
-                return "SPREAD";
-            }*/
-
-            return null;
-        }
-
-        else return null;
     }
 }

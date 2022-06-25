@@ -30,6 +30,8 @@ public class Stove : MonoBehaviour
     [SerializeField] Color pinkColor;
     [SerializeField] Color originalColor;
 
+    [SerializeField] KayaToastPrep kayaToastPrep;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +45,11 @@ public class Stove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (isPoweredOn)
+        {
+            stoveTimeElapsed += Time.deltaTime;
+            kayaToastPrep.toastedTime += Time.deltaTime;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -73,6 +79,7 @@ public class Stove : MonoBehaviour
 
         if (isPoweredOn)
         {
+            kayaToastPrep.isBeingToasted = true;
             stoveIndicatorLight.enabled = true;
             stoveLightMat.EnableKeyword("_EMISSION");
             stoveIndicatorLight.color = purpleColor;
@@ -81,6 +88,7 @@ public class Stove : MonoBehaviour
 
         else if (!isPoweredOn)
         {
+            kayaToastPrep.isBeingToasted = false;
             stoveIndicatorLight.enabled = false;
             stoveLightMat.DisableKeyword("_EMISSION");
             stoveLightMat.color = originalColor;
