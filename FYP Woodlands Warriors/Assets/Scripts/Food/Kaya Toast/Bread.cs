@@ -17,4 +17,9 @@ public class Bread : MonoBehaviour
     {
         
     }
+
+    public void UpdateTooltipActionType()
+    {
+        GameManagerScript.instance.playerControl.raycastActionTooltipText.text = "Cut (Requires Knife)";
+    }
 }

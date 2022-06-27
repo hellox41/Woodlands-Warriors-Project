@@ -113,11 +113,6 @@ public class MeowtiTool : MonoBehaviour
         InitializePawzzle(currentPawzzleType);
     }
 
-    private void Update()
-    {
-
-    }
-
     void RemoveElement<T>(ref T[] arr, int index)  //Remove an element from an array and resize the array
     {
         for (int i = index; i < arr.Length - 1; i++)

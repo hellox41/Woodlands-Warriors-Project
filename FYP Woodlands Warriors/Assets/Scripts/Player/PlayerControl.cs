@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class PlayerControl : MonoBehaviour
 {
     public GameObject meowtiToolGO;
     public GameObject radialMenuGO;
+    public GameObject raycastActionTooltip;
     public RadialMenu radialMenu;
+
+    public TMP_Text raycastActionTooltipText;
 
     public MeowtiTool meowtiTool;
 
@@ -42,13 +45,13 @@ public class PlayerControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        raycastActionTooltip.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))   //Press R to toggle zoom on meow-ti tool
+        if (Input.GetKeyDown(KeyCode.R) && !GameManagerScript.instance.isPreparing)   //Press R to toggle zoom on meow-ti tool
         {
             if (!GameManagerScript.instance.isZoomed)
             {
@@ -88,7 +91,7 @@ public class PlayerControl : MonoBehaviour
         }
 
         //Non-cooking raycasting
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out normalRaycastHit, interactDistance) && !GameManagerScript.instance.isPreparing)
+        if (!GameManagerScript.instance.isPreparing && Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out normalRaycastHit, interactDistance))
         {
             if (normalRaycastHit.transform.GetComponent<Interactable>() != null)  //If mousing over interactable item,
             {
@@ -196,17 +199,21 @@ public class PlayerControl : MonoBehaviour
         //Toggle outline on interactable objects in cursor raycast (in ingredient prep)
         if (GameManagerScript.instance.isPreparing && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out cookingRaycastHit, interactDistance))
         {
-
             if (cookingRaycastHit.transform.GetComponent<Interactable>() != null && cookingRaycastHit.transform.GetComponent<Interactable>().isRaycastButton)
             {
                 prevOutline = cookingRaycastHit.transform.GetComponent<Outline>();
                 prevOutline.enabled = true;
+
+                raycastActionTooltipText.text = cookingRaycastHit.transform.GetComponent<Interactable>().raycastAction;
+                ShowActionTooltip();
             }
 
             else if ((cookingRaycastHit.transform.GetComponent<Interactable>() == null || !cookingRaycastHit.transform.GetComponent<Interactable>().isRaycastButton) && prevOutline != null)
             {
                 prevOutline.enabled = false;
                 prevOutline = null;
+
+                HideActionTooltip();
             }
         }
 
@@ -235,6 +242,10 @@ public class PlayerControl : MonoBehaviour
             interactable = null;
         }
 
+        if (raycastActionTooltip.activeInHierarchy)
+        {
+            TooltipFollowCursor();
+        }
     }
 
     public void HideRadialMenu()
@@ -244,5 +255,26 @@ public class PlayerControl : MonoBehaviour
         GameManagerScript.instance.interactedFood = null;
 
         radialMenuGO.SetActive(false);
+    }
+
+    public void ShowActionTooltip()
+    {
+        if (!raycastActionTooltip.activeInHierarchy)
+        {
+            raycastActionTooltip.SetActive(true);
+        }
+    }
+
+    public void HideActionTooltip()
+    {
+        if (raycastActionTooltip.activeInHierarchy)
+        {
+            raycastActionTooltip.SetActive(false);
+        }
+    }
+
+    public void TooltipFollowCursor()
+    {
+        raycastActionTooltip.transform.position = Input.mousePosition + new Vector3(80f, -30f, 0);
     }
 }

@@ -59,12 +59,12 @@ public class Container : MonoBehaviour
 
         if (itemContained.GetComponent<Container>() != null)
         {
-            itemContained.layer = LayerMask.NameToLayer("Default");
+            GameManagerScript.instance.playerInventory.SetLayerRecursively(itemContained, LayerMask.NameToLayer("Default"));
         }
 
         else if (itemContained.GetComponent<Container>() == null)
         {
-            itemContained.layer = LayerMask.NameToLayer("Ignore Raycast");
+            GameManagerScript.instance.playerInventory.SetLayerRecursively(itemContained, LayerMask.NameToLayer("Ignore Raycast"));
         }
 
         itemContained.transform.parent = transform;

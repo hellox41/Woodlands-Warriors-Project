@@ -108,21 +108,28 @@ public class RadialMenu : MonoBehaviour
         string objectName = GameManagerScript.instance.interactedItem.GetComponent<Interactable>().objectName;
         camTransition = mainCamera.GetComponent<CamTransition>();
 
-        if (objectName == "bread")  //Cutting bread
+        if (objectName == "bread")
         {
             prepFood = GameManagerScript.instance.interactedFood.GetComponent<Bread>().breadType + " Bread";
+
+            
             if (GameManagerScript.instance.accessedApparatus == "KNIFE")
             {
-                if (orders.currentStage == 1)
+                //Cutting bread
+                prepType = "Slicing Edges";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedFood.GetComponent<Food>().camTransitionTransform1);
+                orders.kayaToastPrep.CutBread();
+                ShowPrepUI();
+
+                //Spreading shit
+                if (orders.kayaToastPrep.isBreadCut && orders.kayaToastPrep.isBreadToasted)
                 {
-                    prepType = "Slicing Edges";
-                    camTransition.MoveCamera(GameManagerScript.instance.interactedFood.GetComponent<Food>().camTransitionTransform1);
-                    orders.kayaToastPrep.CutBread();                   
+                    Debug.Log("Start spreading minigame");
                 }
             }
         }
 
-        if (objectName == "stove")
+        if (objectName == "stove")  //Toasting bread
         {
             Stove stove = GameManagerScript.instance.interactedItem.transform.parent.GetComponent<Stove>();
 
@@ -132,14 +139,15 @@ public class RadialMenu : MonoBehaviour
                 prepType = "Toasting Bread";
                 camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponentInParent<Stove>().camTransitionTransform1);
                 orders.kayaToastPrep.ToastBread();
+                ShowPrepUI();
             }
         }
+    }
 
-        if (GameManagerScript.instance.interactedItem != null && GameManagerScript.instance.accessedApparatus != null)
-        {
-            prepTypeText.text = prepFood + ", " + prepType;
-            prepUIGO.SetActive(true);
-        }
+    public void ShowPrepUI()
+    {
+        prepTypeText.text = prepFood + ", " + prepType;
+        prepUIGO.SetActive(true);
     }
 
     public void Pickup()  //Add an item to the player's inventory and set the item's transform to holding pos and rot
@@ -178,5 +186,10 @@ public class RadialMenu : MonoBehaviour
         GameManagerScript.instance.container.Contain(GameManagerScript.instance.playerInventory.currentItemHeld);
         GameManagerScript.instance.playerInventory.RemoveItem(GameManagerScript.instance.playerInventory.currentItemHeld);
         GameManagerScript.instance.isPlaceable = false;
+
+        if (GameManagerScript.instance.interactedItem == stove.ladenItem)
+        {
+            stove.UpdateLadenFood(stove.ladenItem);
+        }
     }
 }

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CamTransition : MonoBehaviour
 {
-    [Range(1, 6)]
-    [SerializeField] float transitionSpeed = 1f;
+    [Range(1, 10)]
+    [SerializeField] float transitionSpeed = 6f;
     [SerializeField] bool isTransitioning = false;
 
     public Transform pointToMoveTo;
@@ -13,12 +13,18 @@ public class CamTransition : MonoBehaviour
 
     [SerializeField] GameObject crosshairGO;
     [SerializeField] GameObject playerGO;
-    [SerializeField] GameObject inventoryGO;
     [SerializeField] GameObject prepUIGO;
+
+    [SerializeField] List<GameObject> children = new List<GameObject>();
 
     private void Start()
     {
         defaultCamTransform = GameObject.Find("Raycast").GetComponent<Transform>();
+
+        foreach (Transform child in transform)
+        {
+            children.Add(child.gameObject);
+        }
     }
 
     // Update is called once per frame
@@ -37,8 +43,12 @@ public class CamTransition : MonoBehaviour
                 if (pointToMoveTo == defaultCamTransform)  //If resetting camera to first person view
                 {
                     transform.parent = playerGO.transform;
-                    inventoryGO.transform.parent = transform;
-                    defaultCamTransform.parent = transform;
+
+                    foreach(GameObject obj in children)
+                    {
+                        obj.transform.parent = transform;
+                    }
+
                     crosshairGO.SetActive(true);
                     prepUIGO.SetActive(false);
                     GameManagerScript.instance.ChangeCursorLockedState(true);

@@ -10,12 +10,14 @@ public class Orders : MonoBehaviour
 
     [Header("Current Order Values")]
     public int stagesToPrepare;
-    public int currentStage = 1;
 
     public bool isPrepared = false;
 
     [Header("Foods")]
     public KayaToastPrep kayaToastPrep;
+
+    [Header("Extra")]
+    public ProgressBar progressBar;
 
     // Start is called before the first frame update
     void Start()
@@ -33,12 +35,11 @@ public class Orders : MonoBehaviour
     {
         if (GameManagerScript.instance.levelNo == 1)
         {
-            currentOrder = GameManagerScript.instance.orders[Random.Range(0, 1)];
+            currentOrder = GameManagerScript.instance.orderTypes[Random.Range(0, 1)];
             Debug.Log(currentOrder + " order recieved!");
         }
 
         GenerateRandomIngredients();
-        currentStage = 1;
     }
 
     void GenerateRandomIngredients()
@@ -46,14 +47,16 @@ public class Orders : MonoBehaviour
         if (currentOrder == "KAYATOAST")  //Random ingredient generation for kaya toast
         {
             kayaToastPrep.breadType = kayaToastPrep.breadTypes[Random.Range(0, kayaToastPrep.breadTypes.Length)];  //Random bread type
+
+            if (kayaToastPrep.breadType == "MULTIGRAIN" || kayaToastPrep.breadType == "HONEYOAT")
+            {
+                kayaToastPrep.isBreadCut = true;
+            }
         }
     }
 
     public void CheckIfCooked()
     {
-        if (currentStage == stagesToPrepare)
-        {
-            isPrepared = true;
-        }
+
     }
 }

@@ -5,6 +5,8 @@ using UnityEngine;
 public class Interactable : MonoBehaviour
 {
     public string objectName;
+    public string raycastAction;
+
     public bool isPreparable;
     public bool isPickup;
     public bool isRaycastButton;

@@ -9,14 +9,16 @@ public class GameManagerScript : MonoBehaviour
     public string[] PrimaryPawzzles = { "18CARROT", "RADIOCAFE", "VITAMINS" };
     public string[] ApparatusPawzzles = { "KNIFE" };
 
-    public string[] orders = { "KAYATOAST", "HALF-BOILEDEGGS" };
+    public string[] orderTypes = { "KAYATOAST", "HALF-BOILEDEGGS" };
 
-    public string accessedApparatus;
+    public string accessedApparatus = null;
 
     public int levelNo;
     public int ordersLeft;
     public int pawzzleDifficulty;
     public int strikes = 0;
+
+    public float roomTemperature = 15f;
 
     public bool isZoomed = false;
     public bool isInteracting = false;
@@ -24,6 +26,10 @@ public class GameManagerScript : MonoBehaviour
     public bool isPlaceable = false;
 
     public Food interactedFood;
+
+    public PlayerControl playerControl;
+
+    public Orders orders;
 
     public GameObject interactedItem;
 
@@ -49,6 +55,7 @@ public class GameManagerScript : MonoBehaviour
     void Start()
     {
         pawzzleDifficulty = levelNo;
+        accessedApparatus = null;
 
         if (levelNo == 1)
         {
@@ -73,7 +80,7 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
-    public void ChangeCursorLockedState(bool lockedState)  //if state = true, lock cursor, otherwise unlock cursor
+    public void ChangeCursorLockedState(bool lockedState)  //if lockedState = true, lock cursor, otherwise unlock cursor
     {
         if (lockedState == true)  //lock cursor
         {

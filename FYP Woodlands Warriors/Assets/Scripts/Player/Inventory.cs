@@ -93,12 +93,7 @@ public class Inventory : MonoBehaviour
 
         if (currentItems < maxItems)
         {
-            objToAdd.layer = LayerMask.NameToLayer("Holding");
-            
-            foreach(Transform child in objToAdd.transform)
-            {
-                child.gameObject.layer = LayerMask.NameToLayer("Holding");
-            }
+            SetLayerRecursively(objToAdd, LayerMask.NameToLayer("Holding"));
 
             objToAdd.GetComponent<Interactable>().isInInventory = true;
             objToAdd.SetActive(false);
@@ -110,10 +105,10 @@ public class Inventory : MonoBehaviour
 
     public void RemoveItem(GameObject objToRemove)
     {
+        //objToRemove's layers are recursively set in Container.cs
         if (objToRemove != GameObject.Find("Meow-ti Tool"))
         {
             itemsHeld.Remove(objToRemove);
-            objToRemove.layer = LayerMask.NameToLayer("Default");
 
             int index = itemsHeld.IndexOf(currentItemHeld);
 
@@ -135,7 +130,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    void SetLayerRecursively(GameObject obj, int newLayer)
+    public void SetLayerRecursively(GameObject obj, int newLayer)
     {
         if (obj == null)
         {
@@ -148,7 +143,7 @@ public class Inventory : MonoBehaviour
         {
             if (child == null)
             {
-                continue;
+                return;
             }
 
             SetLayerRecursively(child.gameObject, newLayer);
