@@ -12,6 +12,8 @@ public class Interactable : MonoBehaviour
     public bool isRaycastButton;
     public bool isInInventory = false;
 
+    public Container holdingContainer;
+
     Outline outline;
 
     public Vector3 holdingPos;
@@ -27,7 +29,7 @@ public class Interactable : MonoBehaviour
 
     public bool CheckCurrentlyInteractable()
     {
-        if (!isPreparable && !isPickup && !GameManagerScript.instance.isPlaceable && !isRaycastButton)
+        if (!isPreparable && !isPickup && !GameManagerScript.instance.isPlaceable && isRaycastButton && GetComponent<Container>() == null)
         {
             return false;
         }

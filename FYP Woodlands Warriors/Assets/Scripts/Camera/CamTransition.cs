@@ -53,6 +53,13 @@ public class CamTransition : MonoBehaviour
                     prepUIGO.SetActive(false);
                     GameManagerScript.instance.ChangeCursorLockedState(true);
                     GameManagerScript.instance.isPreparing = false;
+                    GameManagerScript.instance.playerControl.HideActionTooltip();
+
+                    if (GameManagerScript.instance.playerControl.prevOutline != null)
+                    {
+                        GameManagerScript.instance.playerControl.prevOutline.enabled = false;
+                        GameManagerScript.instance.playerControl.prevOutline = null;
+                    }
                 }
             }
         }

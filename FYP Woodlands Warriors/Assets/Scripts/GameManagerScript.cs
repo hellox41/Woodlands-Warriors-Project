@@ -7,7 +7,6 @@ public class GameManagerScript : MonoBehaviour
     public static GameManagerScript instance;
 
     public string[] PrimaryPawzzles = { "18CARROT", "RADIOCAFE", "VITAMINS" };
-    public string[] ApparatusPawzzles = { "KNIFE" };
 
     public string[] orderTypes = { "KAYATOAST", "HALF-BOILEDEGGS" };
 
@@ -18,12 +17,13 @@ public class GameManagerScript : MonoBehaviour
     public int pawzzleDifficulty;
     public int strikes = 0;
 
-    public float roomTemperature = 15f;
+    public float roomTemperature = 28f;
 
     public bool isZoomed = false;
     public bool isInteracting = false;
     public bool isPreparing = false;
     public bool isPlaceable = false;
+    public bool isTransferable = false;
 
     public Food interactedFood;
 

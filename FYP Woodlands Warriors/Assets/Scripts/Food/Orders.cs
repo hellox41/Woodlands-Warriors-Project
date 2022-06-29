@@ -57,6 +57,18 @@ public class Orders : MonoBehaviour
 
     public void CheckIfCooked()
     {
+        //Checking for kayatoast
+        if (currentOrder == "KAYATOAST")
+        {
+            if (kayaToastPrep.isBreadCut && kayaToastPrep.isBreadToasted && kayaToastPrep.isBreadSpreadKaya && kayaToastPrep.isBreadSpreadButter)
+            {
+                isPrepared = true;
+            }
+        }
 
+        if (isPrepared == true)
+        {
+            Debug.Log("You successfully cooked a dish!");
+        }
     }
 }

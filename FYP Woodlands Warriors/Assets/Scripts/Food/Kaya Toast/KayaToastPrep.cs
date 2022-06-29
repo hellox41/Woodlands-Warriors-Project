@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class KayaToastPrep : MonoBehaviour
 {
@@ -31,6 +32,14 @@ public class KayaToastPrep : MonoBehaviour
     public Stove stove;
     [SerializeField] int timesFlippedCorrectly = 0;
     public bool isFlippedOnThisColor = false;
+
+    [Space]
+
+    [Header("Spreading Prep Values")]
+    public bool isKayaAppliedToKnife = false;
+    public bool isButterAppliedToKnife = false;
+
+    public TMP_Text condimentText;
 
     private void Update()
     {
@@ -121,5 +130,57 @@ public class KayaToastPrep : MonoBehaviour
 
             isFlippedOnThisColor = true;
         }
+    }
+
+    public void SpreadBread()
+    {
+        Spread spread = GameObject.Find("Spread").GetComponent<Spread>();
+
+        if (!isBreadSpreadKaya && !isBreadSpreadButter)
+        {
+            spread.mr.enabled = true;
+        }
+
+        if (isKayaAppliedToKnife)
+        {
+            isBreadSpreadKaya = true;
+            spread.gameObject.SetActive(true);
+
+            spread.UpdateSpread("Kaya");
+            isKayaAppliedToKnife = false;
+            GameManagerScript.instance.orders.progressBar.AddProgress(1);
+        }
+
+        if (isButterAppliedToKnife)
+        {
+            isBreadSpreadButter = true;
+            spread.gameObject.SetActive(true);
+
+            spread.UpdateSpread("Butter");
+            isButterAppliedToKnife = false;
+            GameManagerScript.instance.orders.progressBar.AddProgress(1);
+        }
+
+        if ((isBreadSpreadKaya && isButterAppliedToKnife) || (isBreadSpreadButter && isKayaAppliedToKnife))
+        {
+            spread.UpdateSpread("Kaya and Butter");
+            isBreadSpreadKaya = true;
+            isBreadSpreadButter = true;
+            GameManagerScript.instance.orders.progressBar.AddProgress(1);
+        }
+
+        GameManagerScript.instance.orders.CheckIfCooked();
+    }
+
+    public void ApplyKaya()
+    {
+        isKayaAppliedToKnife = true;
+        condimentText.text = "Knife Condiment: Kaya";
+    }
+
+    public void ApplyButter()
+    {
+        isButterAppliedToKnife = true;
+        condimentText.text = "Knife Condiment: Butter";
     }
 }

@@ -35,12 +35,10 @@ public class PlayerControl : MonoBehaviour
     RaycastHit cookingRaycastHit;
 
     public Outline outline = null;
-    private Outline prevOutline = null;  //Outline for prep buttons
+    public Outline prevOutline = null;  //Outline for prep buttons
     private Outline previousOutline = null;  //Outline for interactable objects
 
     public Interactable interactable = null;
-
-    public Inventory inventory;
 
     // Start is called before the first frame update
     void Start()
@@ -85,11 +83,6 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape) && GameManagerScript.instance.isPreparing)  //Get out of prep 
-        {
-            playerView.GetComponent<CamTransition>().MoveCamera(raycastPointTransform);
-        }
-
         //Non-cooking raycasting
         if (!GameManagerScript.instance.isPreparing && Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out normalRaycastHit, interactDistance))
         {
@@ -128,13 +121,23 @@ public class PlayerControl : MonoBehaviour
                 isMousingOverContainer = true;
                 GameManagerScript.instance.container = normalRaycastHit.transform.GetComponent<Container>();  //Assign container variable in game manager script
 
-                //Show placement preview if holding pickup/placeable item, and if container is not already containing another item
-                if (inventory.currentItemHeld.GetComponent<Interactable>() != null && inventory.currentItemHeld.GetComponent<Interactable>().isPickup && !normalRaycastHit.transform.GetComponent<Container>().isContainingItem)
+                if (GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Interactable>() != null && !normalRaycastHit.transform.GetComponent<Container>().isContainingItem)
                 {
-                    if (inventory.currentItemHeld.name != "Meow-ti Tool")
+                    //Show placement preview if holding pickup/placeable item, and if container is not already containing another item
+                    if ((GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>() == null &&
+                        GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Interactable>().isPickup) ||
+                        (GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>() != null && 
+                        normalRaycastHit.transform.GetComponent<Container>().canContainContainers))
                     {
                         GameManagerScript.instance.container.ShowPreview();
                         GameManagerScript.instance.isPlaceable = true;
+                    }
+
+                    //Enable isTransferable if holding a container which is containing food, and looking at another empty container 
+                    if (GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>() != null &&
+                        GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>().isContainingItem)
+                    {
+                        GameManagerScript.instance.isTransferable = true;
                     }
                 }
             }
@@ -143,10 +146,14 @@ public class PlayerControl : MonoBehaviour
             {
                 isMousingOverContainer = false;
 
-                if (inventory.currentItemHeld.GetComponent<Interactable>() != null && inventory.currentItemHeld.GetComponent<Interactable>().isPickup && GameManagerScript.instance.container.isShowingPreview)
+                if (GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Interactable>() != null &&
+                    GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Interactable>().isPickup &&
+                    GameManagerScript.instance.container.isShowingPreview)
                 {
                     GameManagerScript.instance.container.HidePreview();
                     GameManagerScript.instance.container.isShowingPreview = false;
+                    GameManagerScript.instance.isPlaceable = false;
+                    GameManagerScript.instance.isTransferable = false;
                 }
             }
         }
@@ -168,6 +175,7 @@ public class PlayerControl : MonoBehaviour
             isMousingOverContainer = false;
 
             GameManagerScript.instance.isPlaceable = false;
+            GameManagerScript.instance.isTransferable = false;
         }
 
         if (previousOutline != null && outline != null && previousOutline != outline)  //If looking from container to container, disable previous container's outline and update variables
@@ -178,9 +186,11 @@ public class PlayerControl : MonoBehaviour
             }
 
             //Show placement preview if holding pickup/placeable item, and if container is not already containing another item
-            if (inventory.currentItemHeld.GetComponent<Interactable>() != null && inventory.currentItemHeld.GetComponent<Interactable>().isPickup)
+            if (GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Interactable>() != null && 
+                GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Interactable>().isPickup && 
+                normalRaycastHit.transform.GetComponent<Container>() != null)
             {
-                if (!normalRaycastHit.transform.GetComponent<Container>().isContainingItem)
+                if (!normalRaycastHit.transform.GetComponent<Container>().isContainingItem && normalRaycastHit.transform.GetComponent<Container>().canContainContainers)
                 {
                     GameManagerScript.instance.container.ShowPreview();
                     GameManagerScript.instance.isPlaceable = true;
@@ -221,8 +231,8 @@ public class PlayerControl : MonoBehaviour
         {
             interactable = outline.GetComponent<Interactable>();
 
-            if (interactable.CheckCurrentlyInteractable())
-            {
+            if (interactable.CheckCurrentlyInteractable() && !radialMenuGO.activeInHierarchy)
+            {            
                 GameManagerScript.instance.isInteracting = true;
 
                 GameManagerScript.instance.ChangeCursorLockedState(false);
@@ -231,6 +241,7 @@ public class PlayerControl : MonoBehaviour
                 radialMenu.CheckPrepareButton(interactable.isPreparable);
                 radialMenu.CheckPickupButton(interactable.isPickup);
                 radialMenu.CheckPlaceButton(GameManagerScript.instance.isPlaceable);
+                radialMenu.CheckTransferButton(GameManagerScript.instance.isTransferable);
 
                 radialMenuGO.SetActive(true);
             }
@@ -240,6 +251,11 @@ public class PlayerControl : MonoBehaviour
         {
             HideRadialMenu();
             interactable = null;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && GameManagerScript.instance.isPreparing)  //Get out of prep 
+        {
+            playerView.GetComponent<CamTransition>().MoveCamera(raycastPointTransform);
         }
 
         if (raycastActionTooltip.activeInHierarchy)

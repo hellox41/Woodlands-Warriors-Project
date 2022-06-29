@@ -28,8 +28,6 @@ public class MeowtiTool : MonoBehaviour
     public CanvasGroup stoveCanvas;
     public CanvasGroup activeCanvas;
 
-    public MeowtiToolInteraction meowtiToolInteraction;
-
     public AudioSource toolAudioSource;
 
     public bool isTyping = false;
@@ -330,6 +328,7 @@ public class MeowtiTool : MonoBehaviour
     public void RevertApparatus()
     {
         GameManagerScript.instance.accessedApparatus = null;
+        primaryInput.text = null;
         activeCanvas.gameObject.SetActive(false);
         accessedPanel.SetActive(false);
         inputPanel.SetActive(true);

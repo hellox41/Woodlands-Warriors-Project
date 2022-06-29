@@ -76,11 +76,21 @@ public class Inventory : MonoBehaviour
         if (currentItemHeld.name != "Meow-ti Tool")
         {
             GameManagerScript.instance.isPlaceable = true;
+
+            if (GameManagerScript.instance.container != null)
+            {
+                GameManagerScript.instance.container.ShowPreview();
+            }
         }
 
         else if (currentItemHeld.name == "Meow-ti Tool")
         {
             GameManagerScript.instance.isPlaceable = false;
+
+            if (GameManagerScript.instance.container != null)
+            {
+                GameManagerScript.instance.container.HidePreview();
+            };
         }
     }
 
@@ -109,24 +119,9 @@ public class Inventory : MonoBehaviour
         if (objToRemove != GameObject.Find("Meow-ti Tool"))
         {
             itemsHeld.Remove(objToRemove);
+            currentItems = itemsHeld.Count;
 
-            int index = itemsHeld.IndexOf(currentItemHeld);
-
-            if (index == itemsHeld.Count - 1)
-            {
-                currentItemHeld.SetActive(false);
-                currentItemHeld = itemsHeld[0];
-                currentItemHeld.SetActive(true);
-            }
-
-            else if (index != itemsHeld.Count - 1)
-            {
-                currentItemHeld.SetActive(false);
-                currentItemHeld = itemsHeld[index + 1];
-                currentItemHeld.SetActive(true);
-            }
-
-            Destroy(objToRemove);
+            SwapHeldItem();
         }
     }
 
@@ -147,6 +142,25 @@ public class Inventory : MonoBehaviour
             }
 
             SetLayerRecursively(child.gameObject, newLayer);
+        }
+    }
+
+    public void SwapHeldItem()
+    {
+        int index = itemsHeld.IndexOf(currentItemHeld);
+
+        if (index == itemsHeld.Count - 1)
+        {
+            currentItemHeld.SetActive(false);
+            currentItemHeld = itemsHeld[0];
+            currentItemHeld.SetActive(true);
+        }
+
+        else if (index != itemsHeld.Count - 1)
+        {
+            currentItemHeld.SetActive(false);
+            currentItemHeld = itemsHeld[index + 1];
+            currentItemHeld.SetActive(true);
         }
     }
 }

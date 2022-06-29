@@ -7,6 +7,7 @@ public class Container : MonoBehaviour
     public Transform placePoint;
     public bool isContainingItem = false;
     public bool isShowingPreview = false;
+    public bool canContainContainers = false;
 
     public GameObject itemContained;
 
@@ -28,12 +29,11 @@ public class Container : MonoBehaviour
 
     public void ShowPreview()
     {
-        if (!isShowingPreview)
+        if (!isShowingPreview && GameManagerScript.instance.playerInventory.currentItemHeld.name != "Meow-ti Tool")
         {
             previewedFood = Instantiate(GameManagerScript.instance.playerInventory.currentItemHeld, placePoint.position, placePoint.rotation);
-            //previewedFood.transform.parent = transform;
-
-            previewedFood.layer = LayerMask.NameToLayer("Ignore Raycast");
+            previewedFood.transform.parent = transform;
+            GameManagerScript.instance.playerInventory.SetLayerRecursively(previewedFood, LayerMask.NameToLayer("Ignore Raycast"));
 
             if (previewedFood.GetComponent<Collider>() != null)
             {
@@ -55,20 +55,13 @@ public class Container : MonoBehaviour
     public void Contain(GameObject itemToContain)
     {
         Destroy(previewedFood);
-        GameObject itemContained = Instantiate(itemToContain, placePoint.position, placePoint.rotation);
+        itemToContain.transform.position = placePoint.position;
+        itemToContain.transform.rotation = placePoint.rotation;
 
-        if (itemContained.GetComponent<Container>() != null)
-        {
-            GameManagerScript.instance.playerInventory.SetLayerRecursively(itemContained, LayerMask.NameToLayer("Default"));
-        }
+        GameManagerScript.instance.playerInventory.SetLayerRecursively(itemToContain, LayerMask.NameToLayer("Default"));
 
-        else if (itemContained.GetComponent<Container>() == null)
-        {
-            GameManagerScript.instance.playerInventory.SetLayerRecursively(itemContained, LayerMask.NameToLayer("Ignore Raycast"));
-        }
-
-        itemContained.transform.parent = transform;
-        this.itemContained = itemContained;
+        itemToContain.transform.parent = transform;
+        itemContained = itemToContain;
         isContainingItem = true;
     }
 }

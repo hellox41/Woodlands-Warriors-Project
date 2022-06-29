@@ -10,7 +10,7 @@ public class Food : MonoBehaviour
     public bool isSolid;
     public bool isBeingHeated = false;
 
-    public float temperature = 15f;
+    public float temperature = 28f;
 
     //Transform points for the camera to transition to when preparing food
     public Transform camTransitionTransform1;
