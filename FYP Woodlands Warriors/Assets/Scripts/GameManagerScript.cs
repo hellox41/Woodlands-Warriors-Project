@@ -24,6 +24,9 @@ public class GameManagerScript : MonoBehaviour
     public bool isPreparing = false;
     public bool isPlaceable = false;
     public bool isTransferable = false;
+    public bool isShowcasing = false;
+    public bool isCamTransitioning = false;
+    public bool isOrderUIShrunk = false;
 
     public Food interactedFood;
 

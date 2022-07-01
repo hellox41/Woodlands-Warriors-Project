@@ -19,7 +19,7 @@ public class MouseLook : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameManagerScript.instance.isZoomed && !GameManagerScript.instance.isInteracting && !GameManagerScript.instance.isPreparing)
+        if (!GameManagerScript.instance.isZoomed && !GameManagerScript.instance.isInteracting && !GameManagerScript.instance.isPreparing && !GameManagerScript.instance.isShowcasing)
         {
             float mouseX = Input.GetAxis("Mouse X") * mouseSensitivty * Time.deltaTime;
             float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivty * Time.deltaTime;

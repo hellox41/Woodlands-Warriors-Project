@@ -26,6 +26,7 @@ public class RadialMenu : MonoBehaviour
     public GameObject prepUIGO;
 
     public TMP_Text prepTypeText;
+    public GameObject knifeStatusGO;
 
     Camera mainCamera;
     CamTransition camTransition;
@@ -145,12 +146,13 @@ public class RadialMenu : MonoBehaviour
                 }
 
                 //Cutting bread
-                else if (!orders.kayaToastPrep.isBreadCut)
+                else
                 {
                     prepType = "Slicing Edges";
                     camTransition.MoveCamera(GameManagerScript.instance.interactedFood.GetComponent<Food>().camTransitionTransform1);
                     orders.kayaToastPrep.CutBread();
                     ShowPrepUI();
+                    knifeStatusGO.SetActive(true);
                 }
             }
         }

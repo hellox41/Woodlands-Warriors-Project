@@ -6,7 +6,6 @@ public class CamTransition : MonoBehaviour
 {
     [Range(1, 10)]
     [SerializeField] float transitionSpeed = 6f;
-    [SerializeField] bool isTransitioning = false;
 
     public Transform pointToMoveTo;
     public Transform defaultCamTransform;
@@ -30,14 +29,14 @@ public class CamTransition : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isTransitioning == true)
+        if (GameManagerScript.instance.isCamTransitioning)
         {
             transform.position = Vector3.Lerp(transform.position, pointToMoveTo.position, transitionSpeed * Time.deltaTime);
             transform.rotation = Quaternion.Euler(Vector3.Lerp(transform.rotation.eulerAngles, pointToMoveTo.localRotation.eulerAngles, transitionSpeed * Time.deltaTime));
 
             if (Vector3.Distance(transform.position, pointToMoveTo.position) < 0.005f)
             {
-                isTransitioning = false;
+                GameManagerScript.instance.isCamTransitioning = false;
                 GameManagerScript.instance.ChangeCursorLockedState(false);
 
                 if (pointToMoveTo == defaultCamTransform)  //If resetting camera to first person view
@@ -78,12 +77,12 @@ public class CamTransition : MonoBehaviour
 
         transform.DetachChildren();
         transform.parent = null;
-        isTransitioning = true;
+        GameManagerScript.instance.isCamTransitioning = true;
     }
 
     public void ResetCameraTransform()
     {
         pointToMoveTo = defaultCamTransform;
-        isTransitioning = true;
+        GameManagerScript.instance.isCamTransitioning = true;
     }
 }

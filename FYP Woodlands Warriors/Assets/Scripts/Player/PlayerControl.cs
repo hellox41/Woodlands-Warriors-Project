@@ -258,6 +258,11 @@ public class PlayerControl : MonoBehaviour
             playerView.GetComponent<CamTransition>().MoveCamera(raycastPointTransform);
         }
 
+        if (Input.GetKeyDown(KeyCode.Tab))  //Toggle shrink or expand order on the left side of the screen
+        {
+            GameManagerScript.instance.orders.ToggleOrderUI(GameManagerScript.instance.isOrderUIShrunk);
+        }
+
         if (raycastActionTooltip.activeInHierarchy)
         {
             TooltipFollowCursor();
