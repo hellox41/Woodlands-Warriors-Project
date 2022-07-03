@@ -43,9 +43,12 @@ public class CamTransition : MonoBehaviour
                 {
                     transform.parent = playerGO.transform;
 
-                    foreach(GameObject obj in children)
+                    if (!GameManagerScript.instance.isShowcasing)
                     {
-                        obj.transform.parent = transform;
+                        foreach (GameObject obj in children)
+                        {
+                            obj.transform.parent = transform;
+                        }
                     }
 
                     crosshairGO.SetActive(true);
@@ -64,6 +67,7 @@ public class CamTransition : MonoBehaviour
                 if (GameManagerScript.instance.isShowcasing)
                 {
                     Camera.main.transform.position = GameManagerScript.instance.orders.foodShowcaseTrans.position + GameManagerScript.instance.orders.camOffset;
+                    Camera.main.transform.DetachChildren();
                 }
             }
         }

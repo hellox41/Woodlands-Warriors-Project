@@ -41,6 +41,7 @@ public class Orders : MonoBehaviour
     [SerializeField] TMP_Text orderNameText;
     [SerializeField] TMP_Text orderInfoText;
     [SerializeField] GameObject orderUIGO;
+    [SerializeField] GameObject continueButton;
 
     public RadialMenu radialMenu;
 
@@ -151,7 +152,10 @@ public class Orders : MonoBehaviour
                 finalFoodShowcased = Instantiate(wholeWheatKayaToast, foodShowcaseTrans.position, foodShowcaseTrans.rotation);
             }
         }
+        
         GameManagerScript.instance.isShowcasing = true;
+        GameManagerScript.instance.ChangeCursorLockedState(false);
+        continueButton.SetActive(true);
     }
 
     public void ToggleOrderUI(bool shrunk)  //if param (bool shrunk) is true, expand the ui, else shrink the ui
@@ -177,5 +181,12 @@ public class Orders : MonoBehaviour
         float minutes = Mathf.FloorToInt(stageTime / 60);
         float seconds = Mathf.FloorToInt(stageTime % 60);
         timer.timerText.text = string.Format("{00}:{1:00}", minutes, seconds);
+    }
+
+    public void Continue()
+    {
+        CreateOrder();
+        continueButton.SetActive(false);
+        Camera.main.GetComponent<CamTransition>().MoveCamera(Camera.main.GetComponent<CamTransition>().defaultCamTransform);
     }
 }

@@ -21,6 +21,7 @@ public class Stove : MonoBehaviour
 
     [SerializeField] float timeTillNextColorChange = 6f;
     [SerializeField] float heatingMultiplier = 2.5f;
+    int rng;
 
     public Material stoveLightMat;
 
@@ -46,6 +47,8 @@ public class Stove : MonoBehaviour
         stoveLightMat.color = originalColor;
 
         switchedOnColor = Color.white;
+        rng = Random.Range(3, 7);
+        timeTillNextColorChange = rng;
     }
 
     // Update is called once per frame
@@ -63,8 +66,8 @@ public class Stove : MonoBehaviour
 
             if (timeTillNextColorChange <= 0)
             {
-                timeTillNextColorChange = 6;
                 ChangeLightColor();
+                timeTillNextColorChange = rng;
             }       
         }
     }
@@ -160,6 +163,7 @@ public class Stove : MonoBehaviour
         }
 
         GameManagerScript.instance.orders.kayaToastPrep.isFlippedOnThisColor = false;
+        rng = Random.Range(3, 7);
     }
 
     void UpdateColors()
