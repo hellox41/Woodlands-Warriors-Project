@@ -60,6 +60,11 @@ public class CamTransition : MonoBehaviour
                         GameManagerScript.instance.playerControl.prevOutline = null;
                     }
                 }
+
+                if (GameManagerScript.instance.isShowcasing)
+                {
+                    Camera.main.transform.position = GameManagerScript.instance.orders.foodShowcaseTrans.position + GameManagerScript.instance.orders.camOffset;
+                }
             }
         }
     }

@@ -28,12 +28,16 @@ public class Orders : MonoBehaviour
     public Transform instancingSpawnPoint;
     public GameObject kayaToastObjects;
 
+    [Header("Timer Values")]
+    public Timer timer;
+    public float stageTime;
+
     [Header("Extra")]
     public ProgressBar progressBar;
     public Transform foodShowcaseTrans;
     [Range(0f, 1f)]
     [SerializeField] float camRotationSpeed;
-    [SerializeField] Vector3 camOffset;
+    public Vector3 camOffset;
     [SerializeField] TMP_Text orderNameText;
     [SerializeField] TMP_Text orderInfoText;
     [SerializeField] GameObject orderUIGO;
@@ -54,6 +58,12 @@ public class Orders : MonoBehaviour
         {
             Camera.main.transform.LookAt(finalFoodShowcased.transform);
             Camera.main.transform.Translate(Vector3.right * Time.fixedDeltaTime * camRotationSpeed);
+        }
+
+        if (!GameManagerScript.instance.isShowcasing)
+        {
+            stageTime += Time.deltaTime;
+            UpdateTimer();
         }
     }
 
@@ -94,6 +104,9 @@ public class Orders : MonoBehaviour
             {
                 orderInfoText.text = "Honey Oat Bread";
             }
+
+            Instantiate(kayaToastObjects, instancingSpawnPoint.position, instancingSpawnPoint.rotation);
+            GameManagerScript.instance.playerControl.stove = GameObject.Find("Stove").GetComponent<Stove>();
         }
 
         orderUIGO.SetActive(true);
@@ -118,6 +131,7 @@ public class Orders : MonoBehaviour
         }
     }
 
+    //Instantiate the showcase and start the turnaround
     void ShowcaseFinishedDish()
     {
         if (currentOrder == "KAYATOAST")
@@ -137,8 +151,6 @@ public class Orders : MonoBehaviour
                 finalFoodShowcased = Instantiate(wholeWheatKayaToast, foodShowcaseTrans.position, foodShowcaseTrans.rotation);
             }
         }
-
-        Camera.main.transform.position = foodShowcaseTrans.position + camOffset;
         GameManagerScript.instance.isShowcasing = true;
     }
 
@@ -158,5 +170,12 @@ public class Orders : MonoBehaviour
         }
 
         orderUIGO.GetComponent<OrderUI>().isChangingSize = true;
+    }
+
+    void UpdateTimer()
+    {
+        float minutes = Mathf.FloorToInt(stageTime / 60);
+        float seconds = Mathf.FloorToInt(stageTime % 60);
+        timer.timerText.text = string.Format("{00}:{1:00}", minutes, seconds);
     }
 }

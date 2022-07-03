@@ -40,6 +40,8 @@ public class PlayerControl : MonoBehaviour
 
     public Interactable interactable = null;
 
+    public Stove stove;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -225,6 +227,15 @@ public class PlayerControl : MonoBehaviour
 
                 HideActionTooltip();
             }
+        }
+
+        //If changing look at prep equipment to nothing, remove the outline
+        if (cookingRaycastHit.transform == null && prevOutline != null)
+        {
+            prevOutline.enabled = false;
+            prevOutline = null;
+            isMousingOverInteractible = false;
+            HideActionTooltip();
         }
 
         if (Input.GetMouseButtonDown(1) && isMousingOverInteractible && !GameManagerScript.instance.isInteracting && !GameManagerScript.instance.isPreparing)  //Bring up radial menu by right-clicking

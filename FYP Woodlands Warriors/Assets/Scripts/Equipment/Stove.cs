@@ -36,8 +36,6 @@ public class Stove : MonoBehaviour
 
     Color switchedOnColor;
 
-    [SerializeField] KayaToastPrep kayaToastPrep;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -56,7 +54,7 @@ public class Stove : MonoBehaviour
         if (isPoweredOn)
         {
             timeTillNextColorChange -= Time.deltaTime;
-            kayaToastPrep.toastedTime += Time.deltaTime;
+            GameManagerScript.instance.orders.kayaToastPrep.toastedTime += Time.deltaTime;
 
             if (ladenFood != null)
             {
@@ -100,7 +98,7 @@ public class Stove : MonoBehaviour
 
         if (isPoweredOn)
         {
-            kayaToastPrep.isBeingToasted = true;
+            GameManagerScript.instance.orders.kayaToastPrep.isBeingToasted = true;
             if (ladenFood != null)
             {
                 ladenFood.GetComponent<Food>().isBeingHeated = true;
@@ -113,7 +111,7 @@ public class Stove : MonoBehaviour
 
         else if (!isPoweredOn)
         {
-            kayaToastPrep.isBeingToasted = false;
+            GameManagerScript.instance.orders.kayaToastPrep.isBeingToasted = false;
             if (ladenFood != null)
             {
                 ladenFood.GetComponent<Food>().isBeingHeated = false;
@@ -161,7 +159,7 @@ public class Stove : MonoBehaviour
             UpdateColors();
         }
 
-        kayaToastPrep.isFlippedOnThisColor = false;
+        GameManagerScript.instance.orders.kayaToastPrep.isFlippedOnThisColor = false;
     }
 
     void UpdateColors()
