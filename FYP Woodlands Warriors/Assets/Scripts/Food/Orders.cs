@@ -42,14 +42,25 @@ public class Orders : MonoBehaviour
     [SerializeField] TMP_Text orderInfoText;
     [SerializeField] GameObject orderUIGO;
     [SerializeField] GameObject continueButton;
-
+    GameObject spawnedPrep;
     public RadialMenu radialMenu;
+
+    [Header("Debug")]
+    public string orderTypeOverride;
 
     // Start is called before the first frame update
     void Start()
     {
         orderUIGO.SetActive(false);
-        CreateOrder();
+        if (orderTypeOverride == null || orderTypeOverride == "")
+        {
+            CreateOrder();
+        }
+
+        else
+        {
+            CreateOrder(orderTypeOverride);
+        }
     }
 
     // Update is called once per frame
@@ -68,13 +79,24 @@ public class Orders : MonoBehaviour
         }
     }
 
+    //If parameters are left blank, will generate a random order based on the level
     public void CreateOrder()
     {
         if (GameManagerScript.instance.levelNo == 1)
         {
-            currentOrder = GameManagerScript.instance.orderTypes[Random.Range(0, 1)];
+            currentOrder = GameManagerScript.instance.orderTypes[Random.Range(0, 2)];
             Debug.Log(currentOrder + " order recieved!");
         }
+
+        orderNameText.text = currentOrder;
+        GenerateRandomIngredients();
+    }
+
+    //If parameter is filled in, will generate that specific order
+    void CreateOrder(string orderType)
+    {
+        currentOrder = orderType;
+        Debug.Log(orderType + " order recieved!");
 
         orderNameText.text = currentOrder;
         GenerateRandomIngredients();
@@ -106,10 +128,14 @@ public class Orders : MonoBehaviour
                 orderInfoText.text = "Honey Oat Bread";
             }
 
-            Instantiate(kayaToastObjects, instancingSpawnPoint.position, instancingSpawnPoint.rotation);
+            spawnedPrep = Instantiate(kayaToastObjects, instancingSpawnPoint.position, instancingSpawnPoint.rotation);
             GameManagerScript.instance.playerControl.stove = GameObject.Find("Stove").GetComponent<Stove>();
         }
 
+        if (currentOrder == "HALF-BOILEDEGGS")
+        {
+
+        }
         orderUIGO.SetActive(true);
     }
 
@@ -151,6 +177,8 @@ public class Orders : MonoBehaviour
             {
                 finalFoodShowcased = Instantiate(wholeWheatKayaToast, foodShowcaseTrans.position, foodShowcaseTrans.rotation);
             }
+
+            kayaToastPrep.ResetVariables();
         }
         
         GameManagerScript.instance.isShowcasing = true;
@@ -185,8 +213,11 @@ public class Orders : MonoBehaviour
 
     public void Continue()
     {
+        Destroy(spawnedPrep);
         CreateOrder();
         continueButton.SetActive(false);
         Camera.main.GetComponent<CamTransition>().MoveCamera(Camera.main.GetComponent<CamTransition>().defaultCamTransform);
+        GameManagerScript.instance.ChangeCursorLockedState(true);
+        GameManagerScript.instance.isShowcasing = false;
     }
 }

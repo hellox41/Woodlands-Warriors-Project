@@ -61,4 +61,14 @@ public class KayaToastPrep : MonoBehaviour
             GameManagerScript.instance.orders.progressBar.SetMaxProgress(3);
         }
     }
+
+    public void ResetVariables()
+    {
+        isBreadCut = false;
+        isBreadToasted = false;
+        isBreadSpreadButter = false;
+        isBreadSpreadKaya = false;
+
+        toastedTime = 0f;
+    }
 }

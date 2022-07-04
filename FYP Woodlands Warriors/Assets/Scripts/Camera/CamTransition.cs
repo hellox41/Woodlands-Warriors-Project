@@ -49,11 +49,11 @@ public class CamTransition : MonoBehaviour
                         {
                             obj.transform.parent = transform;
                         }
+                        GameManagerScript.instance.ChangeCursorLockedState(true);
                     }
 
                     crosshairGO.SetActive(true);
                     prepUIGO.SetActive(false);
-                    GameManagerScript.instance.ChangeCursorLockedState(true);
                     GameManagerScript.instance.isPreparing = false;
                     GameManagerScript.instance.playerControl.HideActionTooltip();
 

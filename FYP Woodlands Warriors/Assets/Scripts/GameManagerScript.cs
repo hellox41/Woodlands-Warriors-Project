@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class GameManagerScript : MonoBehaviour
     public string[] PrimaryPawzzles = { "18CARROT", "RADIOCAFE", "VITAMINS" };
 
     public string[] orderTypes = { "KAYATOAST", "HALF-BOILEDEGGS" };
+
+    public Image[] strikeImages;
 
     public string accessedApparatus = null;
 
@@ -27,6 +30,7 @@ public class GameManagerScript : MonoBehaviour
     public bool isShowcasing = false;
     public bool isCamTransitioning = false;
     public bool isOrderUIShrunk = false;
+    bool isFlashing = false;
 
     public Food interactedFood;
 
@@ -70,7 +74,17 @@ public class GameManagerScript : MonoBehaviour
     {
         strikes++;
 
+        if (isFlashing)
+        {
+            StopCoroutine(FlashStrike());
+            strikeImages[strikes - 2].color = Color.red;
+            isFlashing = false;
+        }
+
+        StartCoroutine(FlashStrike());
+
         Debug.Log("A mistake was made!");
+
         if (strikes == 3)
         {
             Debug.Log("You failed the level!");
@@ -90,5 +104,34 @@ public class GameManagerScript : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
+    }
+
+    IEnumerator FlashStrike()
+    {
+        isFlashing = true;
+        Color tmpRed = strikeImages[strikes - 1].color;
+        tmpRed = Color.red;
+        strikeImages[strikes - 1].color = tmpRed;
+
+        yield return new WaitForSeconds(0.5f);
+
+        tmpRed.a = 0.3f;
+        strikeImages[strikes - 1].color = tmpRed;
+
+        yield return new WaitForSeconds(0.5f);
+
+        tmpRed.a = 1f;
+        strikeImages[strikes - 1].color = tmpRed;
+
+        yield return new WaitForSeconds(0.5f);
+
+        tmpRed.a = 0.3f;
+        strikeImages[strikes - 1].color = tmpRed;
+
+        yield return new WaitForSeconds(0.5f);
+
+        tmpRed.a = 1f;
+        strikeImages[strikes - 1].color = tmpRed;
+        isFlashing = false;
     }
 }
