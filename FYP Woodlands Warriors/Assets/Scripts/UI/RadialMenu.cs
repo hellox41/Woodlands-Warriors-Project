@@ -173,6 +173,22 @@ public class RadialMenu : MonoBehaviour
                 ShowPrepUI();
             }
         }
+
+        //Filling pot with water in the sink
+        if (objectName == "sink")
+        {
+            Sink sink = GameManagerScript.instance.interactedItem.GetComponent<Sink>();
+            Container sinkContainer = GameManagerScript.instance.interactedItem.GetComponent<Container>();
+            if (sinkContainer.itemContained.GetComponent<Interactable>().objectName == "pot")
+            {
+                sink.liquidHolder = sinkContainer.itemContained.GetComponent<LiquidHolder>();
+                prepFood = "Pot";
+                prepType = "Filling Water";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
+                orders.halfBoiledEggsPrep.StartFillingWater();
+                ShowPrepUI();
+            }
+        }
     }
 
     public void ShowPrepUI()

@@ -19,6 +19,9 @@ public class Interactable : MonoBehaviour
     public Vector3 holdingPos;
     public Vector3 holdingRot;
 
+    public Transform camPoint1;
+    public Transform camPoint2;
+
     // Start is called before the first frame update
     void Start()
     {

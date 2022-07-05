@@ -16,6 +16,7 @@ public class Orders : MonoBehaviour
 
     [Header("Food Scripts")]
     public KayaToastPrep kayaToastPrep;
+    public HalfBoiledEggsPrep halfBoiledEggsPrep;
 
     [Header("Final Food Gameobjects")]
     public GameObject multigrainKayaToast;
@@ -82,6 +83,7 @@ public class Orders : MonoBehaviour
     //If parameters are left blank, will generate a random order based on the level
     public void CreateOrder()
     {
+        //If first stage, restrict possible dishes to first 2 dishes (kaya toast and eggs)
         if (GameManagerScript.instance.levelNo == 1)
         {
             currentOrder = GameManagerScript.instance.orderTypes[Random.Range(0, 2)];
