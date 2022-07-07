@@ -25,7 +25,7 @@ public class RadialMenu : MonoBehaviour
     public GameObject prepUIGO;
 
     public TMP_Text prepTypeText;
-    public GameObject knifeStatusGO;
+    public GameObject prepStatusGO;
 
     Camera mainCamera;
     CamTransition camTransition;
@@ -133,6 +133,7 @@ public class RadialMenu : MonoBehaviour
            
             if (GameManagerScript.instance.accessedApparatus == "KNIFE")
             {
+                //KAYATOAST
                 //Spreading butter n kaya
                 if (orders.kayaToastPrep.isBreadCut && orders.kayaToastPrep.isBreadToasted)
                 {
@@ -142,9 +143,11 @@ public class RadialMenu : MonoBehaviour
                     GameManagerScript.instance.orders.progressBar.SetMaxProgress(2);
                     camTransition.MoveCamera(GameManagerScript.instance.interactedFood.GetComponent<Food>().camTransitionTransform2);
                     ShowPrepUI();
-                    knifeStatusGO.SetActive(true);
+                    prepStatusGO.SetActive(true);
+                    CheckItemsInteractibility();
                 }
 
+                //KAYATOAST
                 //Cutting bread
                 else if (!orders.kayaToastPrep.isBreadCut)
                 {
@@ -156,14 +159,17 @@ public class RadialMenu : MonoBehaviour
                     camTransition.MoveCamera(GameManagerScript.instance.interactedFood.GetComponent<Food>().camTransitionTransform1);
                     orders.kayaToastPrep.CutBread();
                     ShowPrepUI();
+                    CheckItemsInteractibility();
                 }
             }
         }
 
-        if (objectName == "stove")  //Toasting bread
+        if (objectName == "stove")  
         {
             Stove stove = GameManagerScript.instance.interactedItem.transform.parent.GetComponent<Stove>();
 
+            //KAYATOAST
+            //Toasting bread
             if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "BREAD")
             {
                 prepFood = stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Bread>().breadType + " Bread";
@@ -171,6 +177,21 @@ public class RadialMenu : MonoBehaviour
                 camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponentInParent<Stove>().camTransitionTransform1);
                 orders.kayaToastPrep.ToastBread();
                 ShowPrepUI();
+                CheckItemsInteractibility();
+            }
+
+            //HALF-BOILEDEGGS
+            //Boiling eggs
+            if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "pot" && GameManagerScript.instance.orders.halfBoiledEggsPrep.isPotFilledWithWater)
+            {
+                prepFood = "Pot";
+                prepType = "Boiling Eggs";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
+                orders.halfBoiledEggsPrep.StartBoilingEggs();
+                GameManagerScript.instance.prepStatusText.text = "Boiling: " + Mathf.FloorToInt(stove.ladenItem.GetComponent<LiquidHolder>().liquidGO.GetComponent<Food>().temperature) + "%";
+                ShowPrepUI();
+                prepStatusGO.SetActive(true);
+                CheckItemsInteractibility();
             }
         }
 
@@ -187,6 +208,7 @@ public class RadialMenu : MonoBehaviour
                 camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
                 orders.halfBoiledEggsPrep.StartFillingWater();
                 ShowPrepUI();
+                CheckItemsInteractibility();
             }
         }
     }
@@ -200,7 +222,7 @@ public class RadialMenu : MonoBehaviour
     public void Pickup()  //Add an item to the player's inventory and set the item's transform to holding pos and rot
     {
         if ((GameManagerScript.instance.interactedItem.GetComponent<Food>() != null && GameManagerScript.instance.interactedItem.GetComponent<Food>().temperature < 47) ||
-            GameManagerScript.instance.interactedItem.GetComponent<Food>() == null)
+            GameManagerScript.instance.interactedItem.GetComponent<Food>() == null && GameManagerScript.instance.playerInventory.itemsHeld.Count < 3)
         {
             GameManagerScript.instance.playerInventory.AddItem(GameManagerScript.instance.interactedItem);
 
@@ -223,9 +245,10 @@ public class RadialMenu : MonoBehaviour
             //If picking up object from container, update itemContained and isContainingItem variables of container
             if (GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer != null)
             {
+                GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer.load -= GameManagerScript.instance.interactedItem.GetComponent<Interactable>().loadValue;
                 GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer.isContainingItem = false;
                 GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer.itemContained = null;
-                GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer = null;
+                GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer = null;          
             }
 
             GameManagerScript.instance.interactedItem.gameObject.SetActive(false);
@@ -238,9 +261,13 @@ public class RadialMenu : MonoBehaviour
                     GameManagerScript.instance.playerControl.stove.isLaden = false;
                     GameManagerScript.instance.playerControl.stove.ladenItem = null;
                     GameManagerScript.instance.playerControl.stove.stoveContainer.isContainingItem = false;
+
+                    if (GameManagerScript.instance.interactedItem.GetComponent<Interactable>().objectName == "pot")
+                    {
+                        GameManagerScript.instance.orders.halfBoiledEggsPrep.isHeatingWater = false;
+                    }
                 }
             }    
-
         }
 
         else if (GameManagerScript.instance.interactedItem.GetComponent<Food>() != null && 
@@ -254,17 +281,31 @@ public class RadialMenu : MonoBehaviour
     public void Place()
     {
         GameObject tempObj = GameManagerScript.instance.playerInventory.currentItemHeld;
-        GameManagerScript.instance.container.Contain(GameManagerScript.instance.playerInventory.currentItemHeld);
-        GameManagerScript.instance.playerInventory.RemoveItem(GameManagerScript.instance.playerInventory.currentItemHeld);
-        tempObj.SetActive(true);
-
-        tempObj.GetComponent<Interactable>().holdingContainer = GameManagerScript.instance.container;
-
-        GameManagerScript.instance.isPlaceable = false;
-
-        if (GameManagerScript.instance.playerControl.stove != null && GameManagerScript.instance.interactedItem == GameManagerScript.instance.playerControl.stove.ladenItem)
+        if (GameManagerScript.instance.container.AddLoad(tempObj.GetComponent<Interactable>().loadValue))
         {
-            GameManagerScript.instance.playerControl.stove.UpdateLadenFood(GameManagerScript.instance.playerControl.stove.ladenItem);
+            GameManagerScript.instance.container.Contain(GameManagerScript.instance.playerInventory.currentItemHeld, GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Interactable>().placeOffset);
+            GameManagerScript.instance.playerInventory.RemoveItem(GameManagerScript.instance.playerInventory.currentItemHeld);
+            tempObj.SetActive(true);
+
+            tempObj.GetComponent<Interactable>().holdingContainer = GameManagerScript.instance.container;
+
+            GameManagerScript.instance.isPlaceable = false;
+
+            if (GameManagerScript.instance.playerControl.stove != null)
+            {
+                GameManagerScript.instance.playerControl.stove.isLaden = true;
+                GameManagerScript.instance.playerControl.stove.ladenItem = tempObj;
+
+                if (tempObj.GetComponent<LiquidHolder>() != null)
+                {
+                    GameManagerScript.instance.playerControl.stove.ladenFood = tempObj.GetComponent<LiquidHolder>().liquidGO;
+                }
+
+                if (GameManagerScript.instance.interactedItem == GameManagerScript.instance.playerControl.stove.ladenItem)
+                {
+                    GameManagerScript.instance.playerControl.stove.UpdateLadenFood(GameManagerScript.instance.playerControl.stove.ladenItem);
+                }
+            }
         }
     }
 
@@ -273,6 +314,8 @@ public class RadialMenu : MonoBehaviour
     {
         Container heldContainer = GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>();
 
+        heldContainer.load -= heldContainer.itemContained.GetComponent<Interactable>().loadValue;
+        otherContainer.load += heldContainer.itemContained.GetComponent<Interactable>().loadValue;
         heldContainer.itemContained.transform.parent = null;
         heldContainer.itemContained.transform.position = otherContainer.placePoint.position;
         heldContainer.itemContained.transform.rotation = otherContainer.placePoint.rotation;
@@ -286,4 +329,53 @@ public class RadialMenu : MonoBehaviour
 
         GameManagerScript.instance.playerInventory.SetLayerRecursively(otherContainer.itemContained, LayerMask.NameToLayer("Default"));
     }
+
+    void CheckItemsInteractibility()
+    {
+        Interactable[] interactables = FindObjectsOfType<Interactable>();
+
+        foreach (Interactable interactable in interactables)
+        {
+            //Checking for kaya toast
+            //Slicing Edges
+            if (prepType == "Slicing Edges" && interactable.objectName == "bread")
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Toasting bread
+            if (prepType == "Toasting Bread" && (interactable.objectName == "skillet" || interactable.objectName == "stovePower"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            if (prepType == "Spreading Condiments" && (interactable.objectName == "bread" || interactable.objectName == "kaya" || interactable.objectName == "butter"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+
+            //Checking for half-boiled eggs
+            //Filling water
+            if (prepType == "Filling Water" && interactable.objectName == "tap")
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            if (prepType == "Boiling Eggs" && (interactable.objectName == "pot" || interactable.objectName == "egg" || interactable.objectName == "stovePower"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+        }
+    }
+
+    public void ResetAllInteractibility()
+    {
+        Interactable[] interactables = FindObjectsOfType<Interactable>();
+
+        foreach (Interactable interactable in interactables)
+        {
+            interactable.isCurrentlyRaycastInteractable = false;
+        }
+    }    
 }

@@ -39,6 +39,7 @@ public class MeowtiTool : MonoBehaviour
     List<string> apparatusNouns = new List<string>();
     string knifeNoun;   //index 0
     string spatulaNoun; //index 1
+    string strainerNoun;//index 2
     public TMP_Text apparatusNounsText;
 
     [Header ("18 Carrot Configuration")]
@@ -101,11 +102,11 @@ public class MeowtiTool : MonoBehaviour
             currentPawzzleType = pawzzleTypeOverride;
         }
 
-        for (int i = 0; i < 2; i++)  //Initialize apparatus nouns
+        for (int i = 0; i < 3; i++)  //Initialize apparatus nouns
         {
             InitializeNoun(i);
         }
-        apparatusNounsText.text = "APPARATUS NOUNS \n \n KNIFE - " + knifeNoun + "\n SPATULA - " + spatulaNoun; 
+        apparatusNounsText.text = "APPARATUS NOUNS \n \n KNIFE - " + knifeNoun + "\n SPATULA - " + spatulaNoun + "\n STRAINER - " + strainerNoun; 
 
         InitializePawzzle(currentPawzzleType);
     }
@@ -132,6 +133,11 @@ public class MeowtiTool : MonoBehaviour
         else if(apparatusIndex == 1)
         {
             spatulaNoun = possibleApparatusNouns[rng];
+        }
+
+        else if (apparatusIndex == 2)
+        {
+            strainerNoun = possibleApparatusNouns[rng];
         }
 
         apparatusNouns.Add(possibleApparatusNouns[rng]);
@@ -287,9 +293,14 @@ public class MeowtiTool : MonoBehaviour
                     SolvePrimaryPawzzle("KNIFE");
                 }
 
-                if (apparatusNouns[i] == spatulaNoun)
+                if (apparatusNouns[i] == spatulaNoun) //Solving for spatula
                 {
                     SolvePrimaryPawzzle("SPATULA");
+                }
+
+                if (apparatusNouns[i] == strainerNoun)//Solving for strainer
+                {
+                    SolvePrimaryPawzzle("STRAINER");
                 }
 
                 isSolved = true;

@@ -96,8 +96,8 @@ public class SinkTap : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IE
     {
         if ((CheckTap() == false) && (isTapTurnedLeft || isTapTurnedRight))
         {
+            Debug.Log("You turned the tap in the wrong direction!");
             sink.waterOutputModifier = sink.waterOutputModifier / 2;
-            Debug.Log("You turned the sink in the wrong direction!");
         }
 
         if (isTapTurnedLeft || isTapTurnedRight)

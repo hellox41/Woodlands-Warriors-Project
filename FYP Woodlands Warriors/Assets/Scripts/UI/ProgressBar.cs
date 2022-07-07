@@ -17,13 +17,16 @@ public class ProgressBar : MonoBehaviour
         slider.maxValue = capacity;
     }
 
-    public void AddProgress(int progress)
+    public void AddProgress(float progress)
     {
-        slider.value += progress;
-
-        if (slider.value == slider.maxValue)
+        if (slider.value < slider.maxValue)
         {
-            Camera.main.GetComponent<CamTransition>().MoveCamera(GameManagerScript.instance.playerControl.raycastPointTransform);
+            slider.value += progress;
+
+            if (slider.value == slider.maxValue)
+            {
+                Camera.main.GetComponent<CamTransition>().MoveCamera(GameManagerScript.instance.playerControl.raycastPointTransform);
+            }
         }
     }
 

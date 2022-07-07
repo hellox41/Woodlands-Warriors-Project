@@ -19,12 +19,12 @@ public class Condiment : MonoBehaviour
     public void ApplyKaya()
     {
         GameManagerScript.instance.orders.kayaToastPrep.isKayaAppliedToKnife = true;
-        GameManagerScript.instance.orders.kayaToastPrep.condimentText.text = "Knife Condiment: Kaya";
+        GameManagerScript.instance.prepStatusText.text = "Knife Condiment: Kaya";
     }
 
     public void ApplyButter()
     {
         GameManagerScript.instance.orders.kayaToastPrep.isButterAppliedToKnife = true;
-        GameManagerScript.instance.orders.kayaToastPrep.condimentText.text = "Knife Condiment: Butter";
+        GameManagerScript.instance.prepStatusText.text = "Knife Condiment: Butter";
     }
 }

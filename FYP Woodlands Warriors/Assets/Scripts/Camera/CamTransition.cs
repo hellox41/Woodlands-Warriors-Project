@@ -54,7 +54,12 @@ public class CamTransition : MonoBehaviour
 
                     crosshairGO.SetActive(true);
                     prepUIGO.SetActive(false);
-                    GameManagerScript.instance.isPreparing = false;
+                    if (GameManagerScript.instance.isPreparing)
+                    {
+                        GameManagerScript.instance.isPreparing = false;
+                        GameManagerScript.instance.radialMenu.ResetAllInteractibility();
+                    }
+
                     GameManagerScript.instance.playerControl.HideActionTooltip();
 
                     if (GameManagerScript.instance.playerControl.prevOutline != null)
@@ -75,6 +80,7 @@ public class CamTransition : MonoBehaviour
 
     public void MoveCamera(Transform transitionPoint)  //Detach children and parents, start the camera transition, and enable cursor
     {
+        GameManagerScript.instance.isCamTransitioning = true;
         if (GameManagerScript.instance.interactedFood != null)
         {
             GameManagerScript.instance.interactedFood.GetComponent<Outline>().enabled = false;
@@ -86,7 +92,6 @@ public class CamTransition : MonoBehaviour
 
         transform.DetachChildren();
         transform.parent = null;
-        GameManagerScript.instance.isCamTransitioning = true;
     }
 
     public void ResetCameraTransform()

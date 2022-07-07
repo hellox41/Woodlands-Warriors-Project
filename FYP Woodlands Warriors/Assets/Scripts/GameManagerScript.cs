@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -43,6 +44,10 @@ public class GameManagerScript : MonoBehaviour
     public Container container;
 
     public Inventory playerInventory;
+
+    public TMP_Text prepStatusText;
+
+    public RadialMenu radialMenu;
     private void Awake()
     {
         if (instance == null)

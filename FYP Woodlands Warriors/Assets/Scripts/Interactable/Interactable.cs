@@ -12,12 +12,17 @@ public class Interactable : MonoBehaviour
     public bool isRaycastButton;
     public bool isInInventory = false;
 
+    public bool isCurrentlyRaycastInteractable = false;
+
+    public int loadValue;
+
     public Container holdingContainer;
 
     Outline outline;
 
     public Vector3 holdingPos;
     public Vector3 holdingRot;
+    public Vector3 placeOffset;
 
     public Transform camPoint1;
     public Transform camPoint2;
@@ -40,3 +45,4 @@ public class Interactable : MonoBehaviour
         else return true;
     }
 }
+

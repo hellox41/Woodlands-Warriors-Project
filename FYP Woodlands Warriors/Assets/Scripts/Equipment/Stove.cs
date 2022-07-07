@@ -57,11 +57,16 @@ public class Stove : MonoBehaviour
         if (isPoweredOn)
         {
             timeTillNextColorChange -= Time.deltaTime;
-            GameManagerScript.instance.orders.kayaToastPrep.toastedTime += Time.deltaTime;
 
             if (ladenFood != null)
             {
                 ladenFood.GetComponent<Food>().temperature += Time.deltaTime * heatingMultiplier;
+                
+                if (GameManagerScript.instance.orders.halfBoiledEggsPrep != null && ladenFood.GetComponent<Food>().temperature <= 101)
+                {
+                    GameManagerScript.instance.prepStatusText.text = "Boiling: " +
+                    Mathf.FloorToInt(GameManagerScript.instance.playerControl.stove.ladenItem.GetComponent<LiquidHolder>().liquidGO.GetComponent<Food>().temperature) + "%";
+                }
             }
 
             if (timeTillNextColorChange <= 0)
@@ -92,6 +97,11 @@ public class Stove : MonoBehaviour
             ladenItem = null;
             stoveContainer.isContainingItem = false;
             ladenFood = null;
+
+            if (other.gameObject.GetComponent<Interactable>().objectName == "pot")
+            {
+                GameManagerScript.instance.orders.halfBoiledEggsPrep.isHeatingWater = false;
+            }
         }
     }
 
@@ -101,10 +111,11 @@ public class Stove : MonoBehaviour
 
         if (isPoweredOn)
         {
-            GameManagerScript.instance.orders.kayaToastPrep.isBeingToasted = true;
             if (ladenFood != null)
             {
                 ladenFood.GetComponent<Food>().isBeingHeated = true;
+
+                GameManagerScript.instance.orders.halfBoiledEggsPrep.isHeatingWater = true;
             }
 
             stoveIndicatorLight.enabled = true;
@@ -114,7 +125,6 @@ public class Stove : MonoBehaviour
 
         else if (!isPoweredOn)
         {
-            GameManagerScript.instance.orders.kayaToastPrep.isBeingToasted = false;
             if (ladenFood != null)
             {
                 ladenFood.GetComponent<Food>().isBeingHeated = false;
@@ -175,9 +185,11 @@ public class Stove : MonoBehaviour
 
     public void UpdateLadenFood(GameObject container)
     {
+        ladenItem = container;
+
         if (container.GetComponent<Container>().itemContained != null && container.GetComponent<Container>().itemContained.GetComponent<Food>() != null)
         {
             ladenFood = container.GetComponent<Container>().itemContained;
-        }
+        }   
     }
 }

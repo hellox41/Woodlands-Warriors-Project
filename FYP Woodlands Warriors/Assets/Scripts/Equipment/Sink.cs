@@ -6,7 +6,7 @@ public class Sink : MonoBehaviour
 {
    public bool isPouringWater = false;
 
-    public float waterOutputModifier = 7f;
+    public float waterOutputModifier;
 
     Container sinkContainer;
 
@@ -48,30 +48,23 @@ public class Sink : MonoBehaviour
             //Increase the water level of the liquid holder (pot)
             if (liquidHolder.currentLevel < liquidHolder.capacity)
             {
-                GameManagerScript.instance.orders.progressBar.AddProgress(Mathf.FloorToInt(Time.fixedDeltaTime * waterOutputModifier));
                 liquidHolder.currentLevel += Time.fixedDeltaTime * waterOutputModifier;
+                GameManagerScript.instance.orders.progressBar.slider.value = liquidHolder.currentLevel;
+
+                if (GameManagerScript.instance.orders.progressBar.slider.value >= 1000)
+                {
+                    isPouringWater = false;
+                    waterPour.SetActive(false);
+                    Camera.main.transform.GetComponent<CamTransition>().MoveCamera(GameManagerScript.instance.playerControl.raycastPointTransform);
+                }
             }
 
             //Enable isBoilable when there is 1 litre of water in the pot
             if (!liquidHolder.isBoilable && liquidHolder.currentLevel > 1000f)
             {
                 liquidHolder.isBoilable = true;
+                GameManagerScript.instance.orders.halfBoiledEggsPrep.isPotFilledWithWater = true;
             }
-        }
-    }
-
-    public void TurnTap()
-    {
-        isPouringWater = !isPouringWater;
-
-        if (isPouringWater)
-        {
-            waterPour.SetActive(true);
-        }
-
-        else if (!isPouringWater)
-        {
-            waterPour.SetActive(false);
         }
     }
 }

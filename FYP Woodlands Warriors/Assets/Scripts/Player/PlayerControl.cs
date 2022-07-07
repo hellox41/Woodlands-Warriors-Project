@@ -106,11 +106,14 @@ public class PlayerControl : MonoBehaviour
                 }
             }
 
-            if (normalRaycastHit.transform.GetComponent<Interactable>() == null && outline != null)  //If looking at nothing, remove all variables
+            if (normalRaycastHit.transform.GetComponent<Interactable>() == null && outline != null &&
+                (outline.enabled == true || outline != null || isMousingOverInteractible || stove != null))  //If looking at nothing, remove all variables
             {
                 outline.enabled = false;
                 outline = null;
                 isMousingOverInteractible = false;
+
+                stove = null;
 
                 if (radialMenuGO.activeInHierarchy)
                 {
@@ -211,7 +214,8 @@ public class PlayerControl : MonoBehaviour
         //Toggle outline on interactable objects in cursor raycast (in ingredient prep)
         if (GameManagerScript.instance.isPreparing && Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out cookingRaycastHit, interactDistance))
         {
-            if (cookingRaycastHit.transform.GetComponent<Interactable>() != null && cookingRaycastHit.transform.GetComponent<Interactable>().isRaycastButton)
+            if (cookingRaycastHit.transform.GetComponent<Interactable>() != null && cookingRaycastHit.transform.GetComponent<Interactable>().isRaycastButton && 
+                cookingRaycastHit.transform.GetComponent<Interactable>().isCurrentlyRaycastInteractable)
             {
                 prevOutline = cookingRaycastHit.transform.GetComponent<Outline>();
                 prevOutline.enabled = true;
@@ -256,6 +260,21 @@ public class PlayerControl : MonoBehaviour
 
                 radialMenuGO.SetActive(true);
             }
+
+            if (stove == null)
+            {
+                if (GameManagerScript.instance.interactedItem.GetComponent<Interactable>().objectName == "stove")
+                {
+                    stove = GameManagerScript.instance.interactedItem.GetComponentInParent<Stove>();
+                }
+
+                else if (GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer != null && 
+                    GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer.GetComponent<Interactable>().objectName == "stove")
+                {
+                    stove = GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer.GetComponentInParent<Stove>();
+                }
+            }
+
         }
 
         if (Input.GetMouseButtonUp(1) && GameManagerScript.instance.isInteracting)  //Hide radial menu when right click is released
@@ -307,6 +326,6 @@ public class PlayerControl : MonoBehaviour
 
     public void TooltipFollowCursor()
     {
-        raycastActionTooltip.transform.position = Input.mousePosition + new Vector3(80f, -30f, 0);
+        raycastActionTooltip.transform.position = Input.mousePosition + new Vector3(20f, -30f, 0);
     }
 }

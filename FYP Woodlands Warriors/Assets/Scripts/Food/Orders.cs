@@ -22,12 +22,16 @@ public class Orders : MonoBehaviour
     public GameObject multigrainKayaToast;
     public GameObject honeyOatKayaToast;
     public GameObject wholeWheatKayaToast;
+    public GameObject halfBoiledEggs;
 
     GameObject finalFoodShowcased;
 
     [Header("Food Instancing")]
     public Transform instancingSpawnPoint;
     public GameObject kayaToastObjects;
+
+    public GameObject brownEggs;
+    public GameObject whiteEggs;
 
     [Header("Timer Values")]
     public Timer timer;
@@ -136,7 +140,18 @@ public class Orders : MonoBehaviour
 
         if (currentOrder == "HALF-BOILEDEGGS")
         {
+            halfBoiledEggsPrep.eggsType = halfBoiledEggsPrep.eggTypes[Random.Range(0, halfBoiledEggsPrep.eggTypes.Length)];
 
+            if (halfBoiledEggsPrep.eggsType == "BROWN")
+            {
+                orderInfoText.text = "Brown Eggs";
+
+            }
+
+            if (halfBoiledEggsPrep.eggsType == "WHITE")
+            {
+                orderInfoText.text = "White Eggs";
+            }
         }
         orderUIGO.SetActive(true);
     }
@@ -149,7 +164,16 @@ public class Orders : MonoBehaviour
             if (kayaToastPrep.isBreadCut && kayaToastPrep.isBreadToasted && kayaToastPrep.isBreadSpreadKaya && kayaToastPrep.isBreadSpreadButter)
             {
                 isPrepared = true;
-                radialMenu.knifeStatusGO.SetActive(false);
+                radialMenu.prepStatusGO.SetActive(false);
+            }
+        }
+
+        if (currentOrder == "HALF-BOILEDEGGS")
+        {
+            if (halfBoiledEggsPrep.areEggsBoiled && halfBoiledEggsPrep.eggsStrained == 2)
+            {
+                isPrepared = true;
+                radialMenu.prepStatusGO.SetActive(false);
             }
         }
 
@@ -181,6 +205,12 @@ public class Orders : MonoBehaviour
             }
 
             kayaToastPrep.ResetVariables();
+        }
+
+        if (currentOrder == "HALF-BOILEDEGGS")
+        {
+            finalFoodShowcased = Instantiate(halfBoiledEggs, foodShowcaseTrans.position, Quaternion.identity);
+            halfBoiledEggsPrep.ResetVariables();
         }
         
         GameManagerScript.instance.isShowcasing = true;
@@ -215,11 +245,11 @@ public class Orders : MonoBehaviour
 
     public void Continue()
     {
+        GameManagerScript.instance.isShowcasing = false;
         Destroy(spawnedPrep);
         CreateOrder();
         continueButton.SetActive(false);
         Camera.main.GetComponent<CamTransition>().MoveCamera(Camera.main.GetComponent<CamTransition>().defaultCamTransform);
         GameManagerScript.instance.ChangeCursorLockedState(true);
-        GameManagerScript.instance.isShowcasing = false;
     }
 }

@@ -9,8 +9,10 @@ public class Food : MonoBehaviour
 
     public bool isSolid;
     public bool isBeingHeated = false;
+    public bool isBoiling = false;
 
     public float temperature = 28f;
+    public int boilingPoint;
 
     //Transform points for the camera to transition to when preparing food
     public Transform camTransitionTransform1;
@@ -31,6 +33,30 @@ public class Food : MonoBehaviour
         if (!isBeingHeated && temperature > GameManagerScript.instance.roomTemperature)
         {
             temperature -= Time.deltaTime * 0.5f;
+
+            if (GameManagerScript.instance.orders.halfBoiledEggsPrep != null && GameManagerScript.instance.orders.halfBoiledEggsPrep.isHeatingWater
+                && !GameManagerScript.instance.orders.halfBoiledEggsPrep.isWaterBoiled)
+            {
+                GameManagerScript.instance.prepStatusText.text = "Boiling: " + 
+                    Mathf.FloorToInt(GameManagerScript.instance.playerControl.stove.ladenItem.GetComponent<LiquidHolder>().liquidGO.GetComponent<Food>().temperature) + "%";
+            }
+        }
+
+        if (!isBoiling && !isSolid && temperature >= boilingPoint)
+        {
+            Debug.Log("Boiled");
+            isBoiling = true;
+
+            if (GameManagerScript.instance.orders.halfBoiledEggsPrep != null && !GameManagerScript.instance.orders.halfBoiledEggsPrep.isWaterBoiled)
+            {
+                GameManagerScript.instance.orders.halfBoiledEggsPrep.isWaterBoiled = true;
+                GameManagerScript.instance.orders.progressBar.AddProgress(1);
+            }
+        }
+
+        if (isBoiling && !isSolid && temperature < boilingPoint)
+        {
+            isBoiling = false;
         }
     }
 }

@@ -15,10 +15,6 @@ public class KayaToastPrep : MonoBehaviour
     public bool isBreadSpreadButter = false;
     public bool isBreadSpreadKaya = false;
 
-    public bool isBeingToasted = false;
-
-    public float toastedTime = 0f;
-
     public string breadType;
 
     [Header("Cut Prep Values")]
@@ -68,7 +64,5 @@ public class KayaToastPrep : MonoBehaviour
         isBreadToasted = false;
         isBreadSpreadButter = false;
         isBreadSpreadKaya = false;
-
-        toastedTime = 0f;
     }
 }
