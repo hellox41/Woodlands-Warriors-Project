@@ -18,20 +18,20 @@ public class MeowtiTool : MonoBehaviour
     public GameObject accessedPanel;
     public GameObject inputPanel;
 
+    [Header("Canvases")]
     public CanvasGroup primaryToolCanvas;
     public CanvasGroup eighteenCarrotCanvas;
     public CanvasGroup radioCafeCanvas;
     public CanvasGroup vitaminsCanvas;
+    public CanvasGroup f5Canvas;
 
-    public CanvasGroup knifeCanvas;
-    public CanvasGroup stoveCanvas;
     public CanvasGroup activeCanvas;
 
     public AudioSource toolAudioSource;
 
     public bool isTyping = false;
 
-    [Header ("Debug")]
+    [Header("Debug")]
     public string pawzzleTypeOverride;
 
     [Header("Apparatus Nouns")]
@@ -42,7 +42,17 @@ public class MeowtiTool : MonoBehaviour
     string strainerNoun;//index 2
     public TMP_Text apparatusNounsText;
 
-    [Header ("18 Carrot Configuration")]
+    [Header("F5")]
+    //validF5Foods = { "ZUCCHINI", "SHALLOT", "PEACH", "BELL PEPPER", "DURIAN" };
+    //invalidF5Foods = { "CUCUMBER", "ONION", "NECTARINE", "JALAPENO", "JACKFRUIT" };
+    [SerializeField] Sprite[] validF5Images;
+    [SerializeField] Sprite[] invalidF5Images;
+    [SerializeField] Image f5Image1;
+    [SerializeField] Image f5Image2;
+    string f5Food1;
+    string f5Food2;
+
+    [Header("18 Carrot Configuration")]
     public TMP_Text eighteenCarrotText;
     string[] eighteenCarrotLeftDisplays = { "CARROT", "CARET", "THE WORD CARROT", "SEE EH AR AR OH TEE WORDS ONLY", "KAY AR AR EE TEE", "CARROT SYMBOL", 
         "JUST THE WORD CARROT", "CARET VEGETABLE BUT THE WORD ^ IS GOLD THEN THE SECOND CARAT IS THE SYMBOL", 
@@ -62,7 +72,7 @@ public class MeowtiTool : MonoBehaviour
 
     [Space]
 
-    [Header ("Radio Cafe")]
+    [Header("Radio Cafe")]
     string[] radioCafeWords = { "SMALL", "SMART", "COATED", "BENDY", "BEEFY", "TASTY", "CORNED", "SPICY", "TACKY", "SPIKY", "SMOKY", "RUSTY", "CURED", "CORKED", "ROAST", "CURRY"};
     public AudioClip[] radioAudioClips;
 
@@ -146,6 +156,14 @@ public class MeowtiTool : MonoBehaviour
 
     void InitializePawzzle(string PawzzleType)  //Activate the pawzzle's respective canvas and pick a random answer for them
     {
+        if (PawzzleType == "F5")
+        {
+            InitializeF5();
+            f5Canvas.gameObject.SetActive(true);
+            f5Canvas.interactable = true;
+            activeCanvas = f5Canvas;
+        }
+
         if (PawzzleType == "18CARROT")
         {
             Initialize18Carrot();
@@ -169,6 +187,51 @@ public class MeowtiTool : MonoBehaviour
             vitaminsCanvas.interactable = true;
             activeCanvas = vitaminsCanvas;
         }
+    }
+
+    void InitializeF5()
+    {
+        //Picks a random value of 0 or 1
+        int validRng = Random.Range(0, 2);
+
+        //Decides the image and food of both F5 images
+        int rng = Random.Range(0, validF5Images.Length - 1);
+        int rng2 = Random.Range(0, invalidF5Images.Length - 1);
+
+        //if rng was 0, valid food shown is on the left
+        if (validRng == 0)
+        {
+            f5Image1.sprite = validF5Images[rng];
+
+            //Make sure the invalid food does not match the valid food
+            do
+            {
+                rng2 = Random.Range(0, invalidF5Images.Length - 1);
+            }
+            while (rng2 == rng);
+
+            f5Image2.sprite = invalidF5Images[rng2];
+        }
+
+        //else, valid food is on the right
+        else if (validRng == 1)
+        {
+            f5Image2.sprite = validF5Images[rng];
+
+            //Make sure the invalid food does not match the valid food
+            do
+            {
+                rng2 = Random.Range(0, invalidF5Images.Length - 1);
+            }
+            while (rng2 == rng);
+
+            f5Image1.sprite = invalidF5Images[rng2];
+        }
+
+        f5Image1.SetNativeSize();
+        f5Image2.SetNativeSize();
+
+        AssignF5Adjective();
     }
 
     void Initialize18Carrot()
@@ -348,7 +411,41 @@ public class MeowtiTool : MonoBehaviour
     }
 
     //Pawzzle-specific button methods below
+    //F5
+    void AssignF5Adjective()
+    {
+        //If valid food was...
 
+        //Zucchini
+        if (f5Image1.sprite == validF5Images[0] || f5Image2.sprite == validF5Images[0])
+        {
+            currentPawzzleAdjective = "BLAND";
+        }
+
+        //Shallot
+        if (f5Image1.sprite == validF5Images[1] || f5Image2.sprite == validF5Images[1])
+        {
+            currentPawzzleAdjective = "BLANCHED";
+        }
+
+        //Peach
+        if (f5Image1.sprite == validF5Images[2] || f5Image2.sprite == validF5Images[2])
+        {
+            currentPawzzleAdjective = "CLASSY";
+        }
+
+        //Bell Pepper
+        if (f5Image1.sprite == validF5Images[3] || f5Image2.sprite == validF5Images[3])
+        {
+            currentPawzzleAdjective = "LONELY";
+        }
+
+        //Durian
+        if (f5Image1.sprite == validF5Images[4] || f5Image2.sprite == validF5Images[4])
+        {
+            currentPawzzleAdjective = "BROILED";
+        }
+    }
 
     //RADIOCAFE
     public void PlayRadioCommClip()

@@ -30,8 +30,9 @@ public class Orders : MonoBehaviour
     public Transform instancingSpawnPoint;
     public GameObject kayaToastObjects;
 
-    public GameObject brownEggs;
-    public GameObject whiteEggs;
+    public GameObject eggs;
+    public Material whiteEggMat;
+    public Material brownEggMat;
 
     [Header("Timer Values")]
     public Timer timer;
@@ -141,16 +142,30 @@ public class Orders : MonoBehaviour
         if (currentOrder == "HALF-BOILEDEGGS")
         {
             halfBoiledEggsPrep.eggsType = halfBoiledEggsPrep.eggTypes[Random.Range(0, halfBoiledEggsPrep.eggTypes.Length)];
+            List<MeshRenderer> mrs = new List<MeshRenderer>();
+            foreach (Transform child in eggs.transform)
+            {
+                mrs.Add(child.GetComponent<MeshRenderer>());
+            }
 
             if (halfBoiledEggsPrep.eggsType == "BROWN")
             {
                 orderInfoText.text = "Brown Eggs";
 
+                foreach(MeshRenderer mr in mrs)
+                {
+                    mr.material = brownEggMat;
+                }
             }
 
             if (halfBoiledEggsPrep.eggsType == "WHITE")
             {
                 orderInfoText.text = "White Eggs";
+
+                foreach (MeshRenderer mr in mrs)
+                {
+                    mr.material = whiteEggMat;
+                }
             }
         }
         orderUIGO.SetActive(true);

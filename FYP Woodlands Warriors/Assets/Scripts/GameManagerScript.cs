@@ -8,7 +8,7 @@ public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript instance;
 
-    public string[] PrimaryPawzzles = { "18CARROT", "RADIOCAFE", "VITAMINS" };
+    public string[] PrimaryPawzzles = { "F5", "18CARROT", "RADIOCAFE", "VITAMINS" };
 
     public string[] orderTypes = { "KAYATOAST", "HALF-BOILEDEGGS" };
 
