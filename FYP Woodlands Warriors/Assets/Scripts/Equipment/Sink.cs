@@ -49,9 +49,10 @@ public class Sink : MonoBehaviour
             if (liquidHolder.currentLevel < liquidHolder.capacity)
             {
                 liquidHolder.currentLevel += Time.fixedDeltaTime * waterOutputModifier;
-                GameManagerScript.instance.orders.progressBar.slider.value = liquidHolder.currentLevel;
+                GameManagerScript.instance.orders.prepProgressBar.AddProgress(Time.fixedDeltaTime * waterOutputModifier);
+                GameManagerScript.instance.orders.halfBoiledEggsPrep.savedFillingWaterProgress += Time.fixedDeltaTime * waterOutputModifier;
 
-                if (GameManagerScript.instance.orders.progressBar.slider.value >= 1000)
+                if (GameManagerScript.instance.orders.prepProgressBar.slider.value >= 1000)
                 {
                     isPouringWater = false;
                     waterPour.SetActive(false);

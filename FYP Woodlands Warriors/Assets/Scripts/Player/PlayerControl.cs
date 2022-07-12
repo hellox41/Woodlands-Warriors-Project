@@ -247,7 +247,7 @@ public class PlayerControl : MonoBehaviour
             interactable = outline.GetComponent<Interactable>();
 
             if (interactable.CheckCurrentlyInteractable() && !radialMenuGO.activeInHierarchy)
-            {            
+            {
                 GameManagerScript.instance.isInteracting = true;
 
                 GameManagerScript.instance.ChangeCursorLockedState(false);

@@ -18,25 +18,55 @@ public class Skillet : MonoBehaviour
 
         else if (GameManagerScript.instance.accessedApparatus == "SPATULA" && !GameManagerScript.instance.orders.kayaToastPrep.isFlippedOnThisColor)
         {
-            if (GameManagerScript.instance.orders.kayaToastPrep.breadType == "MULTIGRAIN" && 
-                GameManagerScript.instance.playerControl.stove.stoveLightMat.color == GameManagerScript.instance.playerControl.stove.purpleColor)
+            GetComponent<Container>().itemContained.GetComponent<Bread>().burningTime += 8f;
+
+            if (GameManagerScript.instance.orders.kayaToastPrep.breadType == "MULTIGRAIN")
             {
-                GameManagerScript.instance.orders.kayaToastPrep.timesFlippedCorrectly++;
-                GameManagerScript.instance.orders.progressBar.AddProgress(1);
+                if (GameManagerScript.instance.playerControl.stove.stoveLightMat.color == GameManagerScript.instance.playerControl.stove.purpleColor)
+                {
+                    GameManagerScript.instance.orders.kayaToastPrep.timesFlippedCorrectly++;
+                    GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
+                    GameManagerScript.instance.orders.kayaToastPrep.savedToastBreadProgress++;
+
+                }
+
+                else
+                {
+                    GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
+                    GameManagerScript.instance.orders.dishQualityBar.UpdateProgress();
+                }
             }
 
-            if (GameManagerScript.instance.orders.kayaToastPrep.breadType == "WHOLEWHEAT" && 
-                GameManagerScript.instance.playerControl.stove.stoveLightMat.color == GameManagerScript.instance.playerControl.stove.pinkColor)
+            if (GameManagerScript.instance.orders.kayaToastPrep.breadType == "WHOLEWHEAT")
             {
-                GameManagerScript.instance.orders.kayaToastPrep.timesFlippedCorrectly++;
-                GameManagerScript.instance.orders.progressBar.AddProgress(1);
+                if (GameManagerScript.instance.playerControl.stove.stoveLightMat.color == GameManagerScript.instance.playerControl.stove.pinkColor)
+                {
+                    GameManagerScript.instance.orders.kayaToastPrep.timesFlippedCorrectly++;
+                    GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
+                    GameManagerScript.instance.orders.kayaToastPrep.savedToastBreadProgress++;
+                }
+
+                else
+                {
+                    GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
+                    GameManagerScript.instance.orders.dishQualityBar.UpdateProgress();
+                }
             }
 
-            if (GameManagerScript.instance.orders.kayaToastPrep.breadType == "HONEYOAT" &&
-                GameManagerScript.instance.playerControl.stove.stoveLightMat.color == Color.red)
+            if (GameManagerScript.instance.orders.kayaToastPrep.breadType == "HONEYOAT")
             {
-                GameManagerScript.instance.orders.kayaToastPrep.timesFlippedCorrectly++;
-                GameManagerScript.instance.orders.progressBar.AddProgress(1);
+                if (GameManagerScript.instance.playerControl.stove.stoveLightMat.color == Color.red)
+                {
+                    GameManagerScript.instance.orders.kayaToastPrep.timesFlippedCorrectly++;
+                    GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
+                    GameManagerScript.instance.orders.kayaToastPrep.savedToastBreadProgress++;
+                }
+
+                else
+                {
+                    GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
+                    GameManagerScript.instance.orders.dishQualityBar.UpdateProgress();
+                }
             }
 
             if ((GameManagerScript.instance.orders.kayaToastPrep.breadType == "MULTIGRAIN" || GameManagerScript.instance.orders.kayaToastPrep.breadType == "HONEYOAT") &&

@@ -13,7 +13,16 @@ public class HalfBoiledEggsPrep : MonoBehaviour
     public int eggsInsidePot = 0;
     public int eggsStrained = 0;
 
+    public float savedFillingWaterProgress;
+    public float savedBoilingEggsProgress;
+
+    public int preparedCount = 0;
+
+    //For grading use, [0] is 3 star, [1] is 2 star, [2] is 1 star, [3] is the maximum time limit for the dish before failing the order
+    public int[] dishTimes = { 60, 70, 85, 100 };
+
     [SerializeField] float eggsCookingTimer = 10f;
+    float overcookedTimer;
 
     public string[] eggTypes = {"BROWN", "WHITE"};
 
@@ -21,14 +30,16 @@ public class HalfBoiledEggsPrep : MonoBehaviour
 
     public void StartFillingWater()
     {
-        GameManagerScript.instance.orders.progressBar.ResetProgress();
-        GameManagerScript.instance.orders.progressBar.SetMaxProgress(1000);
+        GameManagerScript.instance.orders.prepProgressBar.ResetValue();
+        GameManagerScript.instance.orders.prepProgressBar.SetMaxProgress(1000);
+        GameManagerScript.instance.orders.prepProgressBar.SetProgress(savedFillingWaterProgress);
     }
 
     public void StartBoilingEggs()
     {
-        GameManagerScript.instance.orders.progressBar.ResetProgress();
-        GameManagerScript.instance.orders.progressBar.SetMaxProgress(5);
+        GameManagerScript.instance.orders.prepProgressBar.ResetValue();
+        GameManagerScript.instance.orders.prepProgressBar.SetMaxProgress(5);
+        GameManagerScript.instance.orders.prepProgressBar.SetProgress(savedBoilingEggsProgress);
     }
 
     private void Update()
@@ -40,7 +51,19 @@ public class HalfBoiledEggsPrep : MonoBehaviour
             if (eggsCookingTimer <= 0)
             {
                 areEggsBoiled = true;
-                GameManagerScript.instance.orders.progressBar.AddProgress(1);
+                GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
+                savedBoilingEggsProgress++;
+            }
+        }
+
+        if (areEggsBoiled && GameManagerScript.instance.playerControl.stove.isPoweredOn)
+        {
+            overcookedTimer += Time.deltaTime;
+
+            if (overcookedTimer > 10)
+            {
+                GameManagerScript.instance.orders.dishQualityBar.AddProgress(-Time.deltaTime * 1.5f);
+                GameManagerScript.instance.orders.dishQualityBar.UpdateProgress();
             }
         }
     }
@@ -57,5 +80,8 @@ public class HalfBoiledEggsPrep : MonoBehaviour
         eggsStrained = 0;
 
         eggsCookingTimer = 10f;
+
+        savedBoilingEggsProgress = 0;
+        savedFillingWaterProgress = 0;
     }
 }

@@ -8,6 +8,10 @@ public class Bread : MonoBehaviour
 
     public GameObject cutcanvas;
 
+    Food food;
+
+    public float burningTime = 25f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +21,29 @@ public class Bread : MonoBehaviour
         {
             GameManagerScript.instance.orders.kayaToastPrep.cutButtons[i] = child.gameObject;
             i++;
+        }
+
+        food = GetComponent<Food>();
+    }
+
+    private void Update()
+    {
+        if (food.isBeingHeated)
+        {
+            if (burningTime > 0)
+            {
+                burningTime -= Time.deltaTime;
+            }
+
+            if (burningTime <= 0)
+            {
+                GameManagerScript.instance.orders.dishQualityBar.AddProgress(-Time.deltaTime * 1.5f);
+            }
+        }
+
+        if (!food.isBeingHeated && burningTime <= 0)
+        {
+            burningTime += Time.deltaTime * 0.5f;
         }
     }
 
@@ -28,7 +55,8 @@ public class Bread : MonoBehaviour
     public void OnCutButtonPressed(int buttonIndex)
     {
         GameManagerScript.instance.orders.kayaToastPrep.cutButtons[buttonIndex].SetActive(false);
-        GameManagerScript.instance.orders.progressBar.AddProgress(1);
+        GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
+        GameManagerScript.instance.orders.kayaToastPrep.savedCutBreadProgress++;
 
         if (buttonIndex == 4)
         {
@@ -59,7 +87,7 @@ public class Bread : MonoBehaviour
 
             spread.UpdateSpread("Kaya");
             GameManagerScript.instance.orders.kayaToastPrep.isKayaAppliedToKnife = false;
-            GameManagerScript.instance.orders.progressBar.AddProgress(1);
+            GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
         }
 
         if (GameManagerScript.instance.orders.kayaToastPrep.isButterAppliedToKnife)
@@ -69,7 +97,7 @@ public class Bread : MonoBehaviour
 
             spread.UpdateSpread("Butter");
             GameManagerScript.instance.orders.kayaToastPrep.isButterAppliedToKnife = false;
-            GameManagerScript.instance.orders.progressBar.AddProgress(1);
+            GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
         }
 
         if ((GameManagerScript.instance.orders.kayaToastPrep.isBreadSpreadKaya && GameManagerScript.instance.orders.kayaToastPrep.isButterAppliedToKnife) || 
@@ -78,7 +106,7 @@ public class Bread : MonoBehaviour
             spread.UpdateSpread("Kaya and Butter");
             GameManagerScript.instance.orders.kayaToastPrep.isBreadSpreadKaya = true;
             GameManagerScript.instance.orders.kayaToastPrep.isBreadSpreadButter = true;
-            GameManagerScript.instance.orders.progressBar.AddProgress(1);
+            GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
         }
 
         GameManagerScript.instance.orders.CheckIfCooked();

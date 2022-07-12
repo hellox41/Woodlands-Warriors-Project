@@ -50,7 +50,8 @@ public class Food : MonoBehaviour
             if (GameManagerScript.instance.orders.halfBoiledEggsPrep != null && !GameManagerScript.instance.orders.halfBoiledEggsPrep.isWaterBoiled)
             {
                 GameManagerScript.instance.orders.halfBoiledEggsPrep.isWaterBoiled = true;
-                GameManagerScript.instance.orders.progressBar.AddProgress(1);
+                GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
+                GameManagerScript.instance.orders.halfBoiledEggsPrep.savedBoilingEggsProgress++;
             }
         }
 

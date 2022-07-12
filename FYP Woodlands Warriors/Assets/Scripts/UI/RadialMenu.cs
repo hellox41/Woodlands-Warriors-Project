@@ -36,7 +36,6 @@ public class RadialMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.SetActive(false);
         orders = GameObject.Find("StageHandler").GetComponent<Orders>();
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
     }
@@ -139,13 +138,13 @@ public class RadialMenu : MonoBehaviour
                 {
                     prepType = "Spreading Condiments";
                     GameManagerScript.instance.interactedFood.GetComponent<Interactable>().enabled = true;
-                    GameManagerScript.instance.orders.progressBar.ResetProgress();
-                    GameManagerScript.instance.orders.progressBar.SetMaxProgress(2);
+                    GameManagerScript.instance.orders.prepProgressBar.ResetValue();
+                    GameManagerScript.instance.orders.prepProgressBar.SetMaxProgress(2);
                     camTransition.MoveCamera(GameManagerScript.instance.interactedFood.GetComponent<Food>().camTransitionTransform2);
                     ShowPrepUI();
                     prepStatusGO.SetActive(true);
                     CheckItemsInteractibility();
-                }
+                }   
 
                 //KAYATOAST
                 //Cutting bread
@@ -211,6 +210,8 @@ public class RadialMenu : MonoBehaviour
                 CheckItemsInteractibility();
             }
         }
+
+        GameManagerScript.instance.orders.prepProgressBar.UpdateProgress();
     }
 
     public void ShowPrepUI()
@@ -291,7 +292,7 @@ public class RadialMenu : MonoBehaviour
 
             GameManagerScript.instance.isPlaceable = false;
 
-            if (GameManagerScript.instance.playerControl.stove != null)
+            if (GameManagerScript.instance.playerControl.stove != null && GameManagerScript.instance.playerControl.stove.ladenItem == null)
             {
                 GameManagerScript.instance.playerControl.stove.isLaden = true;
                 GameManagerScript.instance.playerControl.stove.ladenItem = tempObj;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManagerScript : MonoBehaviour
@@ -17,12 +18,12 @@ public class GameManagerScript : MonoBehaviour
     public string accessedApparatus = null;
 
     public int levelNo;
-    public int ordersLeft;
     public int pawzzleDifficulty;
     public int strikes = 0;
 
     public float roomTemperature = 28f;
 
+    public bool inLevel = false;
     public bool isZoomed = false;
     public bool isInteracting = false;
     public bool isPreparing = false;
@@ -67,11 +68,40 @@ public class GameManagerScript : MonoBehaviour
     void Start()
     {
         pawzzleDifficulty = levelNo;
-        accessedApparatus = null;
+    }
 
-        if (levelNo == 1)
+    //Assign variables on level load
+    private void OnLevelWasLoaded(int level)
+    {
+        orders = GameObject.Find("StageHandler").GetComponent<Orders>();
+        GameObject player = GameObject.Find("Player");
+        playerControl = player.GetComponent<PlayerControl>();
+        playerInventory = player.GetComponent<Inventory>();
+        radialMenu = playerControl.radialMenu;
+        prepStatusText = radialMenu.prepTypeText;
+
+        strikeImages[0] = GameObject.Find("strikeImage1").GetComponent<Image>();
+        strikeImages[1] = GameObject.Find("strikeImage2").GetComponent<Image>();
+    }   
+
+    private void Update()
+    {
+        if (inLevel)
         {
-            ordersLeft = 3;
+            if (orders.currentOrder == "KAYATOAST" && orders.dishTime > orders.kayaToastPrep.dishTimes[3])
+            {
+                FailLevel();
+            }
+
+            else if (orders.currentOrder == "HALF-BOILEDEGGS" && orders.dishTime > orders.halfBoiledEggsPrep.dishTimes[3])
+            {
+                FailLevel();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            FailLevel();
         }
     }
 
@@ -92,7 +122,7 @@ public class GameManagerScript : MonoBehaviour
 
         if (strikes == 3)
         {
-            Debug.Log("You failed the level!");
+            FailLevel();
         }
     }
 
@@ -138,5 +168,10 @@ public class GameManagerScript : MonoBehaviour
         tmpRed.a = 1f;
         strikeImages[strikes - 1].color = tmpRed;
         isFlashing = false;
+    }
+
+    public void FailLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class Orders : MonoBehaviour
 {
-    public int ordersLeft;
+    public int ordersDone;
 
     public string currentOrder;
 
@@ -29,27 +30,54 @@ public class Orders : MonoBehaviour
     [Header("Food Instancing")]
     public Transform instancingSpawnPoint;
     public GameObject kayaToastObjects;
+    public GameObject halfBoiledEggsObjects;
 
     public GameObject eggs;
     public Material whiteEggMat;
     public Material brownEggMat;
 
     [Header("Timer Values")]
-    public Timer timer;
     public float stageTime;
+    public float dishTime;
+    public TMP_Text stageTimeText;
+    public TMP_Text timeGradingText;
+    bool isShowing3Star = true;
+    bool isShowing2Star = false;
+    bool isShowing1Star = false;
+    bool isShowingLatest = false;
+
+    public Image timeGradingFill;
+
+    [SerializeField] Color threeStarColor;
+    [SerializeField] Color twoStarColor;
+    [SerializeField] Color oneStarColor;
+    [SerializeField] Color latestColor;
+
+    [Header("Grading")]
+    public ProgressBar timeProgressBar;
+    public GameObject showcaseUI;
+    public Grader grader;
+    public GameObject uiCanvas;
+    public int totalStageStars = 0;
+    public LevelStats levelStats;
 
     [Header("Extra")]
-    public ProgressBar progressBar;
+    public ProgressBar prepProgressBar;
+    public ProgressBar dishQualityBar;
     public Transform foodShowcaseTrans;
     [Range(0f, 1f)]
     [SerializeField] float camRotationSpeed;
     public Vector3 camOffset;
     [SerializeField] TMP_Text orderNameText;
     [SerializeField] TMP_Text orderInfoText;
+    [SerializeField] TMP_Text showcaseNameText;
+    [SerializeField] TMP_Text showcaseGradingText;
     [SerializeField] GameObject orderUIGO;
     [SerializeField] GameObject continueButton;
     GameObject spawnedPrep;
     public RadialMenu radialMenu;
+    [SerializeField] bool isAtShowcaseTrans = false;
+    public GameObject stageRatingGO;
 
     [Header("Debug")]
     public string orderTypeOverride;
@@ -58,6 +86,7 @@ public class Orders : MonoBehaviour
     void Start()
     {
         orderUIGO.SetActive(false);
+        ordersDone = 0;
         if (orderTypeOverride == null || orderTypeOverride == "")
         {
             CreateOrder();
@@ -66,6 +95,17 @@ public class Orders : MonoBehaviour
         else
         {
             CreateOrder(orderTypeOverride);
+            Debug.Log(currentOrder + " order created through debug settings");
+        }
+
+        if (currentOrder == "KAYATOAST")
+        {
+            timeProgressBar.SetMaxProgress(kayaToastPrep.dishTimes[3]);
+        }
+
+        else if (currentOrder == "HALF-BOILEDEGGS")
+        {
+            timeProgressBar.SetMaxProgress(halfBoiledEggsPrep.dishTimes[3]);
         }
     }
 
@@ -74,6 +114,11 @@ public class Orders : MonoBehaviour
     {
         if (GameManagerScript.instance.isShowcasing && !GameManagerScript.instance.isCamTransitioning)
         {
+            if (!isAtShowcaseTrans)
+            {
+                Camera.main.transform.position = foodShowcaseTrans.position + camOffset;
+                isAtShowcaseTrans = true;
+            }
             Camera.main.transform.LookAt(finalFoodShowcased.transform);
             Camera.main.transform.Translate(Vector3.right * Time.fixedDeltaTime * camRotationSpeed);
         }
@@ -83,6 +128,9 @@ public class Orders : MonoBehaviour
             stageTime += Time.deltaTime;
             UpdateTimer();
         }
+
+        timeProgressBar.SetProgress(timeProgressBar.slider.maxValue - dishTime);
+        timeProgressBar.UpdateProgress();
     }
 
     //If parameters are left blank, will generate a random order based on the level
@@ -141,6 +189,8 @@ public class Orders : MonoBehaviour
 
         if (currentOrder == "HALF-BOILEDEGGS")
         {
+            spawnedPrep = Instantiate(halfBoiledEggsObjects, instancingSpawnPoint.position, instancingSpawnPoint.rotation);
+            eggs = GameObject.Find("Eggs");
             halfBoiledEggsPrep.eggsType = halfBoiledEggsPrep.eggTypes[Random.Range(0, halfBoiledEggsPrep.eggTypes.Length)];
             List<MeshRenderer> mrs = new List<MeshRenderer>();
             foreach (Transform child in eggs.transform)
@@ -179,6 +229,7 @@ public class Orders : MonoBehaviour
             if (kayaToastPrep.isBreadCut && kayaToastPrep.isBreadToasted && kayaToastPrep.isBreadSpreadKaya && kayaToastPrep.isBreadSpreadButter)
             {
                 isPrepared = true;
+                kayaToastPrep.preparedCount++;
                 radialMenu.prepStatusGO.SetActive(false);
             }
         }
@@ -188,6 +239,7 @@ public class Orders : MonoBehaviour
             if (halfBoiledEggsPrep.areEggsBoiled && halfBoiledEggsPrep.eggsStrained == 2)
             {
                 isPrepared = true;
+                halfBoiledEggsPrep.preparedCount++;
                 radialMenu.prepStatusGO.SetActive(false);
             }
         }
@@ -227,10 +279,13 @@ public class Orders : MonoBehaviour
             finalFoodShowcased = Instantiate(halfBoiledEggs, foodShowcaseTrans.position, Quaternion.identity);
             halfBoiledEggsPrep.ResetVariables();
         }
-        
+
+        Camera.main.transform.DetachChildren();
         GameManagerScript.instance.isShowcasing = true;
         GameManagerScript.instance.ChangeCursorLockedState(false);
-        continueButton.SetActive(true);
+        uiCanvas.SetActive(false);
+        showcaseUI.SetActive(true);
+        grader.UpdateText();
     }
 
     public void ToggleOrderUI(bool shrunk)  //if param (bool shrunk) is true, expand the ui, else shrink the ui
@@ -251,20 +306,149 @@ public class Orders : MonoBehaviour
         orderUIGO.GetComponent<OrderUI>().isChangingSize = true;
     }
 
+    //Updates both stage timer and the grading timer's value and color
     void UpdateTimer()
     {
+        //For main timer
         float minutes = Mathf.FloorToInt(stageTime / 60);
         float seconds = Mathf.FloorToInt(stageTime % 60);
-        timer.timerText.text = string.Format("{00}:{1:00}", minutes, seconds);
+        stageTimeText.text = string.Format("{00}:{1:00}", minutes, seconds);
+        dishTime += Time.fixedDeltaTime;
+
+        //For grading timer
+        //Show time for 3 star
+        if (isShowing3Star)
+        {
+            if (currentOrder == "KAYATOAST")
+            {
+                timeGradingText.text = (kayaToastPrep.dishTimes[0] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > kayaToastPrep.dishTimes[0])
+                {
+                    isShowing3Star = false;
+                    isShowing2Star = true;
+                    timeGradingText.color = twoStarColor;
+                    timeGradingFill.color = twoStarColor;
+                }
+            }
+
+            if (currentOrder == "HALF-BOILEDEGGS")
+            {
+                timeGradingText.text = (halfBoiledEggsPrep.dishTimes[0] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > halfBoiledEggsPrep.dishTimes[0])
+                {
+                    isShowing3Star = false;
+                    isShowing2Star = true;
+                    timeGradingText.color = twoStarColor;
+                    timeGradingFill.color = twoStarColor;
+                }
+            }
+        }
+
+        //Show time for 2 star
+        if (isShowing2Star)
+        {
+            if (currentOrder == "KAYATOAST")
+            {
+                timeGradingText.text = (kayaToastPrep.dishTimes[1] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > kayaToastPrep.dishTimes[1])
+                {
+                    isShowing2Star = false;
+                    isShowing1Star = true;
+                    timeGradingText.color = oneStarColor;
+                    timeGradingFill.color = oneStarColor;
+                }
+            }
+
+            if (currentOrder == "HALF-BOILEDEGGS")
+            {
+                timeGradingText.text = (halfBoiledEggsPrep.dishTimes[1] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > halfBoiledEggsPrep.dishTimes[1])
+                {
+                    isShowing2Star = false;
+                    isShowing1Star = true;
+                    timeGradingText.color = oneStarColor;
+                    timeGradingFill.color = oneStarColor;
+                }
+            }
+        }
+
+        //Show time for 1 star
+        if (isShowing1Star)
+        {
+            if (currentOrder == "KAYATOAST")
+            {
+                timeGradingText.text = (kayaToastPrep.dishTimes[2] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > kayaToastPrep.dishTimes[2])
+                {
+                    isShowing1Star = false;
+                    isShowingLatest = true;
+                    timeGradingText.color = latestColor;
+                    timeGradingFill.color = latestColor;
+                }
+            }
+
+            if (currentOrder == "HALF-BOILEDEGGS")
+            {
+                timeGradingText.text = (halfBoiledEggsPrep.dishTimes[2] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > halfBoiledEggsPrep.dishTimes[2])
+                {
+                    isShowing1Star = false;
+                    isShowingLatest = true;
+                    timeGradingText.color = latestColor;
+                    timeGradingFill.color = latestColor;
+                }
+            }
+        }
+
+        //Show time for latest time possible
+        if (isShowingLatest)
+        {
+            if (currentOrder == "KAYATOAST")
+            {
+                timeGradingText.text = (kayaToastPrep.dishTimes[3] - Mathf.FloorToInt(dishTime)).ToString();
+            }
+
+            if (currentOrder == "HALF-BOILEDEGGS")
+            {
+                timeGradingText.text = (halfBoiledEggsPrep.dishTimes[3] - Mathf.FloorToInt(dishTime)).ToString();
+            }
+        }
     }
 
+    /*Create new order, along with the order's prep objects, destroy showcased food, hide the showcase UI, show the normalUI, move camera back to 1st person view, lock the cursor,
+    and reset the dish time*/
     public void Continue()
     {
+        ordersDone++;
+
+        if (ordersDone == 3)
+        {
+            Time.timeScale = 0f;
+            levelStats.UpdateLevelStats();
+            levelStats.gameObject.SetActive(true);
+            return;
+        }
+
         GameManagerScript.instance.isShowcasing = false;
         Destroy(spawnedPrep);
+        Destroy(finalFoodShowcased);
         CreateOrder();
-        continueButton.SetActive(false);
+        showcaseUI.SetActive(false);
+        uiCanvas.SetActive(true);
         Camera.main.GetComponent<CamTransition>().MoveCamera(Camera.main.GetComponent<CamTransition>().defaultCamTransform);
         GameManagerScript.instance.ChangeCursorLockedState(true);
+        isAtShowcaseTrans = false;
+
+        dishTime = 0;
+        GameManagerScript.instance.orders.dishQualityBar.SetProgress(100);
+        GameManagerScript.instance.orders.dishQualityBar.UpdateProgress();
+        timeGradingText.color = threeStarColor;
+        timeGradingFill.color = threeStarColor;
     }
 }

@@ -72,7 +72,6 @@ public class CamTransition : MonoBehaviour
                 if (GameManagerScript.instance.isShowcasing)
                 {
                     Camera.main.transform.position = GameManagerScript.instance.orders.foodShowcaseTrans.position + GameManagerScript.instance.orders.camOffset;
-                    Camera.main.transform.DetachChildren();
                 }
             }
         }

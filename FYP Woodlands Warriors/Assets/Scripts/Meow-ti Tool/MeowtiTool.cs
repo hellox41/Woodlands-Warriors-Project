@@ -31,6 +31,15 @@ public class MeowtiTool : MonoBehaviour
 
     public bool isTyping = false;
 
+    [Header("Tool Heads")]
+    public GameObject knifeHead;
+    public GameObject spatulaHead;
+    public GameObject strainerHead;
+
+    public Animator knifeAnimator;
+    public Animator spatulaAnimator;
+    public Animator strainerAnimator;
+
     [Header("Debug")]
     public string pawzzleTypeOverride;
 
@@ -49,8 +58,6 @@ public class MeowtiTool : MonoBehaviour
     [SerializeField] Sprite[] invalidF5Images;
     [SerializeField] Image f5Image1;
     [SerializeField] Image f5Image2;
-    string f5Food1;
-    string f5Food2;
 
     [Header("18 Carrot Configuration")]
     public TMP_Text eighteenCarrotText;
@@ -105,11 +112,13 @@ public class MeowtiTool : MonoBehaviour
         radioCafeCanvas.gameObject.SetActive(false);
         vitaminsCanvas.gameObject.SetActive(false);
 
-        currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, GameManagerScript.instance.PrimaryPawzzles.Length)];  //Randomly generate the first pawzzle
+        //Randomly generate the first pawzzle
+        GeneratePawzzle();
 
         if (pawzzleTypeOverride != "")  //Control which pawzzle gets generated (debug)
         {
             currentPawzzleType = pawzzleTypeOverride;
+            Debug.Log(currentPawzzleType + " pawzzle created through debug settings");
         }
 
         for (int i = 0; i < 3; i++)  //Initialize apparatus nouns
@@ -119,6 +128,15 @@ public class MeowtiTool : MonoBehaviour
         apparatusNounsText.text = "APPARATUS NOUNS \n \n KNIFE - " + knifeNoun + "\n SPATULA - " + spatulaNoun + "\n STRAINER - " + strainerNoun; 
 
         InitializePawzzle(currentPawzzleType);
+    }
+
+    //Generate a random pawzzle, depending on the level's difficulty (1 includes F5, 18Carrot, radioCafe)
+    void GeneratePawzzle()
+    {
+        if (GameManagerScript.instance.pawzzleDifficulty == 1)
+        {
+            currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, 3)];
+        }
     }
 
     void RemoveElement<T>(ref T[] arr, int index)  //Remove an element from an array and resize the array
@@ -382,10 +400,29 @@ public class MeowtiTool : MonoBehaviour
         }
     }
 
+    //Assign the accessed apparatus from the pawzzle and extrude it out (animation) from the meow-ti tool
     void SolvePrimaryPawzzle(string desiredApparatus)
     {
         GameManagerScript.instance.accessedApparatus = desiredApparatus;
-        Debug.Log("Pawzzle solved! You accessed the " + desiredApparatus + ".");     
+        Debug.Log("Pawzzle solved! You accessed the " + desiredApparatus + ".");
+        
+        if (desiredApparatus == "KNIFE")
+        {
+            knifeHead.SetActive(true);
+            knifeAnimator.SetTrigger("Extrude");
+        }
+
+        if (desiredApparatus == "SPATULA")
+        {
+            spatulaHead.SetActive(true);
+            spatulaAnimator.SetTrigger("Extrude");
+        }
+
+        if (desiredApparatus == "STRAINER")
+        {
+            strainerHead.SetActive(true);
+            strainerAnimator.SetTrigger("Extrude");
+        }
     }
 
     public void StartTyping()
@@ -398,16 +435,45 @@ public class MeowtiTool : MonoBehaviour
         isTyping = false;
     }
 
+    
+    //Reset the apparatus, change the MTT canvas, play revert anim, then generate another pawzzle
+    //This method is called from Revert Button in Input and Access (in Meow-ti Tool gameObject)
     public void RevertApparatus()
     {
+        StartCoroutine(PlayRevertAnim());
+
         GameManagerScript.instance.accessedApparatus = null;
         primaryInput.text = null;
         activeCanvas.gameObject.SetActive(false);
         accessedPanel.SetActive(false);
         inputPanel.SetActive(true);
 
-        currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, GameManagerScript.instance.PrimaryPawzzles.Length)];  //Randomly generate another pawzzle
+        GeneratePawzzle();
         InitializePawzzle(currentPawzzleType);  //Initialize the generated pawzzle
+    }
+
+    IEnumerator PlayRevertAnim()
+    {
+        if (GameManagerScript.instance.accessedApparatus == "KNIFE")
+        {
+            knifeAnimator.SetTrigger("Revert");
+            yield return new WaitForSeconds(1f);
+            knifeHead.SetActive(false);
+        }
+
+        if (GameManagerScript.instance.accessedApparatus == "SPATULA")
+        {
+            spatulaAnimator.SetTrigger("Revert");
+            yield return new WaitForSeconds(1f);
+            spatulaHead.SetActive(false);
+        }
+
+        if (GameManagerScript.instance.accessedApparatus == "STRAINER")
+        {
+            strainerAnimator.SetTrigger("Revert");
+            yield return new WaitForSeconds(1f);
+            strainerHead.SetActive(false);
+        }
     }
 
     //Pawzzle-specific button methods below

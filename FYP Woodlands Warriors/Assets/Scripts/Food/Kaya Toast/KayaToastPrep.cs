@@ -7,6 +7,8 @@ public class KayaToastPrep : MonoBehaviour
 {
     public string[] breadTypes = { "MULTIGRAIN", "WHOLEWHEAT", "HONEYOAT" };
 
+    public int[] dishTimes = { 75, 85, 100, 125 };
+
     // public string[] 
 
     [Header("Bread Values")]
@@ -36,26 +38,35 @@ public class KayaToastPrep : MonoBehaviour
 
     public TMP_Text condimentText;
 
+    [Header("Progress")]
+    public float savedCutBreadProgress;
+    public float savedToastBreadProgress;
+
+    public int preparedCount = 0;
+
     public void CutBread()  //Cutting minigame
     {
         cutCanvas.gameObject.SetActive(true);
-        GameManagerScript.instance.orders.progressBar.ResetProgress();
-        GameManagerScript.instance.orders.progressBar.SetMaxProgress(5);
+        GameManagerScript.instance.orders.prepProgressBar.ResetValue();
+        GameManagerScript.instance.orders.prepProgressBar.SetMaxProgress(5);
+        GameManagerScript.instance.orders.prepProgressBar.SetProgress(savedCutBreadProgress);
     }
 
     public void ToastBread()  //Toasting minigame
     {
-        GameManagerScript.instance.orders.progressBar.ResetProgress();
+        GameManagerScript.instance.orders.prepProgressBar.ResetValue();
 
         if (breadType == "MULTIGRAIN" || breadType == "HONEYOAT")
         {
-            GameManagerScript.instance.orders.progressBar.SetMaxProgress(2);
+            GameManagerScript.instance.orders.prepProgressBar.SetMaxProgress(2);
         }
 
         if (breadType == "WHOLEWHEAT")
         {
-            GameManagerScript.instance.orders.progressBar.SetMaxProgress(3);
+            GameManagerScript.instance.orders.prepProgressBar.SetMaxProgress(3);
         }
+
+        GameManagerScript.instance.orders.prepProgressBar.SetProgress(savedToastBreadProgress);
     }
 
     public void ResetVariables()
@@ -64,5 +75,8 @@ public class KayaToastPrep : MonoBehaviour
         isBreadToasted = false;
         isBreadSpreadButter = false;
         isBreadSpreadKaya = false;
+
+        savedCutBreadProgress = 0;
+        savedToastBreadProgress = 0;
     }
 }

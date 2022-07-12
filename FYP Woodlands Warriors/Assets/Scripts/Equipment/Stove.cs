@@ -111,11 +111,14 @@ public class Stove : MonoBehaviour
 
         if (isPoweredOn)
         {
-            if (ladenFood != null)
+            if (ladenItem.GetComponent<Container>().itemContained != null)
             {
-                ladenFood.GetComponent<Food>().isBeingHeated = true;
+                ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().isBeingHeated = true;
 
-                GameManagerScript.instance.orders.halfBoiledEggsPrep.isHeatingWater = true;
+                if (GameManagerScript.instance.orders.currentOrder == "HALF-BOILEDEGGS")
+                {
+                    GameManagerScript.instance.orders.halfBoiledEggsPrep.isHeatingWater = true;
+                }
             }
 
             stoveIndicatorLight.enabled = true;
@@ -125,9 +128,14 @@ public class Stove : MonoBehaviour
 
         else if (!isPoweredOn)
         {
-            if (ladenFood != null)
+            if (ladenItem.GetComponent<Container>().itemContained != null)
             {
-                ladenFood.GetComponent<Food>().isBeingHeated = false;
+                ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().isBeingHeated = false;
+
+                if (GameManagerScript.instance.orders.currentOrder == "HALF-BOILEDEGGS")
+                {
+                    GameManagerScript.instance.orders.halfBoiledEggsPrep.isHeatingWater = false;
+                }
             }
 
             stoveIndicatorLight.enabled = false;
