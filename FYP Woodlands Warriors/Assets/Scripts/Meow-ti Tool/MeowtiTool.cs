@@ -246,9 +246,6 @@ public class MeowtiTool : MonoBehaviour
             f5Image1.sprite = invalidF5Images[rng2];
         }
 
-        f5Image1.SetNativeSize();
-        f5Image2.SetNativeSize();
-
         AssignF5Adjective();
     }
 
@@ -290,15 +287,13 @@ public class MeowtiTool : MonoBehaviour
             if (i == 0)
             {
                 vitaminFood1 = vitaminFoods[rng];
-                vitaminImage1.sprite = vitaminImages[rng];
-                vitaminImage1.SetNativeSize();
+                vitaminImage1.sprite = vitaminImages[rng];;
             }
 
             else if (i == 1)
             {
                 vitaminFood2 = vitaminFoods[rng];
                 vitaminImage2.sprite = vitaminImages[rng];
-                vitaminImage2.SetNativeSize();
             }
 
             RemoveElement(ref vitaminFoods, rng);

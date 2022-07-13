@@ -82,6 +82,12 @@ public class GameManagerScript : MonoBehaviour
 
         strikeImages[0] = GameObject.Find("strikeImage1").GetComponent<Image>();
         strikeImages[1] = GameObject.Find("strikeImage2").GetComponent<Image>();
+
+        if (level == 2)
+        {
+            levelNo = 1;
+            pawzzleDifficulty = 1;
+        }
     }   
 
     private void Update()

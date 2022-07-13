@@ -125,6 +125,10 @@ public class RadialMenu : MonoBehaviour
     {
         string objectName = GameManagerScript.instance.interactedItem.GetComponent<Interactable>().objectName;
         camTransition = mainCamera.GetComponent<CamTransition>();
+        if (prepStatusGO.activeInHierarchy)
+        {
+            prepStatusGO.SetActive(false);
+        }
 
         if (objectName == "bread")
         {

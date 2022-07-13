@@ -73,19 +73,19 @@ public class Grader : MonoBehaviour
     {
         if (GameManagerScript.instance.orders.currentOrder == "KAYATOAST")
         {
-            if (GameManagerScript.instance.orders.stageTime <= GameManagerScript.instance.orders.kayaToastPrep.dishTimes[0])
+            if (GameManagerScript.instance.orders.dishTime <= GameManagerScript.instance.orders.kayaToastPrep.dishTimes[0])
             {
                 timeStars = 3;
             }
 
-            if (GameManagerScript.instance.orders.stageTime <= GameManagerScript.instance.orders.kayaToastPrep.dishTimes[1] &&
-                GameManagerScript.instance.orders.stageTime > GameManagerScript.instance.orders.kayaToastPrep.dishTimes[0])
+            if (GameManagerScript.instance.orders.dishTime <= GameManagerScript.instance.orders.kayaToastPrep.dishTimes[1] &&
+                GameManagerScript.instance.orders.dishTime > GameManagerScript.instance.orders.kayaToastPrep.dishTimes[0])
             {
                 timeStars = 2;
             }
 
-            if (GameManagerScript.instance.orders.stageTime <= GameManagerScript.instance.orders.kayaToastPrep.dishTimes[2] &&
-                GameManagerScript.instance.orders.stageTime > GameManagerScript.instance.orders.kayaToastPrep.dishTimes[1])
+            if (GameManagerScript.instance.orders.dishTime <= GameManagerScript.instance.orders.kayaToastPrep.dishTimes[2] &&
+                GameManagerScript.instance.orders.dishTime > GameManagerScript.instance.orders.kayaToastPrep.dishTimes[1])
             {
                 timeStars = 1;
             }
@@ -93,19 +93,19 @@ public class Grader : MonoBehaviour
 
         if (GameManagerScript.instance.orders.currentOrder == "HALF-BOILEDEGGS")
         {
-            if (GameManagerScript.instance.orders.stageTime <= GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[0])
+            if (GameManagerScript.instance.orders.dishTime <= GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[0])
             {
                 timeStars = 3;
             }
 
-            if (GameManagerScript.instance.orders.stageTime <= GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[1] &&
-                GameManagerScript.instance.orders.stageTime > GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[0])
+            if (GameManagerScript.instance.orders.dishTime <= GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[1] &&
+                GameManagerScript.instance.orders.dishTime > GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[0])
             {
                 timeStars = 2;
             }
 
-            if (GameManagerScript.instance.orders.stageTime <= GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[2] &&
-                GameManagerScript.instance.orders.stageTime > GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[1])
+            if (GameManagerScript.instance.orders.dishTime <= GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[2] &&
+                GameManagerScript.instance.orders.dishTime > GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[1])
             {
                 timeStars = 1;
             }

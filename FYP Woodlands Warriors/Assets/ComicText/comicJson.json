@@ -1,15 +1,15 @@
 {
-  "Items":
-  [
+  "Items": [
     {
       "_comment": "THESE COMMENTS ARE FOR THE COMIC INDEXES, DO NOT USE THEM!! DO NOT USE '//' FOR COMMENTS, WILL BREAK THE JSON FILE!!!! USE _COMMENT INSTEAD   0",
       "speakerTextString": "Leon",
       "comicTextString": "Lorem Ipsum Bla Bla Bla"
     },
+
     {
       "_comment": "1",
       "speakerTextString": "Luna",
-      "comicTextString": "heyo"
+      "comicTextString": "hallo hello harlo yellow asdadadasdasdas text test"
     }
   ]
 }
