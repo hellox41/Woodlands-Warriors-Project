@@ -16,6 +16,10 @@ public class Container : MonoBehaviour
 
     public GameObject itemContained;
 
+    public List<GameObject> itemsContained = new List<GameObject>();
+
+    public Vector3 placeOffset;
+
     [Range(0f, 1f)]
     [SerializeField] float previewAlpha = 0.5f;
 
@@ -67,6 +71,7 @@ public class Container : MonoBehaviour
         GameManagerScript.instance.playerInventory.SetLayerRecursively(itemToContain, LayerMask.NameToLayer("Default"));
 
         itemToContain.transform.parent = transform;
+        itemsContained.Add(itemToContain);
         itemContained = itemToContain;
         isContainingItem = true;
 

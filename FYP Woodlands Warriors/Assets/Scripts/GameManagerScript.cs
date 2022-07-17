@@ -9,7 +9,7 @@ public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript instance;
 
-    public string[] PrimaryPawzzles = { "F5", "18CARROT", "RADIOCAFE", "VITAMINS" };
+    public string[] PrimaryPawzzles = { "F5", "18CARROT", "RADIOCAFE", "VITAMINS", "HEALTHYPLATE" };
 
     public string[] orderTypes = { "KAYATOAST", "HALF-BOILEDEGGS" };
 
@@ -73,6 +73,7 @@ public class GameManagerScript : MonoBehaviour
     //Assign variables on level load
     private void OnLevelWasLoaded(int level)
     {
+        pawzzleDifficulty = levelNo;
         orders = GameObject.Find("StageHandler").GetComponent<Orders>();
         GameObject player = GameObject.Find("Player");
         playerControl = player.GetComponent<PlayerControl>();
@@ -82,6 +83,8 @@ public class GameManagerScript : MonoBehaviour
 
         strikeImages[0] = GameObject.Find("strikeImage1").GetComponent<Image>();
         strikeImages[1] = GameObject.Find("strikeImage2").GetComponent<Image>();
+
+        ResetVariablesOnLoad();
 
         if (level == 2)
         {
@@ -179,5 +182,15 @@ public class GameManagerScript : MonoBehaviour
     public void FailLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    void ResetVariablesOnLoad()
+    {
+        strikes = 0;
+        isZoomed = false;
+        isInteracting = false;
+        isPreparing = false;
+        isCamTransitioning = false;
+        isOrderUIShrunk = false;
     }
 }

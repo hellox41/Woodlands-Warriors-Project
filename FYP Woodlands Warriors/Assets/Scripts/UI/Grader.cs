@@ -34,6 +34,11 @@ public class Grader : MonoBehaviour
             showcaseNameText.text = "Half-boiled Eggs";
         }
 
+        if (GameManagerScript.instance.orders.currentOrder == "SATAY")
+        {
+            showcaseNameText.text = "Satay";
+        }
+
         gradingText.text = "Time: " + timeStars + " Stars" + "\n" + 
             "Quality: " + qualityStars + " Stars" + "\n \n" +
             "Rating: " + finalDishRating;
@@ -106,6 +111,26 @@ public class Grader : MonoBehaviour
 
             if (GameManagerScript.instance.orders.dishTime <= GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[2] &&
                 GameManagerScript.instance.orders.dishTime > GameManagerScript.instance.orders.halfBoiledEggsPrep.dishTimes[1])
+            {
+                timeStars = 1;
+            }
+        }
+
+        if (GameManagerScript.instance.orders.currentOrder == "SATAY")
+        {
+            if (GameManagerScript.instance.orders.dishTime <= GameManagerScript.instance.orders.satayPrep.dishTimes[0])
+            {
+                timeStars = 3;
+            }
+
+            if (GameManagerScript.instance.orders.dishTime <= GameManagerScript.instance.orders.satayPrep.dishTimes[1] &&
+                GameManagerScript.instance.orders.dishTime > GameManagerScript.instance.orders.satayPrep.dishTimes[0])
+            {
+                timeStars = 2;
+            }
+
+            if (GameManagerScript.instance.orders.dishTime <= GameManagerScript.instance.orders.satayPrep.dishTimes[2] &&
+                GameManagerScript.instance.orders.dishTime > GameManagerScript.instance.orders.satayPrep.dishTimes[1])
             {
                 timeStars = 1;
             }

@@ -9,6 +9,7 @@ TagManager:
   - Canvas
   - Egg
   - FinalFood
+  - meatCube
   layers:
   - Default
   - TransparentFX

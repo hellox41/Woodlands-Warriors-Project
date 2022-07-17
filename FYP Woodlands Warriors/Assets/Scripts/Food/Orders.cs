@@ -13,17 +13,21 @@ public class Orders : MonoBehaviour
     [Header("Current Order Values")]
     public int stagesToPrepare;
 
-    public bool isPrepared = false;
-
     [Header("Food Scripts")]
     public KayaToastPrep kayaToastPrep;
     public HalfBoiledEggsPrep halfBoiledEggsPrep;
+    public SatayPrep satayPrep;
 
     [Header("Final Food Gameobjects")]
     public GameObject multigrainKayaToast;
     public GameObject honeyOatKayaToast;
     public GameObject wholeWheatKayaToast;
+
     public GameObject halfBoiledEggs;
+
+    public GameObject beefSatay;
+    public GameObject chickenSatay;
+    public GameObject muttonSatay;
 
     GameObject finalFoodShowcased;
 
@@ -31,10 +35,15 @@ public class Orders : MonoBehaviour
     public Transform instancingSpawnPoint;
     public GameObject kayaToastObjects;
     public GameObject halfBoiledEggsObjects;
+    public GameObject satayObjects;
 
     public GameObject eggs;
     public Material whiteEggMat;
     public Material brownEggMat;
+
+    public GameObject beefCubes;
+    public GameObject chickenCubes;
+    public GameObject muttonCubes;
 
     [Header("Timer Values")]
     public float stageTime;
@@ -106,6 +115,11 @@ public class Orders : MonoBehaviour
         else if (currentOrder == "HALF-BOILEDEGGS")
         {
             timeProgressBar.SetMaxProgress(halfBoiledEggsPrep.dishTimes[3]);
+        }
+
+        else if (currentOrder == "SATAY")
+        {
+            timeProgressBar.SetMaxProgress(satayPrep.dishTimes[3]);
         }
     }
 
@@ -218,6 +232,28 @@ public class Orders : MonoBehaviour
                 }
             }
         }
+
+        if (currentOrder == "SATAY")
+        {
+            satayPrep.meatType = satayPrep.meatTypes[Random.Range(0, satayPrep.meatTypes.Length)];
+
+            if (satayPrep.meatType == "Beef")
+            {
+                orderInfoText.text = "Beef Cubes";
+            }
+
+            if (satayPrep.meatType == "Chicken")
+            {
+                orderInfoText.text = "Chicken Cubes";
+            }
+
+            if (satayPrep.meatType == "Mutton")
+            {
+                orderInfoText.text = "Mutton Cubes";
+            }
+
+            spawnedPrep = Instantiate(satayObjects, instancingSpawnPoint.position, instancingSpawnPoint.rotation);          
+        }
         orderUIGO.SetActive(true);
     }
 
@@ -227,33 +263,40 @@ public class Orders : MonoBehaviour
         if (currentOrder == "KAYATOAST")
         {
             if (kayaToastPrep.isBreadCut && kayaToastPrep.isBreadToasted && kayaToastPrep.isBreadSpreadKaya && kayaToastPrep.isBreadSpreadButter)
-            {
-                isPrepared = true;
+            { 
                 kayaToastPrep.preparedCount++;
                 radialMenu.prepStatusGO.SetActive(false);
+                ShowcaseFinishedDish();
             }
         }
 
+        //Checking for half-boiled eggs
         if (currentOrder == "HALF-BOILEDEGGS")
         {
             if (halfBoiledEggsPrep.areEggsBoiled && halfBoiledEggsPrep.eggsStrained == 2)
             {
-                isPrepared = true;
                 halfBoiledEggsPrep.preparedCount++;
                 radialMenu.prepStatusGO.SetActive(false);
+                ShowcaseFinishedDish();
             }
         }
 
-        if (isPrepared == true)
+        //Checking for satay
+        if (currentOrder == "SATAY")
         {
-            Debug.Log("You successfully cooked a dish!");
-            ShowcaseFinishedDish();
+            if (satayPrep.areSkewersGrilled)
+            {
+                satayPrep.preparedCount++;
+                radialMenu.prepStatusGO.SetActive(false);
+                ShowcaseFinishedDish();
+            }
         }
     }
 
     //Instantiate the showcase and start the turnaround
     void ShowcaseFinishedDish()
     {
+        Debug.Log("You completed a dish!");
         if (currentOrder == "KAYATOAST")
         {
             if (kayaToastPrep.breadType == "MULTIGRAIN")
@@ -280,6 +323,25 @@ public class Orders : MonoBehaviour
             halfBoiledEggsPrep.ResetVariables();
         }
 
+        if (currentOrder == "SATAY")
+        {
+            if (satayPrep.meatType == "Beef")
+            {
+                finalFoodShowcased = Instantiate(beefSatay, foodShowcaseTrans.position, foodShowcaseTrans.rotation);
+            }
+
+            if (satayPrep.meatType == "Chicken")
+            {
+                finalFoodShowcased = Instantiate(chickenSatay, foodShowcaseTrans.position, foodShowcaseTrans.rotation);
+            }
+
+            if (satayPrep.meatType == "Mutton")
+            {
+                finalFoodShowcased = Instantiate(muttonSatay, foodShowcaseTrans.position, foodShowcaseTrans.rotation);
+            }
+            satayPrep.ResetVariables();
+        }
+
         Camera.main.transform.DetachChildren();
         GameManagerScript.instance.isShowcasing = true;
         GameManagerScript.instance.ChangeCursorLockedState(false);
@@ -294,13 +356,13 @@ public class Orders : MonoBehaviour
         if (shrunk)
         {
             orderUI.sizeToTransitionTo = new Vector3(1f, 1f, 1f);
-            orderUI.posToTransitionTo = new Vector2(-335, 0);
+            orderUI.posToTransitionTo = new Vector2(-740, 0);
         }
 
         else if (!shrunk)
         {
             orderUI.sizeToTransitionTo = new Vector3(0.4f, 0.4f, 0.4f);
-            orderUI.posToTransitionTo = new Vector2(-400, 0);
+            orderUI.posToTransitionTo = new Vector2(-960, 0);
         }
 
         orderUIGO.GetComponent<OrderUI>().isChangingSize = true;
@@ -332,11 +394,24 @@ public class Orders : MonoBehaviour
                 }
             }
 
-            if (currentOrder == "HALF-BOILEDEGGS")
+            else if (currentOrder == "HALF-BOILEDEGGS")
             {
                 timeGradingText.text = (halfBoiledEggsPrep.dishTimes[0] - Mathf.FloorToInt(dishTime)).ToString();
 
                 if (dishTime > halfBoiledEggsPrep.dishTimes[0])
+                {
+                    isShowing3Star = false;
+                    isShowing2Star = true;
+                    timeGradingText.color = twoStarColor;
+                    timeGradingFill.color = twoStarColor;
+                }
+            }
+
+            else if (currentOrder == "SATAY")
+            {
+                timeGradingText.text = (satayPrep.dishTimes[0] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > satayPrep.dishTimes[0])
                 {
                     isShowing3Star = false;
                     isShowing2Star = true;
@@ -374,6 +449,19 @@ public class Orders : MonoBehaviour
                     timeGradingFill.color = oneStarColor;
                 }
             }
+
+            else if (currentOrder == "SATAY")
+            {
+                timeGradingText.text = (satayPrep.dishTimes[1] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > satayPrep.dishTimes[1])
+                {
+                    isShowing2Star = false;
+                    isShowing1Star = true;
+                    timeGradingText.color = oneStarColor;
+                    timeGradingFill.color = oneStarColor;
+                }
+            }
         }
 
         //Show time for 1 star
@@ -404,6 +492,19 @@ public class Orders : MonoBehaviour
                     timeGradingFill.color = latestColor;
                 }
             }
+
+            else if (currentOrder == "SATAY")
+            {
+                timeGradingText.text = (satayPrep.dishTimes[2] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > satayPrep.dishTimes[2])
+                {
+                    isShowing1Star = false;
+                    isShowingLatest = true;
+                    timeGradingText.color = latestColor;
+                    timeGradingFill.color = latestColor;
+                }
+            }
         }
 
         //Show time for latest time possible
@@ -417,6 +518,11 @@ public class Orders : MonoBehaviour
             if (currentOrder == "HALF-BOILEDEGGS")
             {
                 timeGradingText.text = (halfBoiledEggsPrep.dishTimes[3] - Mathf.FloorToInt(dishTime)).ToString();
+            }
+
+            if (currentOrder == "SATAY")
+            {
+                timeGradingText.text = (satayPrep.dishTimes[3] - Mathf.FloorToInt(dishTime)).ToString();
             }
         }
     }

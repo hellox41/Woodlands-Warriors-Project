@@ -31,7 +31,7 @@ public class RadialMenu : MonoBehaviour
     CamTransition camTransition;
 
     private string prepFood;
-    private string prepType;
+    public string prepType;
 
     // Start is called before the first frame update
     void Start()
@@ -215,6 +215,70 @@ public class RadialMenu : MonoBehaviour
             }
         }
 
+        //Mortar (satay)
+        if (objectName == "mortar")
+        {
+            //Adding ingredients
+            if (!GameManagerScript.instance.orders.satayPrep.areAllAdded)
+            {
+                prepFood = "Marinate";
+                prepType = "Adding Ingredients";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.transform.GetComponent<Interactable>().camPoint1);
+                orders.satayPrep.StartAddingIngredients();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
+
+            //Grinding ingredients
+            if (GameManagerScript.instance.orders.satayPrep.areAllAdded && !GameManagerScript.instance.orders.satayPrep.isMixGrinded && GameManagerScript.instance.accessedApparatus == "PESTLE")
+            {
+                prepFood = "Marinate";
+                prepType = "Grinding Ingredients";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
+                orders.satayPrep.StartGrindingIngredients();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
+
+            //Adding and mixing meat cubes
+            if (GameManagerScript.instance.orders.satayPrep.isMixGrinded && GameManagerScript.instance.accessedApparatus == "SPATULA" && !GameManagerScript.instance.orders.satayPrep.isMeatMixed)
+            {
+                prepFood = "Meat Cubes";
+                prepType = "Mixing Meat";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint2);
+                GameManagerScript.instance.interactedItem.GetComponent<Interactable>().raycastAction = "Mix (Requires Spatula)";
+                orders.satayPrep.StartMixingMeat();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
+        }
+
+        //Threading Cubes
+        if (objectName == "skewers" && GameManagerScript.instance.orders.satayPrep.isMeatMixed)
+        {
+            prepFood = "Meat Cubes";
+            prepType = "Threading Cubes";
+            camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
+            orders.satayPrep.StartThreadingMeat();
+            ShowPrepUI();
+            CheckItemsInteractibility();
+        }
+
+        //Grilling Skewers
+        if (objectName == "oven")
+        {
+            GameManagerScript.instance.interactedItem.GetComponent<Oven>().CheckForRack();
+            if (GameManagerScript.instance.orders.satayPrep.isRackInOven)
+            {
+                prepFood = "Skewers";
+                prepType = "Grilling";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
+                orders.satayPrep.StartGrillingSkewers();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
+        }
+
         GameManagerScript.instance.orders.prepProgressBar.UpdateProgress();
     }
 
@@ -251,6 +315,7 @@ public class RadialMenu : MonoBehaviour
             if (GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer != null)
             {
                 GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer.load -= GameManagerScript.instance.interactedItem.GetComponent<Interactable>().loadValue;
+                GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer.itemsContained.Remove(GameManagerScript.instance.interactedItem);
                 GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer.isContainingItem = false;
                 GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer.itemContained = null;
                 GameManagerScript.instance.interactedItem.GetComponent<Interactable>().holdingContainer = null;          
@@ -319,20 +384,30 @@ public class RadialMenu : MonoBehaviour
     {
         Container heldContainer = GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>();
 
-        heldContainer.load -= heldContainer.itemContained.GetComponent<Interactable>().loadValue;
-        otherContainer.load += heldContainer.itemContained.GetComponent<Interactable>().loadValue;
-        heldContainer.itemContained.transform.parent = null;
-        heldContainer.itemContained.transform.position = otherContainer.placePoint.position;
-        heldContainer.itemContained.transform.rotation = otherContainer.placePoint.rotation;
-        heldContainer.itemContained.transform.parent = otherContainer.transform;
+        //heldContainer.load -= heldContainer.itemContained.GetComponent<Interactable>().loadValue;
+        //otherContainer.load += heldContainer.itemContained.GetComponent<Interactable>().loadValue;
 
-        heldContainer.isContainingItem = false;
-        otherContainer.itemContained = heldContainer.itemContained;
-        otherContainer.isContainingItem = true;
-        heldContainer.itemContained = null;
+        for (int i = 0; i < heldContainer.itemsContained.Count; i++)
+        {
+            heldContainer.itemsContained[i].transform.parent = null;
+            heldContainer.itemsContained[i].transform.position = otherContainer.placePoint.position + new Vector3(Random.Range(0f, 0.05f), Random.Range(0f, 0.005f), 0f);
+            heldContainer.itemsContained[i].transform.rotation = otherContainer.placePoint.rotation * Quaternion.Euler(90f, 0f, Random.Range(-15f, 15f));
+            heldContainer.itemsContained[i].transform.parent = otherContainer.transform;
+
+            GameManagerScript.instance.playerInventory.SetLayerRecursively(heldContainer.itemsContained[i], LayerMask.NameToLayer("Default"));
+            otherContainer.itemsContained.Add(heldContainer.itemsContained[i]);
+
+            otherContainer.itemContained = heldContainer.itemContained;
+            otherContainer.isContainingItem = true;
+            heldContainer.itemContained = null;
+        }
+        heldContainer.itemsContained.Clear();
         GameManagerScript.instance.isTransferable = false;
 
-        GameManagerScript.instance.playerInventory.SetLayerRecursively(otherContainer.itemContained, LayerMask.NameToLayer("Default"));
+        if (GameManagerScript.instance.interactedItem.GetComponent<Interactable>().objectName == "metalRack")
+        {
+            GameManagerScript.instance.interactedItem.GetComponent<MetalRack>().CheckSkewers();
+        }
     }
 
     void CheckItemsInteractibility()
@@ -368,6 +443,44 @@ public class RadialMenu : MonoBehaviour
             }
 
             if (prepType == "Boiling Eggs" && (interactable.objectName == "pot" || interactable.objectName == "egg" || interactable.objectName == "stovePower"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+
+            //Checking for satay
+            //Adding ingredients
+            if (prepType == "Adding Ingredients" && (interactable.objectName == "shallots" || interactable.objectName == "tumericPowder" || interactable.objectName == "mincedGarlic" ||
+                interactable.objectName == "chilliPowder"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Grinding mix
+            if (prepType == "Grinding Ingredients" && (interactable.objectName == "mortar"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Mixing meat
+            if (prepType == "Mixing Meat" && (interactable.objectName == "meatCubes" || interactable.objectName == "mortar"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Threading meat
+            if (prepType == "Threading Cubes" && (interactable.objectName == "skewers" || interactable.objectName == "mortar"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+
+                if (interactable.objectName == "mortar")
+                {
+                    interactable.raycastAction = "Pickup Cube";
+                }
+            }
+
+            //Grilling skewers
+            if (prepType == "Grilling" && (interactable.objectName == "ovenDoor" || interactable.objectName == "posKnob" || interactable.objectName == "valueKnob"))
             {
                 interactable.isCurrentlyRaycastInteractable = true;
             }

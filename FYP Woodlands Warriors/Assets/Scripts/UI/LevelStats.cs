@@ -6,6 +6,7 @@ using TMPro;
 
 public class LevelStats : MonoBehaviour
 {
+    public LevelLoader levelLoader;
     public TMP_Text levelLabel;
     public TMP_Text dishesPrepared;
 
@@ -70,6 +71,7 @@ public class LevelStats : MonoBehaviour
 
     public void NextLevel()
     {
-        Debug.Log("Changing to next scene");
+        GameManagerScript.instance.levelNo++;
+        levelLoader.LoadLevel(3);
     }
 }
