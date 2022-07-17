@@ -126,8 +126,16 @@ public class MeowtiTool : MonoBehaviour
     List<string> fruitAndVegetables = new List<string>();
     List<string> meatAndOthers = new List<string>();
     List<string> grains = new List<string>();
-    public int imageIndex = 0;
+    int imageIndex = 0;
 
+    [Header("Blind Spots")]
+    public AudioClip[] blindSpotsClips;  //0 = stirFrying, 1 = heavyRain, 2 = boiling, 3 = deepFrying
+    public GameObject soundSpotObj;
+    public List<string> blindSpotsFoods = new List<string>();
+    public List<GameObject> soundSpots;
+    public string blindSpotsFood;
+    public Transform blindSpotSpawnPoint;
+    public GameObject blindSpotsPanel;
 
     //PAWZZLE SYSTEM BREAKDOWN: Start(): Pick a random pawzzle from the List<> of pawzzles in GameManagerScript, then initialize apparatus nouns and the chosen pawzzle type.
 
@@ -139,6 +147,7 @@ public class MeowtiTool : MonoBehaviour
         vitaminsCanvas.gameObject.SetActive(false);
         f5Canvas.gameObject.SetActive(false);
         healthyPlateCanvas.gameObject.SetActive(false);
+        blindSpotsCanvas.gameObject.SetActive(false);
 
         //Randomly generate the first pawzzle
         GeneratePawzzle();
@@ -257,6 +266,8 @@ public class MeowtiTool : MonoBehaviour
         {
             InitializeBlindSpots();
             blindSpotsCanvas.gameObject.SetActive(true);
+            blindSpotsCanvas.interactable = true;
+            activeCanvas = blindSpotsCanvas;
         }
     }
 
@@ -690,7 +701,9 @@ public class MeowtiTool : MonoBehaviour
 
     void InitializeBlindSpots()
     {
+        blindSpotsFood = blindSpotsFoods[0/*Random.Range(0, blindSpotsFoods.Count)*/];
 
+        CreateSoundSpots();
     }
 
     public void SubmitInput()  //Player presses the submit button for primary pawzzle
@@ -1101,5 +1114,59 @@ public class MeowtiTool : MonoBehaviour
             inputList[i] = inputList[rand];
             inputList[rand] = temp;
         }
+    }
+
+
+    //BLIND SPOTS
+    public void CreateSoundSpots()
+    {
+        if (blindSpotsFood == "CARROT")
+        {
+            GenerateSoundClip("heavyRain", blindSpotsClips[0], false);
+            GenerateSoundClip("deepFrying", blindSpotsClips[3], false);
+            GenerateSoundClip("boiling", blindSpotsClips[2], false);
+        }
+    }
+
+    void GenerateSoundClip(string clipName, AudioClip audioClip, bool isLeft)
+    {
+        BlindSpotsSound soundSpot = Instantiate(soundSpotObj, blindSpotsPanel.transform).GetComponent<BlindSpotsSound>();
+        soundSpot.soundName = clipName;
+        soundSpot.soundClip = audioClip;
+        soundSpot.isLeft = isLeft;
+
+        bool isFarEnoughAway = false;
+
+        do
+        {
+            if (soundSpot.isLeft)
+            {
+                soundSpot.GetComponent<RectTransform>().anchoredPosition = new Vector2(Random.Range(-400, -1600), Random.Range(-600, 600));
+            }
+
+            else if (!soundSpot.isLeft)
+            {
+                soundSpot.GetComponent<RectTransform>().anchoredPosition = new Vector2(Random.Range(400, 1600), Random.Range(-600, 600));
+            }
+
+            soundSpots.Add(soundSpot.gameObject);
+
+            if (soundSpots.Count == 1)
+            {
+                isFarEnoughAway = true;
+            }
+
+            if (soundSpots.Count > 1)
+            {
+                for (int i = 0; i < soundSpots.Count; i++)
+                {
+                    if (Vector2.Distance(soundSpot.GetComponent<RectTransform>().anchoredPosition, soundSpots[i].GetComponent<RectTransform>().anchoredPosition) > 350)
+                    {
+                        isFarEnoughAway = true;
+                    }
+                }
+            }
+        }
+        while (!isFarEnoughAway);
     }
 }

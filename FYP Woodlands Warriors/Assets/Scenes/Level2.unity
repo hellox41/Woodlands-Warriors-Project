@@ -3288,7 +3288,7 @@ GameObject:
   - component: {fileID: 554957114}
   - component: {fileID: 554957113}
   m_Layer: 0
-  m_Name: Panel
+  m_Name: blindSpotsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3304,7 +3304,8 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 730028234}
   m_Father: {fileID: 1696055970}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4696,6 +4697,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 710430298}
   m_CullTransparentMesh: 0
+--- !u!1 &730028233
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 730028234}
+  m_Layer: 0
+  m_Name: blindSpotsSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &730028234
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 730028233}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 554957112}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &732343976
 GameObject:
   m_ObjectHideFlags: 0
@@ -9023,7 +9059,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1354841196
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14695,7 +14731,7 @@ MonoBehaviour:
   vitaminsCanvas: {fileID: 338931011}
   f5Canvas: {fileID: 1171036967}
   healthyPlateCanvas: {fileID: 833399261}
-  blindSpotsCanvas: {fileID: 0}
+  blindSpotsCanvas: {fileID: 1354841197}
   activeCanvas: {fileID: 0}
   toolAudioSource: {fileID: 7641300616301308770}
   isTyping: 0
@@ -14707,7 +14743,7 @@ MonoBehaviour:
   spatulaAnimator: {fileID: 6166417875554440125}
   strainerAnimator: {fileID: 2937651249703357411}
   pestleAnimator: {fileID: 2977758146680250779}
-  pawzzleTypeOverride: HEALTHYPLATE
+  pawzzleTypeOverride: BLINDSPOTS
   possibleApparatusNouns:
   - MONKEY
   - CARROT
@@ -14803,7 +14839,25 @@ MonoBehaviour:
   unknownFood: 
   isolatedFood: 
   isolatedFoodValue: 0
-  imageIndex: 0
+  blindSpotsClips:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  soundSpotObj: {fileID: 4251195980762611160, guid: baac32aeded8dd7409a29bb2a42cf68d,
+    type: 3}
+  blindSpotsFoods:
+  - CARROT
+  - SALMON
+  - CHICKEN
+  - BEEF
+  - CAULIFLOWER
+  - EGGS
+  - SPINACH
+  soundSpots: []
+  blindSpotsFood: 
+  blindSpotSpawnPoint: {fileID: 730028234}
+  blindSpotsPanel: {fileID: 554957111}
 --- !u!23 &8230201189817311165
 MeshRenderer:
   m_ObjectHideFlags: 0
