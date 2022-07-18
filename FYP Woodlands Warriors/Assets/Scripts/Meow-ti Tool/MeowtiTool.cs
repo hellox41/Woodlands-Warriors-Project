@@ -26,6 +26,7 @@ public class MeowtiTool : MonoBehaviour
     public CanvasGroup f5Canvas;
     public CanvasGroup healthyPlateCanvas;
     public CanvasGroup blindSpotsCanvas;
+    public CanvasGroup aporkalypseCanvas;
 
     public CanvasGroup activeCanvas;
 
@@ -136,6 +137,17 @@ public class MeowtiTool : MonoBehaviour
     public string blindSpotsFood;
     public Transform blindSpotSpawnPoint;
     public GameObject blindSpotsPanel;
+
+    [Header("Aporkalypse")]
+    public TMP_Text labelText;
+    public TMP_Text replyField;
+    public List<string> possibleLabels = new List<string>();
+    public List<string> aporkalypseReplies = new List<string>();
+    public Color32[] labelColors;  //[0] = green, [1] = red, [2] = blue, [3] = yellow
+    public List<int> dateValues = new List<int>();  //[0] = day (tens), [1] = day (ones), [2] = month
+    public string porkCut;
+    public string reply;
+    public string omenType;
 
     //PAWZZLE SYSTEM BREAKDOWN: Start(): Pick a random pawzzle from the List<> of pawzzles in GameManagerScript, then initialize apparatus nouns and the chosen pawzzle type.
 
@@ -268,6 +280,14 @@ public class MeowtiTool : MonoBehaviour
             blindSpotsCanvas.gameObject.SetActive(true);
             blindSpotsCanvas.interactable = true;
             activeCanvas = blindSpotsCanvas;
+        }
+
+        else if (PawzzleType == "APORKALYPSE")
+        {
+            InitializeAporkalypse();
+            aporkalypseCanvas.gameObject.SetActive(true);
+            aporkalypseCanvas.interactable = true;
+            activeCanvas = aporkalypseCanvas;
         }
     }
 
@@ -625,7 +645,6 @@ public class MeowtiTool : MonoBehaviour
 
                         selectionRangeFoods.Add(temp1);
                     }
-
                 }
             }
         }
@@ -701,11 +720,39 @@ public class MeowtiTool : MonoBehaviour
 
     void InitializeBlindSpots()
     {
-        blindSpotsFood = blindSpotsFoods[0/*Random.Range(0, blindSpotsFoods.Count)*/];
+        blindSpotsFood = blindSpotsFoods[Random.Range(0, blindSpotsFoods.Count)];
 
         CreateSoundSpots();
     }
 
+    void InitializeAporkalypse()
+    {
+        //Set the label to a random text and color
+        labelText.text = possibleLabels[Random.Range(0, possibleLabels.Count)];
+        labelText.color = labelColors[Random.Range(0, labelColors.Length)];
+
+        int rng1 = Random.Range(0, 2);  //Used for deciding bolding
+        int rng2 = Random.Range(0, 2);  //Used for deciding underline
+
+        //Randomize if the text is italic and/or underlined
+        if (rng1 == 1 && rng2 == 0)
+        {
+            labelText.fontStyle = FontStyles.Italic;
+        }
+
+        else if (rng1 == 0 && rng2 == 1)
+        {
+            labelText.fontStyle = FontStyles.Underline;
+        }
+
+        else if (rng1 == 1 && rng2 == 1)
+        {
+            labelText.fontStyle = FontStyles.Italic | FontStyles.Underline;
+        }
+
+        AssignAporkalypseDate(rng1, rng2);
+        AssignAporkalypseCut();
+    }
     public void SubmitInput()  //Player presses the submit button for primary pawzzle
     {
         bool isSolved = false;
@@ -731,6 +778,16 @@ public class MeowtiTool : MonoBehaviour
                 if (apparatusNouns[i] == pestleNoun)//Solving for pestle
                 {
                     SolvePrimaryPawzzle("PESTLE");
+                }
+
+                if (currentPawzzleType == "BLINDSPOTS")
+                {
+                    for (int n = 0; i < soundSpots.Count; i++)
+                    {
+                        Destroy(soundSpots[n]);
+                    }
+
+                    soundSpots.Clear();
                 }
 
                 isSolved = true;
@@ -1120,11 +1177,57 @@ public class MeowtiTool : MonoBehaviour
     //BLIND SPOTS
     public void CreateSoundSpots()
     {
+        //stirFry = 0, heavyRain = 1, boiling = 2, deepFry = 3
         if (blindSpotsFood == "CARROT")
         {
-            GenerateSoundClip("heavyRain", blindSpotsClips[0], false);
+            GenerateSoundClip("heavyRain", blindSpotsClips[1], false);
+            GenerateSoundClip("deepFrying", blindSpotsClips[3], false);
+            currentPawzzleAdjective = "GRATED";
+        }
+
+        else if (blindSpotsFood == "SALMON")
+        {
+            GenerateSoundClip("heavyRain", blindSpotsClips[1], true);
+            GenerateSoundClip("deepFrying", blindSpotsClips[3], false);
+            currentPawzzleAdjective = "UMAMI";
+        }
+
+        else if (blindSpotsFood == "CHICKEN")
+        {
+            GenerateSoundClip("heavyRain", blindSpotsClips[1], true);
+            GenerateSoundClip("boiling", blindSpotsClips[2], false);
+            currentPawzzleAdjective = "TENDER";
+        }
+
+        else if (blindSpotsFood == "BEEF")
+        {
+            GenerateSoundClip("heavyRain", blindSpotsClips[1], true);
+            GenerateSoundClip("boiling", blindSpotsClips[2], true);
+            currentPawzzleAdjective = "ICKY";
+        }
+
+        else if (blindSpotsFood == "CAULIFLOWER")
+        {
+            GenerateSoundClip("stirFrying", blindSpotsClips[0], false);
             GenerateSoundClip("deepFrying", blindSpotsClips[3], false);
             GenerateSoundClip("boiling", blindSpotsClips[2], false);
+            currentPawzzleAdjective = "BITTERSWEET";
+        }
+
+        else if (blindSpotsFood == "EGGS")
+        {
+            GenerateSoundClip("stirFrying", blindSpotsClips[0], true);
+            GenerateSoundClip("deepFrying", blindSpotsClips[3], false);
+            GenerateSoundClip("boiling", blindSpotsClips[2], false);
+            currentPawzzleAdjective = "COMPRESSED";
+        }
+
+        else if (blindSpotsFood == "SPINACH")
+        {
+            GenerateSoundClip("stirFrying", blindSpotsClips[0], false);
+            GenerateSoundClip("heavyRain", blindSpotsClips[1], false);
+            GenerateSoundClip("deepFrying", blindSpotsClips[3], true);
+            currentPawzzleAdjective = "BLAND";
         }
     }
 
@@ -1168,5 +1271,466 @@ public class MeowtiTool : MonoBehaviour
             }
         }
         while (!isFarEnoughAway);
+    }
+
+    void AssignAporkalypseDate(int italic, int underline)
+    {
+        //if label color is green
+        if (labelText.color == labelColors[0])
+        {
+            if (labelText.text == possibleLabels[0])  //green prediction
+            {
+                SetAporkalypseDate(17, 7);
+            }
+
+            else if (labelText.text == possibleLabels[1]) //green signal
+            {
+                SetAporkalypseDate(31, 1);
+            }
+
+            else if (labelText.text == possibleLabels[2]) //green premonition
+            {
+                SetAporkalypseDate(22, 1);
+            }
+
+            else if (labelText.text == possibleLabels[3]) //green sign
+            {
+                SetAporkalypseDate(13, 3);
+            }
+
+            else if (labelText.text == possibleLabels[4]) //green prophecy
+            {
+                SetAporkalypseDate(2, 9);
+            }
+
+            else if (labelText.text == possibleLabels[5]) //green indication
+            {
+                SetAporkalypseDate(15, 4);
+            }
+        }
+
+        //if label color is red
+        if (labelText.color == labelColors[1])
+        {
+            if (labelText.text == possibleLabels[0])  //red prediction
+            {
+                SetAporkalypseDate(21, 11);
+            }
+
+            else if (labelText.text == possibleLabels[1]) //red signal
+            {
+                SetAporkalypseDate(5, 8);
+            }
+
+            else if (labelText.text == possibleLabels[2]) //red premonition
+            {
+                SetAporkalypseDate(23, 6);
+            }
+
+            else if (labelText.text == possibleLabels[3]) //red sign
+            {
+                SetAporkalypseDate(22, 2);
+            }
+
+            else if (labelText.text == possibleLabels[4]) //red prophecy
+            {
+                SetAporkalypseDate(27, 8);
+            }
+
+            else if (labelText.text == possibleLabels[5]) //red indication
+            {
+                SetAporkalypseDate(14, 2);
+            }
+        }
+
+        //if label color is blue
+        if (labelText.color == labelColors[3])
+        {
+            if (labelText.text == possibleLabels[0])  //blue prediction
+            {
+                SetAporkalypseDate(31, 3);
+            }
+
+            else if (labelText.text == possibleLabels[1]) //blue signal
+            {
+                SetAporkalypseDate(16, 5);
+            }
+
+            else if (labelText.text == possibleLabels[2]) //blue premonition
+            {
+                SetAporkalypseDate(9, 11);
+            }
+
+            else if (labelText.text == possibleLabels[3]) //blue sign
+            {
+                SetAporkalypseDate(27, 7);
+            }
+
+            else if (labelText.text == possibleLabels[4]) //blue prophecy
+            {
+                SetAporkalypseDate(20, 12);
+            }
+
+            else if (labelText.text == possibleLabels[5]) //blue indication
+            {
+                SetAporkalypseDate(7, 7);
+            }
+        }
+
+        //if label color is yellow
+        if (labelText.color == labelColors[3])
+        {
+            if (labelText.text == possibleLabels[0])  //yellow prediction
+            {
+                SetAporkalypseDate(15, 9);
+            }
+
+            else if (labelText.text == possibleLabels[1]) //yellow signal
+            {
+                SetAporkalypseDate(1, 4);
+            }
+
+            else if (labelText.text == possibleLabels[2]) //yellow premonition
+            {
+                SetAporkalypseDate(31, 12);
+            }
+
+            else if (labelText.text == possibleLabels[3]) //yellow sign
+            {
+                SetAporkalypseDate(2, 2);
+            }
+
+            else if (labelText.text == possibleLabels[4]) //yellow prophecy
+            {
+                SetAporkalypseDate(1, 5);
+            }
+
+            else if (labelText.text == possibleLabels[5]) //yellow indication
+            {
+                SetAporkalypseDate(21, 10);
+            }
+        }
+
+        //If the text is italic...
+        if (italic == 1)
+        {
+            int temp;
+            temp = dateValues[1]; //store ones number of day in a temporary int
+            dateValues[1] = dateValues[2]; //swap the month number and the ones digit 
+            dateValues[2] = temp;
+        }
+
+        //If the text is underlined...
+        if (underline == 1)
+        {
+            int temp;
+            temp = dateValues[0]; //store tens number of day in a temporary int
+            dateValues[0] = dateValues[1]; //swap the tens and ones digit in day number
+            dateValues[1] = temp;
+
+            if (dateValues[0] * 10 + dateValues[1] > 31)  //Defaulting the date to 31st of the month (total days in a month doesn't matter anyway)
+            {
+                dateValues[0] = 3;
+                dateValues[1] = 1;
+            }
+        }
+    }
+
+    void SetAporkalypseDate(int day, int month)
+    {
+        dateValues.Add((day - (day % 10)) / 10);
+        dateValues.Add(day % 10);
+        dateValues.Add(month);
+    }
+
+    void AssignAporkalypseCut()
+    {
+        int dayNum = dateValues[0] * 10 + dateValues[1];
+        if (dayNum <= 7) //1st week
+        {
+            if (dateValues[2] <= 3) //jan to mar
+            {
+                porkCut = "UPPER HEAD";
+            }
+
+            if (dateValues[2] > 3 && dateValues[2] <= 6) //apr to jun
+            {
+                porkCut = "NECK";
+            }
+
+            if (dateValues[2] > 6 && dateValues[2] <= 9) //jul to sep
+            {
+                porkCut = "LOIN";
+            }
+
+            if (dateValues[2] > 9) //oct to dec
+            {
+                porkCut = "UPPER HAM";
+            }
+        }
+
+        if (dayNum > 7 && dayNum <= 14) //2nd week
+        {
+            if (dateValues[2] <= 3) //jan to mar
+            {
+                porkCut = "HEAD";
+            }
+
+            if (dateValues[2] > 3 && dateValues[2] <= 6) //apr to jun
+            {
+                porkCut = "SHOULDER";
+            }
+
+            if (dateValues[2] > 6 && dateValues[2] <= 9) //jul to sep
+            {
+                porkCut = "NECK";
+            }
+
+            if (dateValues[2] > 9) //oct to dec
+            {
+                porkCut = "HAM";
+            }
+        }
+
+        if (dayNum > 14 && dayNum <= 21) //3rd week
+        {
+            if (dateValues[2] <= 3) //jan to mar
+            {
+                porkCut = "LOWER HEAD";
+            }
+
+            if (dateValues[2] > 3 && dateValues[2] <= 6) //apr to jun
+            {
+                porkCut = "BLADE";
+            }
+
+            if (dateValues[2] > 6 && dateValues[2] <= 9) //jul to sep
+            {
+                porkCut = "BACON";
+            }
+
+            if (dateValues[2] > 9) //oct to dec
+            {
+                porkCut = "LOWER HAM";
+            }
+        }
+
+        if (dayNum > 21) //4th+ week
+        {
+            if (dateValues[2] <= 3) //jan to mar
+            {
+                porkCut = "JOWL";
+            }
+
+            if (dateValues[2] > 3 && dateValues[2] <= 6) //apr to jun
+            {
+                porkCut = "FRONT HOCK";
+            }
+
+            if (dateValues[2] > 6 && dateValues[2] <= 9) //jul to sep
+            {
+                porkCut = "BELLY";
+            }
+
+            if (dateValues[2] > 9) //oct to dec
+            {
+                porkCut = "HIND HOCK";
+            }
+        }
+
+        if (porkCut == "LOIN" || porkCut == "HIND HOCK" || porkCut == "LOWER HEAD" || porkCut == "BLADE" || porkCut == "NECK" || porkCut == "UPPER HAM")
+        {
+            omenType = "GOOD";
+        }
+
+        else if (porkCut == "BACON" || porkCut == "HAM" || porkCut == "BELLY" || porkCut == "HIND HOCK")
+        {
+            omenType = "NO";
+        }
+
+        else if (porkCut == "UPPER HEAD" || porkCut == "JOWL" || porkCut == "SHOULDER" || porkCut == "FRONT HOCK" || porkCut == "RIBS" || porkCut == "LOWER HAM")
+        {
+            omenType = "BAD";
+        }
+    }
+
+    public void OmenButtonPressed(string buttonType)
+    {
+        if (buttonType != omenType)
+        {
+            GameManagerScript.instance.ErrorMade();
+        }
+
+        else if (buttonType == omenType)
+        {
+            reply = aporkalypseReplies[Random.Range(0, aporkalypseReplies.Count)];
+            replyField.text = reply;
+            AssignAporkalypseAdjective();
+        }
+    }
+
+    void AssignAporkalypseAdjective()
+    {
+        //GOOD OMEN
+        if (omenType == "GOOD")
+        {
+            if (reply == "ERRR")
+            {
+                currentPawzzleAdjective = "KNOWING";
+            }
+
+            else if (reply == "MMHMM")
+            {
+                currentPawzzleAdjective = "AMAZING";
+            }
+
+            else if (reply == "UHHHHH")
+            {
+                currentPawzzleAdjective = "TRUTHFUL";
+            }
+
+            else if (reply == "UHH")
+            {
+                currentPawzzleAdjective = "HONEST";
+            }
+
+            else if (reply == "ER")
+            {
+                currentPawzzleAdjective = "LAWFUL";
+            }
+
+            else if (reply == "UM")
+            {
+                currentPawzzleAdjective = "BEST";
+            }
+
+            else if (reply == "UHM")
+            {
+                currentPawzzleAdjective = "FAST";
+            }
+
+            else if (reply == "MMHM")
+            {
+                currentPawzzleAdjective = "SHALLOW";
+            }
+
+            else if (reply == "UH UH")
+            {
+                currentPawzzleAdjective = "RATIONAL";
+            }
+
+            else if (reply == "MHMM")
+            {
+                currentPawzzleAdjective = "CALM";
+            }
+        }
+
+        //NO OMEN
+        else if (omenType == "NO")
+        {
+            if (reply == "ERRR")
+            {
+                currentPawzzleAdjective = "UNSURE";
+            }
+
+            else if (reply == "MMHMM")
+            {
+                currentPawzzleAdjective = "MEDIOCRE";
+            }
+
+            else if (reply == "UHHHHH")
+            {
+                currentPawzzleAdjective = "DOUBTFUL";
+            }
+
+            else if (reply == "UHH")
+            {
+                currentPawzzleAdjective = "SECRETIVE";
+            }
+
+            else if (reply == "ER")
+            {
+                currentPawzzleAdjective = "NEUTRAL";
+            }
+
+            else if (reply == "UM")
+            {
+                currentPawzzleAdjective = "DECENT";
+            }
+
+            else if (reply == "UHM")
+            {
+                currentPawzzleAdjective = "AVERAGE";
+            }
+
+            else if (reply == "MMHM")
+            {
+                currentPawzzleAdjective = "DEEP";
+            }
+
+            else if (reply == "UH UH")
+            {
+                currentPawzzleAdjective = "COLLECTED";
+            }
+
+            else if (reply == "MHMM")
+            {
+                currentPawzzleAdjective = "FREE";
+            }
+        }
+
+        //BAD OMEN
+        else if (omenType == "BAD")
+        {
+            if (reply == "ERRR")
+            {
+                currentPawzzleAdjective = "UNAWARE";
+            }
+
+            else if (reply == "MMHMM")
+            {
+                currentPawzzleAdjective = "HORRIBLE";
+            }
+
+            else if (reply == "UHHHHH")
+            {
+                currentPawzzleAdjective = "LYING";
+            }
+
+            else if (reply == "UHH")
+            {
+                currentPawzzleAdjective = "DECEITFUL";
+            }
+
+            else if (reply == "ER")
+            {
+                currentPawzzleAdjective = "CHAOTIC";
+            }
+
+            else if (reply == "UM")
+            {
+                currentPawzzleAdjective = "WORST";
+            }
+
+            else if (reply == "UHM")
+            {
+                currentPawzzleAdjective = "SLUGGISH";
+            }
+
+            else if (reply == "MMHM")
+            {
+                currentPawzzleAdjective = "BOTTOMLESS";
+            }
+
+            else if (reply == "UH UH")
+            {
+                currentPawzzleAdjective = "BERZERK";
+            }
+
+            else if (reply == "MHMM")
+            {
+                currentPawzzleAdjective = "HYSTERICAL";
+            }
+        }
     }
 }

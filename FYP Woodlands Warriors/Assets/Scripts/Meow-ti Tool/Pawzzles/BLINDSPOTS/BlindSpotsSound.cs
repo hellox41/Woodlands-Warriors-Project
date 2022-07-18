@@ -22,23 +22,16 @@ public class BlindSpotsSound : MonoBehaviour
         blindSpotsSpawn = transform.parent.gameObject;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void PlaySound()
     {
         meowtiToolAudio.clip = soundClip;
+        meowtiToolAudio.loop = true;
         meowtiToolAudio.Play();
-        Debug.Log("Playing " + soundName);
     }
 
     public void StopSound()
     {
         meowtiToolAudio.Stop();
-        Debug.Log("Stopping " + soundName);
+        meowtiToolAudio.loop = false;
     }
-
 }
