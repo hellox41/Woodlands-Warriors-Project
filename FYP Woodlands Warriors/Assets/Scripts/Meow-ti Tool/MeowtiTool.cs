@@ -1483,9 +1483,9 @@ public class MeowtiTool : MonoBehaviour
 
     void SetAporkalypseDate(int day, int month)
     {
-        dateValues.Add((day - (day % 10)) / 10);
-        dateValues.Add(day % 10);
-        dateValues.Add(month);
+        dateValues.Add((day - (day % 10)) / 10);  //tens digit of day number
+        dateValues.Add(day % 10);  //ones digit of day number
+        dateValues.Add(month);  //month number
     }
 
     void AssignAporkalypseCut()
@@ -1868,7 +1868,7 @@ public class MeowtiTool : MonoBehaviour
             if (emptyRng > (emptyRngCap / 2))
             {
                 currentDrinkSprite = null;
-                drinkImage.sprite = currentDrinkSprite;
+                drinkImage.enabled = false;
                 serveButton.interactable = false;
                 skipButton.interactable = false;
                 GenerateBartendingAdjective();
@@ -1880,7 +1880,7 @@ public class MeowtiTool : MonoBehaviour
                 currentDrinkSprite = avaiableDrinkSprites[Random.Range(0, avaiableDrinkSprites.Count)];
                 drinkImage.sprite = currentDrinkSprite;
                 avaiableDrinkSprites.Remove(currentDrinkSprite);
-                emptyRngCap -= 20;
+                emptyRngCap -= 15;
             }
         }
     }
