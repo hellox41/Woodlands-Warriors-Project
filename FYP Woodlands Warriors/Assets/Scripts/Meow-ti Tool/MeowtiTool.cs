@@ -20,12 +20,13 @@ public class MeowtiTool : MonoBehaviour
 
     [Header("Canvases")]
     public CanvasGroup primaryToolCanvas;
+    public CanvasGroup f5Canvas;
     public CanvasGroup eighteenCarrotCanvas;
     public CanvasGroup radioCafeCanvas;
     public CanvasGroup vitaminsCanvas;
-    public CanvasGroup f5Canvas;
-    public CanvasGroup healthyPlateCanvas;
     public CanvasGroup blindSpotsCanvas;
+    public CanvasGroup bartendingCanvas;
+    public CanvasGroup healthyPlateCanvas;
     public CanvasGroup aporkalypseCanvas;
 
     public CanvasGroup activeCanvas;
@@ -149,6 +150,23 @@ public class MeowtiTool : MonoBehaviour
     public string reply;
     public string omenType;
 
+    [Header("Bartending")]
+    public TMP_Text indicatorText;
+    public Image drinkImage;
+    public Sprite currentDrinkSprite;
+    public string drinkType;
+    public int drinkSweetness;
+    public string drinkTexture;
+    public List<Sprite> drinkSprites = new List<Sprite>();  //BUBBLE TEA, GLASS OF WATER, CAN OF SODA, LEMONADE, MILKSHAKE
+    public List<Sprite> avaiableDrinkSprites = new List<Sprite>();
+    public List<string> indicatorWords = new List<string>();  //"RED", "BLUE", "PURPLE", "YELLOW"
+    public List<string> indicatorTextures = new List<string>();  //SMOOTH, THICK, CREAMY, CHEWY
+    public Color32[] indicatorColors;  //RED BLUE PURPLE YELLOW
+    public int serveScore;
+    int emptyRngCap = 160;
+    public Button serveButton;
+    public Button skipButton;
+
     //PAWZZLE SYSTEM BREAKDOWN: Start(): Pick a random pawzzle from the List<> of pawzzles in GameManagerScript, then initialize apparatus nouns and the chosen pawzzle type.
 
     // Start is called before the first frame update
@@ -160,6 +178,8 @@ public class MeowtiTool : MonoBehaviour
         f5Canvas.gameObject.SetActive(false);
         healthyPlateCanvas.gameObject.SetActive(false);
         blindSpotsCanvas.gameObject.SetActive(false);
+        aporkalypseCanvas.gameObject.SetActive(false);
+        bartendingCanvas.gameObject.SetActive(false);
 
         //Randomly generate the first pawzzle
         GeneratePawzzle();
@@ -288,6 +308,14 @@ public class MeowtiTool : MonoBehaviour
             aporkalypseCanvas.gameObject.SetActive(true);
             aporkalypseCanvas.interactable = true;
             activeCanvas = aporkalypseCanvas;
+        }
+
+        else if (PawzzleType == "BARTENDING")
+        {
+            InitializeBartending();
+            bartendingCanvas.gameObject.SetActive(true);
+            bartendingCanvas.interactable = true;
+            activeCanvas = bartendingCanvas;
         }
     }
 
@@ -731,7 +759,7 @@ public class MeowtiTool : MonoBehaviour
         labelText.text = possibleLabels[Random.Range(0, possibleLabels.Count)];
         labelText.color = labelColors[Random.Range(0, labelColors.Length)];
 
-        int rng1 = Random.Range(0, 2);  //Used for deciding bolding
+        int rng1 = Random.Range(0, 2);  //Used for deciding italic
         int rng2 = Random.Range(0, 2);  //Used for deciding underline
 
         //Randomize if the text is italic and/or underlined
@@ -753,6 +781,22 @@ public class MeowtiTool : MonoBehaviour
         AssignAporkalypseDate(rng1, rng2);
         AssignAporkalypseCut();
     }
+
+    void InitializeBartending()
+    {
+        int sweetRng = Random.Range(0, 4);
+        drinkSweetness = sweetRng;
+        indicatorText.text = indicatorWords[sweetRng];
+
+        int textureRng = Random.Range(0, 4);
+        drinkTexture = indicatorTextures[textureRng];
+        indicatorText.color = indicatorColors[textureRng];
+
+        avaiableDrinkSprites.AddRange(drinkSprites);
+
+        GenerateNewDrink();
+    }
+
     public void SubmitInput()  //Player presses the submit button for primary pawzzle
     {
         bool isSolved = false;
@@ -1273,6 +1317,7 @@ public class MeowtiTool : MonoBehaviour
         while (!isFarEnoughAway);
     }
 
+    //APORKALYPSE
     void AssignAporkalypseDate(int italic, int underline)
     {
         //if label color is green
@@ -1344,7 +1389,7 @@ public class MeowtiTool : MonoBehaviour
         }
 
         //if label color is blue
-        if (labelText.color == labelColors[3])
+        if (labelText.color == labelColors[2])
         {
             if (labelText.text == possibleLabels[0])  //blue prediction
             {
@@ -1731,6 +1776,150 @@ public class MeowtiTool : MonoBehaviour
             {
                 currentPawzzleAdjective = "HYSTERICAL";
             }
+        }
+    }
+
+    //BARTENDING
+    public void BartendingButton(string buttonType)
+    {
+        int tempInt = 0;
+        if (currentDrinkSprite == drinkSprites[0])  //BUBBLE TEA
+        {
+            tempInt = CheckServeScoreToAdd(2, "CHEWY");
+        }
+
+        else if (currentDrinkSprite == drinkSprites[1])  //GLASS OF WATER
+        {
+            tempInt = CheckServeScoreToAdd(0, "SMOOTH");
+        }
+
+        else if (currentDrinkSprite == drinkSprites[2])  //CAN OF SODA
+        {
+            tempInt = CheckServeScoreToAdd(3, "SPARKLING");
+        }
+
+        else if (currentDrinkSprite == drinkSprites[3])  //LEMONADE
+        {
+            tempInt = CheckServeScoreToAdd(1, "SPARKLING");
+        }
+
+        else if (currentDrinkSprite == drinkSprites[4])  //MILKSHAKE
+        {
+            tempInt = CheckServeScoreToAdd(2, "SMOOTH");
+
+            if (drinkTexture == "THICK")
+            {
+                tempInt++;
+            }
+        }
+
+        if (buttonType == "SERVE")
+        {
+            if (tempInt > 0)
+            {
+                serveScore += tempInt;
+            }
+
+            else if (tempInt == 0)
+            {
+                GameManagerScript.instance.ErrorMade();
+            }
+        }
+
+        if (buttonType == "SKIP")
+        {
+            if (tempInt > 0)
+            {
+                GameManagerScript.instance.ErrorMade();
+            }
+        }
+
+        GenerateNewDrink();
+    }
+
+    int CheckServeScoreToAdd(int sweetnessCheck, string textureCheck)
+    {
+        int scoreToAdd = 0;
+        if (drinkSweetness == sweetnessCheck)
+        {
+            scoreToAdd++;
+        }
+
+        if (drinkTexture == textureCheck)
+        {
+            scoreToAdd++;
+        }
+
+        return scoreToAdd;
+    }
+
+    void GenerateNewDrink()
+    {
+        if (currentDrinkSprite == null)
+        {
+            currentDrinkSprite = avaiableDrinkSprites[Random.Range(0, avaiableDrinkSprites.Count)];
+            drinkImage.sprite = currentDrinkSprite;
+            avaiableDrinkSprites.Remove(currentDrinkSprite);
+        }
+
+        else if (drinkImage.sprite != null)
+        {
+            int emptyRng = Random.Range(0, 100);
+            if (emptyRng > (emptyRngCap / 2))
+            {
+                currentDrinkSprite = null;
+                drinkImage.sprite = currentDrinkSprite;
+                serveButton.interactable = false;
+                skipButton.interactable = false;
+                GenerateBartendingAdjective();
+                return;
+            }
+
+            else
+            {
+                currentDrinkSprite = avaiableDrinkSprites[Random.Range(0, avaiableDrinkSprites.Count)];
+                drinkImage.sprite = currentDrinkSprite;
+                avaiableDrinkSprites.Remove(currentDrinkSprite);
+                emptyRngCap -= 20;
+            }
+        }
+    }
+
+    void GenerateBartendingAdjective()
+    {
+        if (serveScore == 0)
+        {
+            currentPawzzleAdjective = "SUBPAR";
+        }
+
+        else if (serveScore == 1)
+        {
+            currentPawzzleAdjective = "STANDARD";
+        }
+
+        else if (serveScore == 2)
+        {
+            currentPawzzleAdjective = "SAUCY";
+        }
+
+        else if (serveScore == 3)
+        {
+            currentPawzzleAdjective = "STANDARD";
+        }
+
+        else if (serveScore == 4)
+        {
+            currentPawzzleAdjective = "SKILLED";
+        }
+
+        else if (serveScore > 4 && serveScore < 7)
+        {
+            currentPawzzleAdjective = "STELLAR";
+        }
+
+        else if (serveScore >= 7)
+        {
+            currentPawzzleAdjective = "SURPREME";
         }
     }
 }
