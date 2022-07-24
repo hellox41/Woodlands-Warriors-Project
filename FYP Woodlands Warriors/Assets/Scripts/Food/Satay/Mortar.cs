@@ -1,31 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Mortar : MonoBehaviour
 {
     MixingBar mixingBar;
     [SerializeField] float progressToAdd;
 
+    public string prepType;
+
     public GameObject meatGO;
     public Transform dropPoint;
 
     public Skewer skewerScript;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void Grind()
     {
-        if (GameManagerScript.instance.radialMenu.prepType == "Grinding Ingredients")
+        if (GameManagerScript.instance.radialMenu.prepType == "Grinding Ingredients" || GameManagerScript.instance.radialMenu.prepType == "Grinding Sambal Ingredients")
         {
             if (mixingBar == null)
             {
@@ -54,9 +46,15 @@ public class Mortar : MonoBehaviour
                 childRb.isKinematic = false;
                 childRb.useGravity = true;
 
-                child.SetParent(transform);
+                StartCoroutine(WaitASec(meatGO.transform, transform));
             }
         }
+    }
+
+    IEnumerator WaitASec(Transform childTrans, Transform parentTrans)
+    {
+        yield return new WaitForSeconds(1f);
+        childTrans.SetParent(parentTrans);
     }
 
     public void MixMeat()

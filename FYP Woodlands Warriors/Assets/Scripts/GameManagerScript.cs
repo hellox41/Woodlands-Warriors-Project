@@ -5,13 +5,27 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+//Singleton script that handles level data, time, pawzzle types, order types, and strikes. Also stores public instance variables for scripts to communicate with (e.g. interactedItem from orders)
 public class GameManagerScript : MonoBehaviour
 {
     public static GameManagerScript instance;
 
+    public LevelLoader levelLoader;
+
+    public List<string> dishesPrepared = new List<string>();
+    public List<int> dishCount = new List<int>();
+
     public string[] PrimaryPawzzles = { "F5", "18CARROT", "RADIOCAFE", "VITAMINS", "HEALTHYPLATE" };
 
     public string[] orderTypes = { "KAYATOAST", "HALF-BOILEDEGGS" };
+
+    public string[] possibleApparatusNouns = { "MONKEY", "CARROT", "GRANDMA", "CHICKEN", "BANANA", "POTATO", "SOTONG" };
+    public List<string> apparatusNouns = new List<string>();
+    public string knifeNoun;   //index 0
+    public string spatulaNoun; //index 1
+    public string strainerNoun; //index 2
+    public string pestleNoun; //index 3
+    public string paddleNoun; //index 4
 
     public Image[] strikeImages;
 
@@ -20,6 +34,7 @@ public class GameManagerScript : MonoBehaviour
     public int levelNo;
     public int pawzzleDifficulty;
     public int strikes = 0;
+    public int tapTurnedCount = 0;
 
     public float roomTemperature = 28f;
 
@@ -33,6 +48,7 @@ public class GameManagerScript : MonoBehaviour
     public bool isCamTransitioning = false;
     public bool isOrderUIShrunk = false;
     bool isFlashing = false;
+    public bool isShowingGameOver = false;
 
     public Food interactedFood;
 
@@ -49,6 +65,8 @@ public class GameManagerScript : MonoBehaviour
     public TMP_Text prepStatusText;
 
     public RadialMenu radialMenu;
+
+    public Material waterMat;
     private void Awake()
     {
         if (instance == null)
@@ -68,6 +86,7 @@ public class GameManagerScript : MonoBehaviour
     void Start()
     {
         pawzzleDifficulty = levelNo;
+        waterMat.color = new Color32(170, 243, 250, 127);
     }
 
     //Assign variables on level load
@@ -80,16 +99,29 @@ public class GameManagerScript : MonoBehaviour
         playerInventory = player.GetComponent<Inventory>();
         radialMenu = playerControl.radialMenu;
         prepStatusText = radialMenu.prepTypeText;
+        levelLoader = GameObject.Find("LevelLoader").GetComponent<LevelLoader>();
 
         strikeImages[0] = GameObject.Find("strikeImage1").GetComponent<Image>();
         strikeImages[1] = GameObject.Find("strikeImage2").GetComponent<Image>();
 
         ResetVariablesOnLoad();
 
-        if (level == 2)
+        if (SceneManager.GetActiveScene().name == "Level1")
         {
             levelNo = 1;
             pawzzleDifficulty = 1;
+        }
+
+        else if (SceneManager.GetActiveScene().name == "Level2")
+        {
+            levelNo = 2;
+            pawzzleDifficulty = 2;
+        }
+
+        else if (SceneManager.GetActiveScene().name == "Level3")
+        {
+            levelNo = 3;
+            pawzzleDifficulty = 3;
         }
     }   
 
@@ -99,24 +131,39 @@ public class GameManagerScript : MonoBehaviour
         {
             if (orders.currentOrder == "KAYATOAST" && orders.dishTime > orders.kayaToastPrep.dishTimes[3])
             {
-                FailLevel();
+                StartCoroutine(orders.gameOver.DisplayGameOver("dishTime"));
             }
 
             else if (orders.currentOrder == "HALF-BOILEDEGGS" && orders.dishTime > orders.halfBoiledEggsPrep.dishTimes[3])
             {
-                FailLevel();
+                StartCoroutine(orders.gameOver.DisplayGameOver("dishTime"));
+            }
+
+            else if (orders.currentOrder == "SATAY" && orders.dishTime > orders.satayPrep.dishTimes[3])
+            {
+                StartCoroutine(orders.gameOver.DisplayGameOver("dishTime"));
+            }
+
+            else if (orders.currentOrder == "NASILEMAK" && orders.dishTime > orders.nasiLemakPrep.dishTimes[3])
+            {
+                StartCoroutine(orders.gameOver.DisplayGameOver("dishTime"));
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F12))
+        /*if (Input.GetKeyDown(KeyCode.F12))
         {
             FailLevel();
-        }
+        }*/
     }
 
     public void ErrorMade()
     {
         strikes++;
+
+        if (strikes == 3)
+        {
+            StartCoroutine(orders.gameOver.DisplayGameOver("strikes"));
+        }
 
         if (isFlashing)
         {
@@ -125,14 +172,13 @@ public class GameManagerScript : MonoBehaviour
             isFlashing = false;
         }
 
-        StartCoroutine(FlashStrike());
+        if (!isShowingGameOver)
+        {
+            StartCoroutine(FlashStrike());
+        }
+
 
         Debug.Log("A mistake was made!");
-
-        if (strikes == 3)
-        {
-            FailLevel();
-        }
     }
 
     public void ChangeCursorLockedState(bool lockedState)  //if lockedState = true, lock cursor, otherwise unlock cursor
@@ -179,11 +225,6 @@ public class GameManagerScript : MonoBehaviour
         isFlashing = false;
     }
 
-    public void FailLevel()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
     void ResetVariablesOnLoad()
     {
         strikes = 0;
@@ -192,5 +233,8 @@ public class GameManagerScript : MonoBehaviour
         isPreparing = false;
         isCamTransitioning = false;
         isOrderUIShrunk = false;
+        waterMat.color = new Color32(170, 243, 250, 127);
+        dishesPrepared.Clear();
+        dishCount.Clear();
     }
 }

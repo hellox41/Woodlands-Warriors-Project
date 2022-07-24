@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System;
 using TMPro;
 
+//Meowti-tool script handles all pawzzles and pawzzle generation
 public class MeowtiTool : MonoBehaviour
 {
     public string currentPawzzleType;
@@ -31,31 +32,33 @@ public class MeowtiTool : MonoBehaviour
 
     public CanvasGroup activeCanvas;
 
-    public AudioSource toolAudioSource;
-
     public bool isTyping = false;
+
+    [Header("Audio")]
+    public AudioSource toolAudioSource;
+    public AudioClip error;
+    public AudioClip pawzzleSolved;
+    public AudioClip buttonClick;
+    public AudioClip extrude;
 
     [Header("Tool Heads")]
     public GameObject knifeHead;
     public GameObject spatulaHead;
     public GameObject strainerHead;
     public GameObject pestleHead;
+    public GameObject paddleHead;
 
     public Animator knifeAnimator;
     public Animator spatulaAnimator;
     public Animator strainerAnimator;
     public Animator pestleAnimator;
+    public Animator paddleAnimator;
 
     [Header("Debug")]
     public string pawzzleTypeOverride;
 
     [Header("Apparatus Nouns")]
-    public string[] possibleApparatusNouns = { "MONKEY", "CARROT", "GRANDMA", "CHICKEN", "BANANA", "POTATO", "SOTONG" };
-    List<string> apparatusNouns = new List<string>();
-    string knifeNoun;   //index 0
-    string spatulaNoun; //index 1
-    string strainerNoun; //index 2
-    string pestleNoun; //index 3
+
     public TMP_Text apparatusNounsText;
 
     [Header("F5")]
@@ -190,12 +193,13 @@ public class MeowtiTool : MonoBehaviour
             Debug.Log(currentPawzzleType + " pawzzle created through debug settings");
         }
 
-        for (int i = 0; i < 4; i++)  //Initialize apparatus nouns
+        for (int i = 0; i < 5; i++)  //Initialize apparatus nouns
         {
             InitializeNoun(i);
         }
-        apparatusNounsText.text = "APPARATUS NOUNS \n \n KNIFE - " + knifeNoun + "\n SPATULA - " + spatulaNoun + "\n STRAINER - " + strainerNoun +
-            "\n PESTLE - " + pestleNoun;
+        GameManagerScript.instance.orders.receiptNouns.UpdateText();
+        /*apparatusNounsText.text = "APPARATUS NOUNS \n \n KNIFE - " + knifeNoun + "\n SPATULA - " + spatulaNoun + "\n STRAINER - " + strainerNoun +
+            "\n PESTLE - " + pestleNoun + "\n PADDLE - " + paddleNoun;*/
 
         InitializePawzzle(currentPawzzleType);
     }
@@ -203,14 +207,23 @@ public class MeowtiTool : MonoBehaviour
     //Generate a random pawzzle, depending on the level's difficulty (1 includes F5, 18Carrot, radioCafe)
     void GeneratePawzzle()
     {
+        GameManagerScript.instance.accessedApparatus = null;
         if (GameManagerScript.instance.pawzzleDifficulty == 1)
         {
-            currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, 3)];
+            //F5, 18C, Radiocafe, vitamins
+            currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(0, 4)];
         }
 
         if (GameManagerScript.instance.pawzzleDifficulty == 2)
         {
-            currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(3, 5)];
+            //RADIOCAFE, VITAMINS, BLIND SPOTS, BARTENDING
+            currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(2, 6)];
+        }
+
+        if (GameManagerScript.instance.pawzzleDifficulty == 3)
+        {
+            //BLIND SPOTS, BARTENDING, APORKALYPSE, HEALTHYPLATE
+            currentPawzzleType = GameManagerScript.instance.PrimaryPawzzles[Random.Range(4, 8)];
         }
     }
 
@@ -226,30 +239,35 @@ public class MeowtiTool : MonoBehaviour
 
     void InitializeNoun(int apparatusIndex)  //Create nouns for the kitchen apparatus on level start
     {
-        int rng = Random.Range(0, possibleApparatusNouns.Length - 1);
+        int rng = Random.Range(0, GameManagerScript.instance.possibleApparatusNouns.Length);
 
         if (apparatusIndex == 0)
         {
-            knifeNoun = possibleApparatusNouns[rng];
+            GameManagerScript.instance.knifeNoun = GameManagerScript.instance.possibleApparatusNouns[rng];
         }
 
         else if (apparatusIndex == 1)
         {
-            spatulaNoun = possibleApparatusNouns[rng];
+            GameManagerScript.instance.spatulaNoun = GameManagerScript.instance.possibleApparatusNouns[rng];
         }
 
         else if (apparatusIndex == 2)
         {
-            strainerNoun = possibleApparatusNouns[rng];
+            GameManagerScript.instance.strainerNoun = GameManagerScript.instance.possibleApparatusNouns[rng];
         }
 
         else if (apparatusIndex == 3)
         {
-            pestleNoun = possibleApparatusNouns[rng];
+            GameManagerScript.instance.pestleNoun = GameManagerScript.instance.possibleApparatusNouns[rng];
         }
 
-        apparatusNouns.Add(possibleApparatusNouns[rng]);
-        RemoveElement(ref possibleApparatusNouns, rng);
+        else if (apparatusIndex == 4)
+        {
+            GameManagerScript.instance.paddleNoun = GameManagerScript.instance.possibleApparatusNouns[rng];
+        }
+
+        GameManagerScript.instance.apparatusNouns.Add(GameManagerScript.instance.possibleApparatusNouns[rng]);
+        RemoveElement(ref GameManagerScript.instance.possibleApparatusNouns, rng);
     }
 
     void InitializePawzzle(string PawzzleType)  //Activate the pawzzle's respective canvas and pick a random answer for them
@@ -413,6 +431,7 @@ public class MeowtiTool : MonoBehaviour
         }
 
         //Add vitamin types of the chosen foods to a list for later
+        vitaminsToAdd.Clear();
         if (vitaminFood1 == "MILK" || vitaminFood2 == "MILK")
         {
             vitaminsToAdd.Add("A"); vitaminsToAdd.Add("Bs");
@@ -755,6 +774,7 @@ public class MeowtiTool : MonoBehaviour
 
     void InitializeAporkalypse()
     {
+        currentPawzzleAdjective = null;
         //Set the label to a random text and color
         labelText.text = possibleLabels[Random.Range(0, possibleLabels.Count)];
         labelText.color = labelColors[Random.Range(0, labelColors.Length)];
@@ -784,6 +804,12 @@ public class MeowtiTool : MonoBehaviour
 
     void InitializeBartending()
     {
+        currentPawzzleAdjective = null;
+        emptyRngCap = 160;
+        avaiableDrinkSprites.Clear();
+        drinkImage.enabled = true;
+        serveButton.interactable = true;
+        skipButton.interactable = true;
         int sweetRng = Random.Range(0, 4);
         drinkSweetness = sweetRng;
         indicatorText.text = indicatorWords[sweetRng];
@@ -800,28 +826,33 @@ public class MeowtiTool : MonoBehaviour
     public void SubmitInput()  //Player presses the submit button for primary pawzzle
     {
         bool isSolved = false;
-        for (int i = 0; i < apparatusNouns.Count; i++)
+        for (int i = 0; i < GameManagerScript.instance.apparatusNouns.Count; i++)
         {
-            if (primaryInput.text == currentPawzzleAdjective + " " + apparatusNouns[i]) //If correct
+            if (primaryInput.text == currentPawzzleAdjective + " " + GameManagerScript.instance.apparatusNouns[i]) //If correct
             {
-                if (apparatusNouns[i] == knifeNoun)  //Solving for knife
+                if (GameManagerScript.instance.apparatusNouns[i] == GameManagerScript.instance.knifeNoun)  //Solving for knife
                 {
                     SolvePrimaryPawzzle("KNIFE");
                 }
 
-                if (apparatusNouns[i] == spatulaNoun) //Solving for spatula
+                if (GameManagerScript.instance.apparatusNouns[i] == GameManagerScript.instance.spatulaNoun) //Solving for spatula
                 {
                     SolvePrimaryPawzzle("SPATULA");
                 }
 
-                if (apparatusNouns[i] == strainerNoun)//Solving for strainer
+                if (GameManagerScript.instance.apparatusNouns[i] == GameManagerScript.instance.strainerNoun)//Solving for strainer
                 {
                     SolvePrimaryPawzzle("STRAINER");
                 }
 
-                if (apparatusNouns[i] == pestleNoun)//Solving for pestle
+                if (GameManagerScript.instance.apparatusNouns[i] == GameManagerScript.instance.pestleNoun)//Solving for pestle
                 {
                     SolvePrimaryPawzzle("PESTLE");
+                }
+
+                if (GameManagerScript.instance.apparatusNouns[i] == GameManagerScript.instance.paddleNoun)//Solving for pestle
+                {
+                    SolvePrimaryPawzzle("PADDLE");
                 }
 
                 if (currentPawzzleType == "BLINDSPOTS")
@@ -842,8 +873,12 @@ public class MeowtiTool : MonoBehaviour
                 break;
             }
 
-            if (primaryInput.text != currentPawzzleAdjective + " " + apparatusNouns[i] && i == apparatusNouns.Count - 1 && !isSolved)  //If wrong
+            if (primaryInput.text != currentPawzzleAdjective + " " + GameManagerScript.instance.apparatusNouns[i] && i == GameManagerScript.instance.apparatusNouns.Count - 1 && !isSolved)  //If wrong
             {
+                if (GameManagerScript.instance.strikes < 2)
+                {
+                    toolAudioSource.PlayOneShot(error);
+                }
                 GameManagerScript.instance.ErrorMade();
                 break;
             }
@@ -853,6 +888,8 @@ public class MeowtiTool : MonoBehaviour
     //Assign the accessed apparatus from the pawzzle and extrude it out (animation) from the meow-ti tool
     void SolvePrimaryPawzzle(string desiredApparatus)
     {
+        toolAudioSource.PlayOneShot(pawzzleSolved);
+        toolAudioSource.PlayOneShot(extrude);
         GameManagerScript.instance.accessedApparatus = desiredApparatus;
         //Debug.Log("Pawzzle solved! You accessed the " + desiredApparatus + ".");
 
@@ -878,6 +915,12 @@ public class MeowtiTool : MonoBehaviour
         {
             pestleHead.SetActive(true);
             pestleAnimator.SetTrigger("Extrude");
+        }
+
+        if (desiredApparatus == "PADDLE")
+        {
+            paddleHead.SetActive(true);
+            paddleAnimator.SetTrigger("Extrude");
         }
     }
 
@@ -910,6 +953,7 @@ public class MeowtiTool : MonoBehaviour
 
     IEnumerator PlayRevertAnim()
     {
+        toolAudioSource.PlayOneShot(extrude);
         if (GameManagerScript.instance.accessedApparatus == "KNIFE")
         {
             knifeAnimator.SetTrigger("Revert");
@@ -936,6 +980,13 @@ public class MeowtiTool : MonoBehaviour
             pestleAnimator.SetTrigger("Revert");
             yield return new WaitForSeconds(1f);
             pestleHead.SetActive(false);
+        }
+
+        if (GameManagerScript.instance.accessedApparatus == "PADDLE")
+        {
+            paddleAnimator.SetTrigger("Revert");
+            yield return new WaitForSeconds(1f);
+            paddleHead.SetActive(false);
         }
     }
 
@@ -1131,6 +1182,7 @@ public class MeowtiTool : MonoBehaviour
     }
     public void ChangeSelectionRangeFoodUp()
     {
+        toolAudioSource.PlayOneShot(buttonClick);
         imageIndex++;
 
         if (imageIndex > selectionRangeImages.Count - 1)
@@ -1143,6 +1195,7 @@ public class MeowtiTool : MonoBehaviour
 
     public void ChangeSelectionRangeFoodDown()
     {
+        toolAudioSource.PlayOneShot(buttonClick);
         imageIndex--;
 
         if (imageIndex < 0)
@@ -1588,7 +1641,7 @@ public class MeowtiTool : MonoBehaviour
             omenType = "GOOD";
         }
 
-        else if (porkCut == "BACON" || porkCut == "HAM" || porkCut == "BELLY" || porkCut == "HIND HOCK")
+        else if (porkCut == "BACON" || porkCut == "HAM" || porkCut == "BELLY" || porkCut == "HIND HOCK" || porkCut == "HEAD")
         {
             omenType = "NO";
         }
@@ -1604,6 +1657,7 @@ public class MeowtiTool : MonoBehaviour
         if (buttonType != omenType)
         {
             GameManagerScript.instance.ErrorMade();
+            toolAudioSource.PlayOneShot(error);
         }
 
         else if (buttonType == omenType)
@@ -1782,7 +1836,9 @@ public class MeowtiTool : MonoBehaviour
     //BARTENDING
     public void BartendingButton(string buttonType)
     {
+        toolAudioSource.PlayOneShot(buttonClick);
         int tempInt = 0;
+
         if (currentDrinkSprite == drinkSprites[0])  //BUBBLE TEA
         {
             tempInt = CheckServeScoreToAdd(2, "CHEWY");
@@ -1820,9 +1876,10 @@ public class MeowtiTool : MonoBehaviour
                 serveScore += tempInt;
             }
 
-            else if (tempInt == 0)
+            if (tempInt == 0)
             {
                 GameManagerScript.instance.ErrorMade();
+                toolAudioSource.PlayOneShot(error);
             }
         }
 
@@ -1831,6 +1888,7 @@ public class MeowtiTool : MonoBehaviour
             if (tempInt > 0)
             {
                 GameManagerScript.instance.ErrorMade();
+                toolAudioSource.PlayOneShot(error);
             }
         }
 
@@ -1904,7 +1962,7 @@ public class MeowtiTool : MonoBehaviour
 
         else if (serveScore == 3)
         {
-            currentPawzzleAdjective = "STANDARD";
+            currentPawzzleAdjective = "SHREWD";
         }
 
         else if (serveScore == 4)

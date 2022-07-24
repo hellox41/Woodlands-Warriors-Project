@@ -290,6 +290,7 @@ GameObject:
   - component: {fileID: 1839055125265372208}
   - component: {fileID: 1839055125265372212}
   - component: {fileID: 1839055125265372213}
+  - component: {fileID: 1029698628937199933}
   m_Layer: 0
   m_Name: oven
   m_TagString: Untagged
@@ -469,6 +470,102 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 2565978763696528814, guid: 57e5a1f0dd5d5a841b362cbfd6afa59c, type: 3}
+--- !u!82 &1029698628937199933
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839055125265372209}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 2b01af33105e2834f89acba1e4c4eaea, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.3
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.509
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1839055125302921695
 GameObject:
   m_ObjectHideFlags: 0
@@ -679,6 +776,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   progressToAdd: 0.5
+  prepType: 
   meatGO: {fileID: 7684354767219189443}
   dropPoint: {fileID: 7684354767841323744}
   skewerScript: {fileID: 0}
@@ -1330,6 +1428,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   marinateLevel: {fileID: 7684354767839049085}
+  marinateChickenObj: {fileID: 0}
 --- !u!1 &1839055125712701006
 GameObject:
   m_ObjectHideFlags: 0
@@ -1624,6 +1723,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   marinateLevel: {fileID: 7684354767839049085}
+  marinateChickenObj: {fileID: 0}
 --- !u!1 &1839055125724658940
 GameObject:
   m_ObjectHideFlags: 0
@@ -2564,6 +2664,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   marinateLevel: {fileID: 7684354767839049085}
+  marinateChickenObj: {fileID: 0}
 --- !u!1 &1839055127134423437
 GameObject:
   m_ObjectHideFlags: 0
@@ -3789,6 +3890,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   marinateLevel: {fileID: 7684354767839049085}
+  marinateChickenObj: {fileID: 0}
 --- !u!1 &7684354767839049085
 GameObject:
   m_ObjectHideFlags: 0

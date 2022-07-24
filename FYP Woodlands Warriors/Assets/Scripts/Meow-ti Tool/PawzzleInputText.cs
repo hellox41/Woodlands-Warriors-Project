@@ -5,6 +5,7 @@ using TMPro;
 
 public class PawzzleInputText : MonoBehaviour
 {
+    public AudioClip typeSfx;
     public TMP_InputField inputField;
 
     public void OnValueChanged()
@@ -14,5 +15,7 @@ public class PawzzleInputText : MonoBehaviour
         {
             inputField.text = upperText;
         }
+
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(typeSfx);
     }
 }

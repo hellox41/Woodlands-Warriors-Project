@@ -29,7 +29,8 @@ public class Sink : MonoBehaviour
     private void FixedUpdate()
     {
         //Pouring water into pot
-        if (isPouringWater && sinkContainer.itemContained.GetComponent<Interactable>().objectName == "pot")
+        if (isPouringWater && (sinkContainer.itemContained.GetComponent<Interactable>().objectName == "pot" ||
+            sinkContainer.itemContained.GetComponent<Interactable>().objectName == "cookerPot"))
         {
             liquidHolder = sinkContainer.itemContained.GetComponent<LiquidHolder>();
 
@@ -50,7 +51,10 @@ public class Sink : MonoBehaviour
             {
                 liquidHolder.currentLevel += Time.fixedDeltaTime * waterOutputModifier;
                 GameManagerScript.instance.orders.prepProgressBar.AddProgress(Time.fixedDeltaTime * waterOutputModifier);
-                GameManagerScript.instance.orders.halfBoiledEggsPrep.savedFillingWaterProgress += Time.fixedDeltaTime * waterOutputModifier;
+                if (GameManagerScript.instance.orders.currentOrder == "HALF-BOILEDEGGS")
+                {
+                    GameManagerScript.instance.orders.halfBoiledEggsPrep.savedFillingWaterProgress += Time.fixedDeltaTime * waterOutputModifier;
+                }
 
                 if (GameManagerScript.instance.orders.prepProgressBar.slider.value >= 1000)
                 {
@@ -64,7 +68,15 @@ public class Sink : MonoBehaviour
             if (!liquidHolder.isBoilable && liquidHolder.currentLevel > 1000f)
             {
                 liquidHolder.isBoilable = true;
-                GameManagerScript.instance.orders.halfBoiledEggsPrep.isPotFilledWithWater = true;
+                if (GameManagerScript.instance.orders.currentOrder == "HALF-BOILEDEGGS")
+                {
+                    GameManagerScript.instance.orders.halfBoiledEggsPrep.isPotFilledWithWater = true;
+                }
+                
+                else if (GameManagerScript.instance.orders.currentOrder == "NASILEMAK")
+                {
+                    GameManagerScript.instance.orders.nasiLemakPrep.isPotFilledWithWater = true;
+                }
             }
         }
     }

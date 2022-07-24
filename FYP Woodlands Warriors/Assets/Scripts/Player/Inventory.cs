@@ -22,7 +22,7 @@ public class Inventory : MonoBehaviour
     {
         var d = Input.GetAxis("Mouse ScrollWheel");  //Swapping between items in inventory
 
-        if (!GameManagerScript.instance.isInteracting)
+        if (!GameManagerScript.instance.isInteracting && !GameManagerScript.instance.isZoomed && !GameManagerScript.instance.isPreparing)
         {
             if (currentItems > 1)
             {

@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+//Orders handles order generation, grading, prep object instantiation, and cooking.
 public class Orders : MonoBehaviour
 {
     public int ordersDone;
 
     public string currentOrder;
+
+    public ReceiptNouns receiptNouns;
 
     [Header("Current Order Values")]
     public int stagesToPrepare;
@@ -17,6 +20,7 @@ public class Orders : MonoBehaviour
     public KayaToastPrep kayaToastPrep;
     public HalfBoiledEggsPrep halfBoiledEggsPrep;
     public SatayPrep satayPrep;
+    public NasiLemakPrep nasiLemakPrep;
 
     [Header("Final Food Gameobjects")]
     public GameObject multigrainKayaToast;
@@ -29,6 +33,8 @@ public class Orders : MonoBehaviour
     public GameObject chickenSatay;
     public GameObject muttonSatay;
 
+    public GameObject nasiLemak;
+
     GameObject finalFoodShowcased;
 
     [Header("Food Instancing")]
@@ -36,6 +42,7 @@ public class Orders : MonoBehaviour
     public GameObject kayaToastObjects;
     public GameObject halfBoiledEggsObjects;
     public GameObject satayObjects;
+    public GameObject nasiLemakObjects;
 
     public GameObject eggs;
     public Material whiteEggMat;
@@ -50,10 +57,10 @@ public class Orders : MonoBehaviour
     public float dishTime;
     public TMP_Text stageTimeText;
     public TMP_Text timeGradingText;
-    bool isShowing3Star = true;
-    bool isShowing2Star = false;
-    bool isShowing1Star = false;
-    bool isShowingLatest = false;
+    public bool isShowing3Star = true;
+    public bool isShowing2Star = false;
+    public bool isShowing1Star = false;
+    public bool isShowingLatest = false;
 
     public Image timeGradingFill;
 
@@ -69,6 +76,10 @@ public class Orders : MonoBehaviour
     public GameObject uiCanvas;
     public int totalStageStars = 0;
     public LevelStats levelStats;
+
+    [Header("Audio")]
+    public AudioSource sfxAudioSource;
+    public AudioSource musicAudioSource;
 
     [Header("Extra")]
     public ProgressBar prepProgressBar;
@@ -87,6 +98,8 @@ public class Orders : MonoBehaviour
     public RadialMenu radialMenu;
     [SerializeField] bool isAtShowcaseTrans = false;
     public GameObject stageRatingGO;
+    public GameOver gameOver;
+
 
     [Header("Debug")]
     public string orderTypeOverride;
@@ -121,6 +134,11 @@ public class Orders : MonoBehaviour
         {
             timeProgressBar.SetMaxProgress(satayPrep.dishTimes[3]);
         }
+
+        else if (currentOrder == "NASILEMAK")
+        {
+            timeProgressBar.SetMaxProgress(nasiLemakPrep.dishTimes[3]);
+        }
     }
 
     // Update is called once per frame
@@ -145,6 +163,35 @@ public class Orders : MonoBehaviour
 
         timeProgressBar.SetProgress(timeProgressBar.slider.maxValue - dishTime);
         timeProgressBar.UpdateProgress();
+
+        //Checking for failure
+        if (!GameManagerScript.instance.isShowingGameOver)
+        {
+            if (currentOrder == "KAYATOAST" && dishTime > kayaToastPrep.dishTimes[3])
+            {
+                StartCoroutine(gameOver.DisplayGameOver("dishTime")); ;
+            }
+
+            else if (currentOrder == "HALF-BOILEDEGGS" && dishTime > halfBoiledEggsPrep.dishTimes[3])
+            {
+                StartCoroutine(gameOver.DisplayGameOver("dishTime"));
+            }
+
+            else if (currentOrder == "SATAY" && dishTime > satayPrep.dishTimes[3])
+            {
+                StartCoroutine(gameOver.DisplayGameOver("dishTime"));
+            }
+
+            else if (currentOrder == "NASILEMAK" && dishTime > nasiLemakPrep.dishTimes[3])
+            {
+                StartCoroutine(gameOver.DisplayGameOver("dishTime"));
+            }
+
+            if (dishQualityBar.slider.value <= 0)
+            {
+                StartCoroutine(gameOver.DisplayGameOver("dishQuality"));
+            }
+        }
     }
 
     //If parameters are left blank, will generate a random order based on the level
@@ -154,9 +201,23 @@ public class Orders : MonoBehaviour
         if (GameManagerScript.instance.levelNo == 1)
         {
             currentOrder = GameManagerScript.instance.orderTypes[Random.Range(0, 2)];
-            Debug.Log(currentOrder + " order recieved!");
         }
 
+        //If second stage, restrict possible dishes to eggs and satay
+        if (GameManagerScript.instance.levelNo == 2)
+        {
+            currentOrder = GameManagerScript.instance.orderTypes[Random.Range(1, 3)];
+
+        }
+
+        //If third stage, restrict possible dishes to satay and nasilemak
+        if (GameManagerScript.instance.levelNo == 3)
+        {
+            currentOrder = GameManagerScript.instance.orderTypes[Random.Range(2, 4)];
+
+        }
+
+        Debug.Log(currentOrder + " order recieved!");
         orderNameText.text = currentOrder;
         GenerateRandomIngredients();
     }
@@ -254,6 +315,16 @@ public class Orders : MonoBehaviour
 
             spawnedPrep = Instantiate(satayObjects, instancingSpawnPoint.position, instancingSpawnPoint.rotation);          
         }
+
+        if (currentOrder == "NASILEMAK")
+        {
+            nasiLemakPrep.riceType = nasiLemakPrep.riceTypes[Random.Range(0, nasiLemakPrep.riceTypes.Length)];
+
+            orderInfoText.text = nasiLemakPrep.riceType + " Rice";
+
+            spawnedPrep = Instantiate(nasiLemakObjects, instancingSpawnPoint.position, Quaternion.identity);
+        }
+
         orderUIGO.SetActive(true);
     }
 
@@ -267,6 +338,17 @@ public class Orders : MonoBehaviour
                 kayaToastPrep.preparedCount++;
                 radialMenu.prepStatusGO.SetActive(false);
                 ShowcaseFinishedDish();
+
+                if (!GameManagerScript.instance.dishesPrepared.Contains("Kaya Toast: "))
+                {
+                    GameManagerScript.instance.dishesPrepared.Add("Kaya Toast: ");
+                    GameManagerScript.instance.dishCount.Add(1);
+                }
+
+                else if (GameManagerScript.instance.dishesPrepared.Contains("Kaya Toast: "))
+                {
+                    GameManagerScript.instance.dishCount[GameManagerScript.instance.dishesPrepared.IndexOf("Kaya Toast: ")]++;
+                }
             }
         }
 
@@ -278,6 +360,17 @@ public class Orders : MonoBehaviour
                 halfBoiledEggsPrep.preparedCount++;
                 radialMenu.prepStatusGO.SetActive(false);
                 ShowcaseFinishedDish();
+
+                if (!GameManagerScript.instance.dishesPrepared.Contains("Half-boiled Eggs: "))
+                {
+                    GameManagerScript.instance.dishesPrepared.Add("Half-boiled Eggs: ");
+                    GameManagerScript.instance.dishCount.Add(1);
+                }
+
+                else if (GameManagerScript.instance.dishesPrepared.Contains("Half-boiled Eggs: "))
+                {
+                    GameManagerScript.instance.dishCount[GameManagerScript.instance.dishesPrepared.IndexOf("Half-boiled Eggs: ")]++;
+                }
             }
         }
 
@@ -289,6 +382,39 @@ public class Orders : MonoBehaviour
                 satayPrep.preparedCount++;
                 radialMenu.prepStatusGO.SetActive(false);
                 ShowcaseFinishedDish();
+
+                if (!GameManagerScript.instance.dishesPrepared.Contains("Satay: "))
+                {
+                    GameManagerScript.instance.dishesPrepared.Add("Satay: ");
+                    GameManagerScript.instance.dishCount.Add(1);
+                }
+
+                else if (GameManagerScript.instance.dishesPrepared.Contains("Satay: "))
+                {
+                    GameManagerScript.instance.dishCount[GameManagerScript.instance.dishesPrepared.IndexOf("Satay: ")]++;
+                }
+            }
+        }
+
+        //Checking for nasilemak
+        if (currentOrder == "NASILEMAK")
+        {
+            if (nasiLemakPrep.isRiceScooped && nasiLemakPrep.isChickenFried && nasiLemakPrep.isSambalFried)
+            {
+                nasiLemakPrep.preparedCount++;
+                radialMenu.prepStatusGO.SetActive(false);
+                ShowcaseFinishedDish();
+
+                if (!GameManagerScript.instance.dishesPrepared.Contains("Nasi Lemak: "))
+                {
+                    GameManagerScript.instance.dishesPrepared.Add("Nasi Lemak: ");
+                    GameManagerScript.instance.dishCount.Add(1);
+                }
+
+                else if (GameManagerScript.instance.dishesPrepared.Contains("Nasi Lemak: "))
+                {
+                    GameManagerScript.instance.dishCount[GameManagerScript.instance.dishesPrepared.IndexOf("Nasi Lemak: ")]++;
+                }
             }
         }
     }
@@ -342,6 +468,12 @@ public class Orders : MonoBehaviour
             satayPrep.ResetVariables();
         }
 
+        if (currentOrder == "NASILEMAK")
+        {
+            finalFoodShowcased = Instantiate(nasiLemak, foodShowcaseTrans.position, Quaternion.identity);
+            nasiLemakPrep.ResetVariables();
+        }
+
         Camera.main.transform.DetachChildren();
         GameManagerScript.instance.isShowcasing = true;
         GameManagerScript.instance.ChangeCursorLockedState(false);
@@ -356,13 +488,13 @@ public class Orders : MonoBehaviour
         if (shrunk)
         {
             orderUI.sizeToTransitionTo = new Vector3(1f, 1f, 1f);
-            orderUI.posToTransitionTo = new Vector2(-740, 0);
+            orderUI.posToTransitionTo = new Vector2(180, 540);
         }
 
         else if (!shrunk)
         {
             orderUI.sizeToTransitionTo = new Vector3(0.4f, 0.4f, 0.4f);
-            orderUI.posToTransitionTo = new Vector2(-960, 0);
+            orderUI.posToTransitionTo = new Vector2(0, 0);
         }
 
         orderUIGO.GetComponent<OrderUI>().isChangingSize = true;
@@ -389,7 +521,7 @@ public class Orders : MonoBehaviour
                 {
                     isShowing3Star = false;
                     isShowing2Star = true;
-                    timeGradingText.color = twoStarColor;
+                    timeGradingText.color = twoStarColor - new Color32(100, 100, 100, 0);
                     timeGradingFill.color = twoStarColor;
                 }
             }
@@ -402,7 +534,7 @@ public class Orders : MonoBehaviour
                 {
                     isShowing3Star = false;
                     isShowing2Star = true;
-                    timeGradingText.color = twoStarColor;
+                    timeGradingText.color = twoStarColor - new Color32(100, 100, 100, 0);
                     timeGradingFill.color = twoStarColor;
                 }
             }
@@ -415,7 +547,20 @@ public class Orders : MonoBehaviour
                 {
                     isShowing3Star = false;
                     isShowing2Star = true;
-                    timeGradingText.color = twoStarColor;
+                    timeGradingText.color = twoStarColor - new Color32(100, 100, 100, 0);
+                    timeGradingFill.color = twoStarColor;
+                }
+            }
+
+            else if (currentOrder == "NASILEMAK")
+            {
+                timeGradingText.text = (nasiLemakPrep.dishTimes[0] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > nasiLemakPrep.dishTimes[0])
+                {
+                    isShowing3Star = false;
+                    isShowing2Star = true;
+                    timeGradingText.color = twoStarColor - new Color32(100, 100, 100, 0);
                     timeGradingFill.color = twoStarColor;
                 }
             }
@@ -432,7 +577,7 @@ public class Orders : MonoBehaviour
                 {
                     isShowing2Star = false;
                     isShowing1Star = true;
-                    timeGradingText.color = oneStarColor;
+                    timeGradingText.color = oneStarColor - new Color32(100, 100, 100, 0);
                     timeGradingFill.color = oneStarColor;
                 }
             }
@@ -445,7 +590,7 @@ public class Orders : MonoBehaviour
                 {
                     isShowing2Star = false;
                     isShowing1Star = true;
-                    timeGradingText.color = oneStarColor;
+                    timeGradingText.color = oneStarColor - new Color32(100, 100, 100, 0);
                     timeGradingFill.color = oneStarColor;
                 }
             }
@@ -458,7 +603,20 @@ public class Orders : MonoBehaviour
                 {
                     isShowing2Star = false;
                     isShowing1Star = true;
-                    timeGradingText.color = oneStarColor;
+                    timeGradingText.color = oneStarColor - new Color32(100, 100, 100, 0);
+                    timeGradingFill.color = oneStarColor;
+                }
+            }
+
+            else if (currentOrder == "NASILEMAK")
+            {
+                timeGradingText.text = (nasiLemakPrep.dishTimes[1] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > nasiLemakPrep.dishTimes[1])
+                {
+                    isShowing2Star = false;
+                    isShowing1Star = true;
+                    timeGradingText.color = oneStarColor - new Color32(100, 100, 100, 0);
                     timeGradingFill.color = oneStarColor;
                 }
             }
@@ -475,7 +633,7 @@ public class Orders : MonoBehaviour
                 {
                     isShowing1Star = false;
                     isShowingLatest = true;
-                    timeGradingText.color = latestColor;
+                    timeGradingText.color = latestColor - new Color32(100, 100, 100, 0);
                     timeGradingFill.color = latestColor;
                 }
             }
@@ -488,7 +646,7 @@ public class Orders : MonoBehaviour
                 {
                     isShowing1Star = false;
                     isShowingLatest = true;
-                    timeGradingText.color = latestColor;
+                    timeGradingText.color = latestColor - new Color32(100, 100, 100, 0);
                     timeGradingFill.color = latestColor;
                 }
             }
@@ -501,7 +659,21 @@ public class Orders : MonoBehaviour
                 {
                     isShowing1Star = false;
                     isShowingLatest = true;
-                    timeGradingText.color = latestColor;
+                    timeGradingText.color = latestColor - new Color32(100, 100, 100, 0);
+                    timeGradingFill.color = latestColor;
+                }
+            }
+
+
+            else if (currentOrder == "NASILEMAK")
+            {
+                timeGradingText.text = (nasiLemakPrep.dishTimes[2] - Mathf.FloorToInt(dishTime)).ToString();
+
+                if (dishTime > nasiLemakPrep.dishTimes[2])
+                {
+                    isShowing1Star = false;
+                    isShowingLatest = true;
+                    timeGradingText.color = latestColor - new Color32(100, 100, 100, 0);
                     timeGradingFill.color = latestColor;
                 }
             }
@@ -524,6 +696,11 @@ public class Orders : MonoBehaviour
             {
                 timeGradingText.text = (satayPrep.dishTimes[3] - Mathf.FloorToInt(dishTime)).ToString();
             }
+
+            if (currentOrder == "NASILEMAK")
+            {
+                timeGradingText.text = (nasiLemakPrep.dishTimes[3] - Mathf.FloorToInt(dishTime)).ToString();
+            }
         }
     }
 
@@ -536,8 +713,8 @@ public class Orders : MonoBehaviour
         if (ordersDone == 3)
         {
             Time.timeScale = 0f;
-            levelStats.UpdateLevelStats();
             levelStats.gameObject.SetActive(true);
+            StartCoroutine(levelStats.UpdateLevelStats());
             return;
         }
 
@@ -556,5 +733,13 @@ public class Orders : MonoBehaviour
         GameManagerScript.instance.orders.dishQualityBar.UpdateProgress();
         timeGradingText.color = threeStarColor;
         timeGradingFill.color = threeStarColor;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            StartCoroutine(levelStats.UpdateLevelStats());
+        }
     }
 }

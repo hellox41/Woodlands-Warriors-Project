@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class SatayPrep : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class SatayPrep : MonoBehaviour
 
     [Header("Grinding Ingredients")]
     public GameObject mixingBar;
+    public TMP_Text barText;
     public float savedGrindingProgress;
 
     public bool isMixGrinded = false;
@@ -44,18 +46,6 @@ public class SatayPrep : MonoBehaviour
     public bool isRackInOven = false;
     public bool areSkewersGrilled = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void StartAddingIngredients()
     {
         GameManagerScript.instance.orders.prepProgressBar.ResetValue();
@@ -65,7 +55,10 @@ public class SatayPrep : MonoBehaviour
 
     public void StartGrindingIngredients()
     {
+        mixingBar.GetComponent<ProgressBar>().ResetProgress();
+        mixingBar.GetComponent<ProgressBar>().ResetValue();
         mixingBar.SetActive(true);
+        barText.text = "GRIND";
         GameManagerScript.instance.orders.prepProgressBar.ResetValue();
         GameManagerScript.instance.orders.prepProgressBar.SetMaxProgress(1);
         GameManagerScript.instance.orders.prepProgressBar.SetProgress(savedGrindingProgress);
@@ -139,9 +132,6 @@ public class SatayPrep : MonoBehaviour
                     GameManagerScript.instance.orders.dishQualityBar.AddProgress(-20f);
                 }
             }
-            /*skewersScript.spawnedSkewer.transform.rotation = Quaternion.Euler(90f, 0f, Random.Range(-15f, 15f));
-            skewersScript.spawnedSkewer.transform.position = GameObject.Find("skewerPlacePoint").transform.position + new Vector3(Random.Range(0f, 0.05f), Random.Range(0f, 0.005f), 0f);
-            skewersScript.spawnedSkewer.transform.parent = GameObject.Find("meatPlate").transform;*/
 
             skewersScript.GetComponentInParent<Container>().Contain(skewersScript.spawnedSkewer, new Vector3(Random.Range(0f, 0.05f), Random.Range(0f, 0.005f), 0f));
             GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);

@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class CamTransition : MonoBehaviour
 {
+    public AudioClip camTransSfx;
     [Range(1, 10)]
     [SerializeField] float transitionSpeed = 6f;
+
+    public MeshRenderer playerMr;
+    public GameObject heldItemObj;
 
     public Transform pointToMoveTo;
     public Transform defaultCamTransform;
@@ -37,10 +41,13 @@ public class CamTransition : MonoBehaviour
             if (Vector3.Distance(transform.position, pointToMoveTo.position) < 0.005f)
             {
                 GameManagerScript.instance.isCamTransitioning = false;
+
                 GameManagerScript.instance.ChangeCursorLockedState(false);
 
                 if (pointToMoveTo == defaultCamTransform)  //If resetting camera to first person view
                 {
+                    transform.position = defaultCamTransform.position;
+                    transform.rotation = Quaternion.Euler(defaultCamTransform.rotation.eulerAngles);
                     transform.parent = playerGO.transform;
 
                     if (!GameManagerScript.instance.isShowcasing)
@@ -48,6 +55,8 @@ public class CamTransition : MonoBehaviour
                         foreach (GameObject obj in children)
                         {
                             obj.transform.parent = transform;
+                            obj.transform.localPosition = new Vector3(0, 0, 0);
+                            obj.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, 0));
                         }
                         GameManagerScript.instance.ChangeCursorLockedState(true);
                     }
@@ -57,6 +66,9 @@ public class CamTransition : MonoBehaviour
                     if (GameManagerScript.instance.isPreparing)
                     {
                         GameManagerScript.instance.isPreparing = false;
+
+                        heldItemObj.SetActive(true);
+
                         GameManagerScript.instance.radialMenu.ResetAllInteractibility();
                     }
 
@@ -79,6 +91,11 @@ public class CamTransition : MonoBehaviour
 
     public void MoveCamera(Transform transitionPoint)  //Detach children and parents, start the camera transition, and enable cursor
     {
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(camTransSfx, 0.3f);
+        playerMr.enabled = false;
+        heldItemObj = GameManagerScript.instance.playerInventory.currentItemHeld;
+        heldItemObj.SetActive(false);
+
         GameManagerScript.instance.isCamTransitioning = true;
         if (GameManagerScript.instance.interactedFood != null)
         {
@@ -95,6 +112,7 @@ public class CamTransition : MonoBehaviour
 
     public void ResetCameraTransform()
     {
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(camTransSfx, 0.3f);
         pointToMoveTo = defaultCamTransform;
         GameManagerScript.instance.isCamTransitioning = true;
     }

@@ -24,17 +24,6 @@ public class Container : MonoBehaviour
     [SerializeField] float previewAlpha = 0.5f;
 
     public GameObject previewedFood;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void ShowPreview()
     {

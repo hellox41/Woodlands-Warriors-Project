@@ -14,8 +14,6 @@ public class SinkTap : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IE
     public bool isTapTurnedRight = false;
     bool isResetting = false;
 
-    [SerializeField] int timesPreviouslyTurned = 0;
-
     [SerializeField] float timeToNextStall;
 
     Quaternion originalRot;
@@ -104,7 +102,7 @@ public class SinkTap : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IE
         {
             sink.isPouringWater = true;
             sink.waterPour.SetActive(true);
-            timesPreviouslyTurned++;
+            GameManagerScript.instance.tapTurnedCount++;
         }
     }
 
@@ -120,7 +118,7 @@ public class SinkTap : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IE
         //If no strikes were made
         if (GameManagerScript.instance.strikes == 0)
         {
-            if (timesPreviouslyTurned % 2 == 0) //If no. of times previously turned is even
+            if (GameManagerScript.instance.tapTurnedCount % 2 == 0) //If no. of times previously turned is even
             {
                 if (isTapTurnedLeft)
                 {
@@ -144,7 +142,7 @@ public class SinkTap : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IE
         //If 1 strike was made
         else if (GameManagerScript.instance.strikes == 1)
         {
-            if (timesPreviouslyTurned % 2 == 0) //If no. of times previously turned is even
+            if (GameManagerScript.instance.tapTurnedCount % 2 == 0) //If no. of times previously turned is even
             {
                 if (isTapTurnedRight)
                 {
@@ -168,7 +166,7 @@ public class SinkTap : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IE
         //If 2 strikes were made
         else if (GameManagerScript.instance.strikes == 2)
         {
-            if (timesPreviouslyTurned % 2 == 0) //If no. of times previously turned is even
+            if (GameManagerScript.instance.tapTurnedCount % 2 == 0) //If no. of times previously turned is even
             {
                 if (isTapTurnedRight)
                 {

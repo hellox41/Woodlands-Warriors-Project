@@ -20,6 +20,8 @@ public class Stove : MonoBehaviour
     public bool isPoweredOn = false;
 
     [SerializeField] float timeTillNextColorChange = 6f;
+    [SerializeField] int minTimeTillNextChange;
+    [SerializeField] int maxTimeTillNextChange;
     [SerializeField] float heatingMultiplier = 2.5f;
     int rng;
 
@@ -27,14 +29,21 @@ public class Stove : MonoBehaviour
 
     public Light stoveIndicatorLight;
 
-    [SerializeField] List<string> stoveLightColor = new List<string>();
+    [SerializeField] List<string> kayaToastStoveLightColors = new List<string>();
+    [SerializeField] List<string> nasiLemakStoveLightColors = new List<string>();
     public string currentStoveLightColorName;
 
-    //light color will rotate randomly between purple, red, and pink every 6 seconds
-    public Color purpleColor; 
-    public Color pinkColor; 
     public Color originalColor;
 
+    //light color will rotate randomly between purple, red, and pink every 6 seconds in KAYATOAST
+    [Header("KAYATOAST Cols")]
+    public Color purpleColor; 
+    public Color pinkColor;
+
+    [Header("NASILEMAK Cols")]
+    public Color orangeColor;
+    public Color yellowColor;
+    public Color greenColor;
     Color switchedOnColor;
 
     // Start is called before the first frame update
@@ -47,7 +56,7 @@ public class Stove : MonoBehaviour
         stoveLightMat.color = originalColor;
 
         switchedOnColor = Color.white;
-        rng = Random.Range(3, 7);
+        rng = Random.Range(minTimeTillNextChange, maxTimeTillNextChange);
         timeTillNextColorChange = rng;
     }
 
@@ -144,44 +153,78 @@ public class Stove : MonoBehaviour
         }
     }
 
-    //Switches stove light color to a random color (pink, red, or purple) that is not already being shown
+    //Switches stove light color to a random color (pink, red, or purple for kayatoast, yellow and orange for nasilemak) that is not already being shown
     void ChangeLightColor()
     {
         string colorToChangeTo;
 
-        do
+        if (GameManagerScript.instance.orders.currentOrder == "KAYATOAST")
         {
-            colorToChangeTo = stoveLightColor[Random.Range(0, stoveLightColor.Count)];
-        }
-        while (colorToChangeTo == currentStoveLightColorName);
+            do
+            {
+                colorToChangeTo = kayaToastStoveLightColors[Random.Range(0, kayaToastStoveLightColors.Count)];
+            }
 
-        if (currentStoveLightColorName != colorToChangeTo)
+            while (colorToChangeTo == currentStoveLightColorName);
+
+            if (currentStoveLightColorName != colorToChangeTo)
+            {
+                currentStoveLightColorName = colorToChangeTo;
+
+                if (currentStoveLightColorName == "Purple")
+                {
+                    switchedOnColor = purpleColor;
+                }
+
+                if (currentStoveLightColorName == "Pink")
+                {
+                    switchedOnColor = pinkColor;
+                }
+
+                if (currentStoveLightColorName == "Red")
+                {
+                    switchedOnColor = Color.red;
+                }
+            }
+
+            GameManagerScript.instance.orders.kayaToastPrep.isFlippedOnThisColor = false;
+        }
+
+        else if (GameManagerScript.instance.orders.currentOrder == "NASILEMAK" && GameManagerScript.instance.isPreparing && (GameManagerScript.instance.radialMenu.prepType == "Cooking Sambal"
+            || GameManagerScript.instance.orders.radialMenu.prepType == "Frying Chicken"))
         {
+            //Generate a diff colour
+            do
+            {
+                colorToChangeTo = nasiLemakStoveLightColors[Random.Range(0, nasiLemakStoveLightColors.Count)];
+            }
+            while (colorToChangeTo == currentStoveLightColorName);
+
+            //Change the current color to the generated color
             currentStoveLightColorName = colorToChangeTo;
 
-            if (currentStoveLightColorName == "Purple")
+            if (currentStoveLightColorName == nasiLemakStoveLightColors[0])
             {
-                switchedOnColor = purpleColor;
+                switchedOnColor = orangeColor;
             }
 
-            if (currentStoveLightColorName == "Pink")
+            if (currentStoveLightColorName == nasiLemakStoveLightColors[1])
             {
-                switchedOnColor = pinkColor;
+                switchedOnColor = yellowColor;
             }
 
-            if (currentStoveLightColorName == "Red")
+            if (currentStoveLightColorName == nasiLemakStoveLightColors[2])
             {
-                switchedOnColor = Color.red;
+                switchedOnColor = greenColor;
             }
+
+            GameManagerScript.instance.orders.nasiLemakPrep.isFlippedOnThisColor = false;
         }
 
         if (isPoweredOn)
         {
             UpdateColors();
         }
-
-        GameManagerScript.instance.orders.kayaToastPrep.isFlippedOnThisColor = false;
-        rng = Random.Range(3, 7);
     }
 
     void UpdateColors()

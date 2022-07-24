@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+//Player control handles player control (wow) such as key inputs, movement, outline casting, pick and place systems, etc. All key inputs are recorded in playerControl, with the exception
+//of comic controls and scrollwheel to change held item. That is handled in Inventory.cs instead.
 public class PlayerControl : MonoBehaviour
 {
     public GameObject meowtiToolGO;
@@ -51,12 +53,19 @@ public class PlayerControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R) && !GameManagerScript.instance.isPreparing)   //Press R to toggle zoom on meow-ti tool
+        //Press R to toggle zoom on meow-ti tool
+        if (Input.GetKeyDown(KeyCode.R) && !GameManagerScript.instance.isPreparing && GameManagerScript.instance.playerInventory.currentItemHeld.name == "Meow-ti Tool")  
         {
             if (!GameManagerScript.instance.isZoomed)
             {
                 //Zoom in on the meow-ti tool, enable cursor and tool canvas.
 
+                if (outline != null)
+                {
+                    outline.enabled = false;
+                    outline = null;
+                }
+                GameManagerScript.instance.isZoomed = true;
                 meowtiToolGO.transform.localPosition = toolZoomPos;
                 meowtiToolGO.transform.localRotation = Quaternion.Euler(toolZoomEuler);
                 playerView.fieldOfView = 45;
@@ -64,7 +73,6 @@ public class PlayerControl : MonoBehaviour
                 UICanvas.gameObject.SetActive(false);
                 meowtiTool.activeCanvas.interactable = true;
                 GameManagerScript.instance.ChangeCursorLockedState(false);
-                GameManagerScript.instance.isZoomed = true;
             }
 
             else if (GameManagerScript.instance.isZoomed)
@@ -100,7 +108,13 @@ public class PlayerControl : MonoBehaviour
                     previousOutline = outline;
                 }
 
-                if (!outline.enabled)  //Enable outline
+                if (!outline.enabled && ((normalRaycastHit.transform.GetComponent<Interactable>().isRaycastButton && GameManagerScript.instance.isPreparing) ||
+                    normalRaycastHit.transform.GetComponent<Interactable>().isPreparable || normalRaycastHit.transform.GetComponent<Interactable>().isPickup))  //Enable outline
+                {
+                    outline.enabled = true;
+                }
+
+                if (normalRaycastHit.transform.GetComponent<Container>() != null)
                 {
                     outline.enabled = true;
                 }
@@ -201,7 +215,7 @@ public class PlayerControl : MonoBehaviour
                     GameManagerScript.instance.isPlaceable = true;
                 }
 
-                else if (normalRaycastHit.transform.GetComponent<Container>().isContainingItem)
+                else if (normalRaycastHit.transform.GetComponent<Container>().isContainingItem || !normalRaycastHit.transform.GetComponent<Container>().canContainContainers)
                 {
                     GameManagerScript.instance.isPlaceable = false;
                 }

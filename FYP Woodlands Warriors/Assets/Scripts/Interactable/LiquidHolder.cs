@@ -46,10 +46,10 @@ public class LiquidHolder : MonoBehaviour
                 GameManagerScript.instance.orders.dishQualityBar.UpdateProgress();
             }
 
-            GameManagerScript.instance.orders.halfBoiledEggsPrep.eggsInsidePot--;
-            GameManagerScript.instance.orders.halfBoiledEggsPrep.eggsStrained++;
-            GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
-            GameManagerScript.instance.orders.halfBoiledEggsPrep.savedBoilingEggsProgress++;
+            GameManagerScript.instance.orders.halfBoiledEggsPrep.eggsInsidePot -= 2;
+            GameManagerScript.instance.orders.halfBoiledEggsPrep.eggsStrained += 2;
+            GameManagerScript.instance.orders.prepProgressBar.AddProgress(2);
+            GameManagerScript.instance.orders.halfBoiledEggsPrep.savedBoilingEggsProgress += 2;
 
             GameManagerScript.instance.orders.CheckIfCooked();
         }

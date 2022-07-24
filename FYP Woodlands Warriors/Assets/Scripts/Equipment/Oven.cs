@@ -5,6 +5,8 @@ using TMPro;
 
 public class Oven : MonoBehaviour
 {
+    AudioSource audioSource;
+    public AudioClip clickSfx;
     bool isCoverClosed = false;
 
     public Light ovenLight;
@@ -30,6 +32,7 @@ public class Oven : MonoBehaviour
     private void Start()
     {
         container = GetComponent<Container>();
+        audioSource = GetComponent<AudioSource>();
     }
     // Update is called once per frame
     void Update()
@@ -59,13 +62,8 @@ public class Oven : MonoBehaviour
         {
             coverAnimator.SetTrigger("Close");
             ovenLight.enabled = true;
+            audioSource.Play();
         }    
-
-        else if (!isCoverClosed)
-        {
-            coverAnimator.SetTrigger("Open");
-            ovenLight.enabled = false;
-        }
     }
 
     public void CheckForRack()
@@ -78,6 +76,7 @@ public class Oven : MonoBehaviour
 
     public void ChangeDigitSelection()
     {
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(clickSfx);
         digitSelection++;
 
         if (digitSelection > 4)
@@ -109,6 +108,7 @@ public class Oven : MonoBehaviour
 
     public void ChangeDigitValue()
     {
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(clickSfx);
         //Change thousands digit
         if (digitSelection == 1)
         {
@@ -162,9 +162,9 @@ public class Oven : MonoBehaviour
 
     void LockIn()
     {
-        if ((GameManagerScript.instance.orders.satayPrep.meatType == "Beef" && displayNo == 2048) ||
-            (GameManagerScript.instance.orders.satayPrep.meatType == "Chicken" && displayNo == 1987) ||
-            (GameManagerScript.instance.orders.satayPrep.meatType == "Mutton" && displayNo == 2707))
+        if ((GameManagerScript.instance.orders.satayPrep.meatType == "Beef" && displayNo == 0956) ||
+            (GameManagerScript.instance.orders.satayPrep.meatType == "Chicken" && displayNo == 1777) ||
+            (GameManagerScript.instance.orders.satayPrep.meatType == "Mutton" && displayNo == 0155))
         {
             GameManagerScript.instance.orders.satayPrep.areSkewersGrilled = true;
             GameManagerScript.instance.orders.CheckIfCooked();

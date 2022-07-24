@@ -29,7 +29,7 @@ public class ScrollingText : MonoBehaviour
         foreach (char c in currentText.ToCharArray())
         {
             text.text += c;
-            yield return new WaitForSeconds(scrollSpeed);
+            yield return new WaitForSecondsRealtime(scrollSpeed);
         }
     }
 }

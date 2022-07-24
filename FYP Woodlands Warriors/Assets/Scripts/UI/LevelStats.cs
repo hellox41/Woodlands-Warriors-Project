@@ -3,30 +3,54 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LevelStats : MonoBehaviour
 {
     public LevelLoader levelLoader;
     public TMP_Text levelLabel;
-    public TMP_Text dishesPrepared;
+    public TMP_Text dishesLabelText;
+    public TMP_Text dishesPreparedText;
 
-    public TMP_Text timeAndStars;
+    public TMP_Text time;
+    public TMP_Text stars;
 
     public Image gradeImage;
 
+    public GameObject nextLevelButton;
+
     [SerializeField] Sprite[] gradeSprites; // 0 = S, 1 = A, 2 = B, 3 = C, 4 = D, 5 = F
 
-    public void UpdateLevelStats()
+    public IEnumerator UpdateLevelStats()
     {
-        levelLabel.text = "Day " + GameManagerScript.instance.levelNo + " Complete!";
-        dishesPrepared.text = "Kaya Toast: " + GameManagerScript.instance.orders.kayaToastPrep.preparedCount +
-            "\nHalf-boiled Eggs: " + GameManagerScript.instance.orders.halfBoiledEggsPrep.preparedCount;
+        yield return new WaitForSeconds(0.75f);
+        levelLabel.text = GameManagerScript.instance.levelNo.ToString();
+        levelLabel.gameObject.SetActive(true);
+        
+        for (int i = 0; i < GameManagerScript.instance.dishesPrepared.Count; i++)
+        {
+            if (i > 0)
+            {
+                dishesLabelText.text += "\n";
+                dishesPreparedText.text += "\n";
+            }
+
+            yield return new WaitForSeconds(0.5f);
+            dishesLabelText.text += GameManagerScript.instance.dishesPrepared[i];
+            yield return new WaitForSeconds(0.5f);
+            dishesPreparedText.text += GameManagerScript.instance.dishCount[i];
+        }
 
         float minutes = Mathf.FloorToInt(GameManagerScript.instance.orders.stageTime / 60);
         float seconds = Mathf.FloorToInt(GameManagerScript.instance.orders.stageTime % 60);
 
-        timeAndStars.text = "Total Time: " + string.Format("{00}:{1:00}", minutes, seconds) +
-            "\nTotal Stars: " + GameManagerScript.instance.orders.totalStageStars;
+        yield return new WaitForSeconds(1f);
+        time.text = string.Format("{00}:{1:00}", minutes, seconds);
+        time.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(1f);
+        stars.text = GameManagerScript.instance.orders.totalStageStars.ToString();
+        stars.gameObject.SetActive(true);
 
         //S grade (perfect)
         if (GameManagerScript.instance.orders.totalStageStars == GameManagerScript.instance.orders.ordersDone * 6)
@@ -67,11 +91,21 @@ public class LevelStats : MonoBehaviour
         {
             gradeImage.sprite = gradeSprites[5];
         }
+
+        yield return new WaitForSeconds(2f);
+        gradeImage.enabled = true;
+
+        yield return new WaitForSeconds(1f);
+        nextLevelButton.SetActive(true);
     }
 
     public void NextLevel()
     {
         GameManagerScript.instance.levelNo++;
-        levelLoader.LoadLevel(3);
+        if (GameManagerScript.instance.levelNo < 4)
+        {
+            levelLoader.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+
     }
 }

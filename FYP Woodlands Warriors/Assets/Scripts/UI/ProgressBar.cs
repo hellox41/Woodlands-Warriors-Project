@@ -16,16 +16,6 @@ public class ProgressBar : MonoBehaviour
 
     public void AddProgress(float progressToAdd)
     {
-        /*if (slider.value < slider.maxValue)
-        {
-            slider.value += progress;
-
-            if (slider.value == slider.maxValue)
-            {
-                Camera.main.GetComponent<CamTransition>().MoveCamera(GameManagerScript.instance.playerControl.raycastPointTransform);
-            }
-        }*/
-
         progress += progressToAdd;
         UpdateProgress();
     }

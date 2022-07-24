@@ -37,12 +37,27 @@ public class Interactable : MonoBehaviour
 
     public bool CheckCurrentlyInteractable()
     {
-        if (!isPreparable && !isPickup && !GameManagerScript.instance.isPlaceable && isRaycastButton && GetComponent<Container>() == null)
+        if (isRaycastButton && GameManagerScript.instance.isPreparing)
+        {
+            return true;
+        }
+
+        if (isPreparable || isPickup)
+        {
+            return true;
+        }
+
+        if (!isPreparable && !isPickup && !GameManagerScript.instance.isPlaceable && GetComponent<Container>() == null)
         {
             return false;
         }
 
-        else return true;
+        else if (GetComponent<Container>() != null)
+        {
+            return true;
+        }
+
+        else return false;
     }
 }
 

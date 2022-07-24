@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+//RadialMenu dictates prep sequences and general pick and place mechanic
 public class RadialMenu : MonoBehaviour
 {
     public string buttonType;
 
     public Food food;
-
-    public PlayerControl playerControl;
 
     Orders orders;
 
@@ -114,11 +113,11 @@ public class RadialMenu : MonoBehaviour
             Transfer(GameManagerScript.instance.interactedItem.GetComponent<Container>());
         }
 
-        playerControl.HideRadialMenu();
-        playerControl.interactable = null;
+        GameManagerScript.instance.playerControl.HideRadialMenu();
+        GameManagerScript.instance.playerControl.interactable = null;
         GameManagerScript.instance.container = null;
-        playerControl.outline.enabled = false;
-        playerControl.outline = null;
+        GameManagerScript.instance.playerControl.outline.enabled = false;
+        GameManagerScript.instance.playerControl.outline = null;
     }
 
     void PrepSetup()
@@ -142,8 +141,8 @@ public class RadialMenu : MonoBehaviour
                 {
                     prepType = "Spreading Condiments";
                     GameManagerScript.instance.interactedFood.GetComponent<Interactable>().enabled = true;
-                    GameManagerScript.instance.orders.prepProgressBar.ResetValue();
-                    GameManagerScript.instance.orders.prepProgressBar.SetMaxProgress(2);
+                    orders.prepProgressBar.ResetValue();
+                    orders.prepProgressBar.SetMaxProgress(2);
                     camTransition.MoveCamera(GameManagerScript.instance.interactedFood.GetComponent<Food>().camTransitionTransform2);
                     ShowPrepUI();
                     prepStatusGO.SetActive(true);
@@ -175,6 +174,7 @@ public class RadialMenu : MonoBehaviour
             //Toasting bread
             if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "BREAD")
             {
+                stove.isPoweredOn = false;
                 prepFood = stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Bread>().breadType + " Bread";
                 prepType = "Toasting Bread";
                 camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponentInParent<Stove>().camTransitionTransform1);
@@ -185,8 +185,9 @@ public class RadialMenu : MonoBehaviour
 
             //HALF-BOILEDEGGS
             //Boiling eggs
-            if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "pot" && GameManagerScript.instance.orders.halfBoiledEggsPrep.isPotFilledWithWater)
+            if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "pot" && orders.halfBoiledEggsPrep.isPotFilledWithWater)
             {
+                stove.isPoweredOn = false;
                 prepFood = "Pot";
                 prepType = "Boiling Eggs";
                 camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
@@ -196,6 +197,31 @@ public class RadialMenu : MonoBehaviour
                 prepStatusGO.SetActive(true);
                 CheckItemsInteractibility();
             }
+
+            //NASILEMAK
+            //Frying chicken
+            if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "CHICKEN")
+            {
+                stove.isPoweredOn = false;
+                prepFood = "Skillet";
+                prepType = "Frying Chicken";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponentInParent<Stove>().camTransitionTransform1);
+                orders.nasiLemakPrep.StartFryingChicken();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
+
+            //Frying sambal
+            if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "SAMBAL")
+            {
+                stove.isPoweredOn = false;
+                prepFood = "Skillet";
+                prepType = "Cooking Sambal";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponentInParent<Stove>().camTransitionTransform1);
+                orders.nasiLemakPrep.StartCookingSambal();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
         }
 
         //Filling pot with water in the sink
@@ -203,6 +229,8 @@ public class RadialMenu : MonoBehaviour
         {
             Sink sink = GameManagerScript.instance.interactedItem.GetComponent<Sink>();
             Container sinkContainer = GameManagerScript.instance.interactedItem.GetComponent<Container>();
+
+            //Fill with water (half-boiled eggs)
             if (sinkContainer.itemContained.GetComponent<Interactable>().objectName == "pot")
             {
                 sink.liquidHolder = sinkContainer.itemContained.GetComponent<LiquidHolder>();
@@ -213,48 +241,96 @@ public class RadialMenu : MonoBehaviour
                 ShowPrepUI();
                 CheckItemsInteractibility();
             }
+
+            //Washing rice
+            if (sinkContainer.itemContained.GetComponent<Interactable>().objectName == "cookerPot")
+            {
+                sink.liquidHolder = sinkContainer.itemContained.GetComponent<LiquidHolder>();
+                prepFood = "Cooker Pot";
+                prepType = "Washing Rice";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
+                orders.nasiLemakPrep.StartFillingPotWithWater();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
         }
 
         //Mortar (satay)
         if (objectName == "mortar")
         {
-            //Adding ingredients
-            if (!GameManagerScript.instance.orders.satayPrep.areAllAdded)
+            if (GameManagerScript.instance.orders.currentOrder == "SATAY")
             {
-                prepFood = "Marinate";
-                prepType = "Adding Ingredients";
-                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.transform.GetComponent<Interactable>().camPoint1);
-                orders.satayPrep.StartAddingIngredients();
-                ShowPrepUI();
-                CheckItemsInteractibility();
+                //Adding ingredients
+                if (!orders.satayPrep.areAllAdded)
+                {
+                    prepFood = "Marinate";
+                    prepType = "Adding Ingredients";
+                    camTransition.MoveCamera(GameManagerScript.instance.interactedItem.transform.GetComponent<Interactable>().camPoint1);
+                    orders.satayPrep.StartAddingIngredients();
+                    ShowPrepUI();
+                    CheckItemsInteractibility();
+                }
+
+                //Grinding ingredients
+                if (orders.satayPrep.areAllAdded && !orders.satayPrep.isMixGrinded && GameManagerScript.instance.accessedApparatus == "PESTLE")
+                {
+                    prepFood = "Marinate";
+                    prepType = "Grinding Ingredients";
+                    camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
+                    orders.satayPrep.StartGrindingIngredients();
+                    ShowPrepUI();
+                    CheckItemsInteractibility();
+                }
+
+                //Adding and mixing meat cubes
+                if (orders.satayPrep.isMixGrinded && GameManagerScript.instance.accessedApparatus == "SPATULA" && !orders.satayPrep.isMeatMixed)
+                {
+                    prepFood = "Meat Cubes";
+                    prepType = "Mixing Meat";
+                    camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint2);
+                    GameManagerScript.instance.interactedItem.GetComponent<Interactable>().raycastAction = "Mix (Requires Spatula)";
+                    orders.satayPrep.StartMixingMeat();
+                    ShowPrepUI();
+                    CheckItemsInteractibility();
+                }
             }
 
-            //Grinding ingredients
-            if (GameManagerScript.instance.orders.satayPrep.areAllAdded && !GameManagerScript.instance.orders.satayPrep.isMixGrinded && GameManagerScript.instance.accessedApparatus == "PESTLE")
-            {
-                prepFood = "Marinate";
-                prepType = "Grinding Ingredients";
-                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
-                orders.satayPrep.StartGrindingIngredients();
-                ShowPrepUI();
-                CheckItemsInteractibility();
-            }
 
-            //Adding and mixing meat cubes
-            if (GameManagerScript.instance.orders.satayPrep.isMixGrinded && GameManagerScript.instance.accessedApparatus == "SPATULA" && !GameManagerScript.instance.orders.satayPrep.isMeatMixed)
+            else if (GameManagerScript.instance.orders.currentOrder == "NASILEMAK")
             {
-                prepFood = "Meat Cubes";
-                prepType = "Mixing Meat";
-                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint2);
-                GameManagerScript.instance.interactedItem.GetComponent<Interactable>().raycastAction = "Mix (Requires Spatula)";
-                orders.satayPrep.StartMixingMeat();
-                ShowPrepUI();
-                CheckItemsInteractibility();
+                if (!orders.nasiLemakPrep.areAllSambalAdded)
+                {
+                    prepFood = "Sambal";
+                    prepType = "Adding Sambal Ingredients";
+                    camTransition.MoveCamera(GameManagerScript.instance.interactedItem.transform.GetComponent<Interactable>().camPoint1);
+                    orders.nasiLemakPrep.StartAddingSambalIngredients();
+                    ShowPrepUI();
+                    CheckItemsInteractibility();
+                }
+
+                else if (orders.nasiLemakPrep.areAllSambalAdded && !orders.nasiLemakPrep.isSambalGrinded && GameManagerScript.instance.accessedApparatus == "PESTLE")
+                {
+                    prepFood = "Sambal";
+                    prepType = "Grinding Sambal Ingredients";
+                    camTransition.MoveCamera(GameManagerScript.instance.interactedItem.transform.GetComponent<Interactable>().camPoint1);
+                    orders.nasiLemakPrep.StartGrindingSambalIngredients();
+                    ShowPrepUI();
+                    CheckItemsInteractibility();
+                }
+
+                else if (orders.nasiLemakPrep.isSambalGrinded && GameManagerScript.instance.accessedApparatus == "SPATULA")
+                {
+                    prepFood = "Sambal Paste";
+                    prepType = "Scooping Sambal";
+                    camTransition.MoveCamera(GameManagerScript.instance.interactedItem.transform.GetComponent<Interactable>().camPoint1);
+                    ShowPrepUI();
+                    CheckItemsInteractibility();
+                }
             }
         }
 
         //Threading Cubes
-        if (objectName == "skewers" && GameManagerScript.instance.orders.satayPrep.isMeatMixed)
+        if (objectName == "skewers" && orders.satayPrep.isMeatMixed)
         {
             prepFood = "Meat Cubes";
             prepType = "Threading Cubes";
@@ -268,7 +344,7 @@ public class RadialMenu : MonoBehaviour
         if (objectName == "oven")
         {
             GameManagerScript.instance.interactedItem.GetComponent<Oven>().CheckForRack();
-            if (GameManagerScript.instance.orders.satayPrep.isRackInOven)
+            if (orders.satayPrep.isRackInOven)
             {
                 prepFood = "Skewers";
                 prepType = "Grilling";
@@ -279,7 +355,71 @@ public class RadialMenu : MonoBehaviour
             }
         }
 
-        GameManagerScript.instance.orders.prepProgressBar.UpdateProgress();
+        //Cooker pot (nasilemak)
+        if (objectName == "cookerPot")
+        {
+            if (!orders.nasiLemakPrep.isRiceInPot)
+            {
+                prepFood = "Rice Pot";
+                prepType = "Adding Rice";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
+                orders.nasiLemakPrep.StartAddingRice();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
+
+            else if (orders.nasiLemakPrep.isRiceCooked && orders.nasiLemakPrep.isRiceInPot)
+            {
+                if (GameManagerScript.instance.accessedApparatus == "PADDLE")
+                {
+                    prepFood = "Rice Pot";
+                    prepType = "Scooping Rice";
+                    camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint2);
+                    ShowPrepUI();
+                    CheckItemsInteractibility();
+                }
+            }
+        }
+
+        //Rice cooker appliance
+        if (objectName == "riceCooker")
+        {
+            if (orders.nasiLemakPrep.isPotInCooker && !orders.nasiLemakPrep.isRiceCooked 
+                && orders.nasiLemakPrep.isPotFilledWithWater)
+            {
+                prepFood = "Rice";
+                prepType = "Cooking Rice";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
+                orders.nasiLemakPrep.StartCookingRice();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
+        }
+
+        //Mixing bowl
+        if (objectName == "mixingBowl")
+        {
+            if (!orders.nasiLemakPrep.areAllAdded)
+            {
+                prepFood = "Marinate";
+                prepType = "Adding Ingredients";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
+                orders.nasiLemakPrep.StartAddingIngredients();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
+
+            else if (orders.nasiLemakPrep.areAllAdded && GameManagerScript.instance.accessedApparatus == "SPATULA" && !orders.nasiLemakPrep.isMarinateMixed)
+            {
+                prepFood = "Marinate";
+                prepType = "Mixing Ingredients";
+                camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint2);
+                orders.nasiLemakPrep.StartMixingIngredients();
+                ShowPrepUI();
+                CheckItemsInteractibility();
+            }
+        }
+        orders.prepProgressBar.UpdateProgress();
     }
 
     public void ShowPrepUI()
@@ -334,7 +474,7 @@ public class RadialMenu : MonoBehaviour
 
                     if (GameManagerScript.instance.interactedItem.GetComponent<Interactable>().objectName == "pot")
                     {
-                        GameManagerScript.instance.orders.halfBoiledEggsPrep.isHeatingWater = false;
+                        orders.halfBoiledEggsPrep.isHeatingWater = false;
                     }
                 }
             }    
@@ -424,12 +564,12 @@ public class RadialMenu : MonoBehaviour
             }
 
             //Toasting bread
-            if (prepType == "Toasting Bread" && (interactable.objectName == "skillet" || interactable.objectName == "stovePower"))
+            else if (prepType == "Toasting Bread" && (interactable.objectName == "skillet" || interactable.objectName == "stovePower"))
             {
                 interactable.isCurrentlyRaycastInteractable = true;
             }
 
-            if (prepType == "Spreading Condiments" && (interactable.objectName == "bread" || interactable.objectName == "kaya" || interactable.objectName == "butter"))
+            else if (prepType == "Spreading Condiments" && (interactable.objectName == "bread" || interactable.objectName == "kaya" || interactable.objectName == "butter"))
             {
                 interactable.isCurrentlyRaycastInteractable = true;
             }
@@ -437,12 +577,12 @@ public class RadialMenu : MonoBehaviour
 
             //Checking for half-boiled eggs
             //Filling water
-            if (prepType == "Filling Water" && interactable.objectName == "tap")
+            else if (prepType == "Filling Water" && interactable.objectName == "tap")
             {
                 interactable.isCurrentlyRaycastInteractable = true;
             }
 
-            if (prepType == "Boiling Eggs" && (interactable.objectName == "pot" || interactable.objectName == "egg" || interactable.objectName == "stovePower"))
+            else if (prepType == "Boiling Eggs" && (interactable.objectName == "pot" || interactable.objectName == "egg" || interactable.objectName == "stovePower"))
             {
                 interactable.isCurrentlyRaycastInteractable = true;
             }
@@ -450,26 +590,26 @@ public class RadialMenu : MonoBehaviour
 
             //Checking for satay
             //Adding ingredients
-            if (prepType == "Adding Ingredients" && (interactable.objectName == "shallots" || interactable.objectName == "tumericPowder" || interactable.objectName == "mincedGarlic" ||
-                interactable.objectName == "chilliPowder"))
+            else if (prepType == "Adding Ingredients" && orders.currentOrder == "SATAY" && (interactable.objectName == "shallots" || 
+                interactable.objectName == "tumericPowder" || interactable.objectName == "mincedGarlic" || interactable.objectName == "chilliPowder"))
             {
                 interactable.isCurrentlyRaycastInteractable = true;
             }
 
             //Grinding mix
-            if (prepType == "Grinding Ingredients" && (interactable.objectName == "mortar"))
+            else if (prepType == "Grinding Ingredients" && (interactable.objectName == "mortar"))
             {
                 interactable.isCurrentlyRaycastInteractable = true;
             }
 
             //Mixing meat
-            if (prepType == "Mixing Meat" && (interactable.objectName == "meatCubes" || interactable.objectName == "mortar"))
+            else if (prepType == "Mixing Meat" && (interactable.objectName == "meatCubes" || interactable.objectName == "mortar"))
             {
                 interactable.isCurrentlyRaycastInteractable = true;
             }
 
             //Threading meat
-            if (prepType == "Threading Cubes" && (interactable.objectName == "skewers" || interactable.objectName == "mortar"))
+            else if (prepType == "Threading Cubes" && (interactable.objectName == "skewers" || interactable.objectName == "mortar"))
             {
                 interactable.isCurrentlyRaycastInteractable = true;
 
@@ -480,7 +620,76 @@ public class RadialMenu : MonoBehaviour
             }
 
             //Grilling skewers
-            if (prepType == "Grilling" && (interactable.objectName == "ovenDoor" || interactable.objectName == "posKnob" || interactable.objectName == "valueKnob"))
+            else if (prepType == "Grilling" && (interactable.objectName == "ovenDoor" || interactable.objectName == "posKnob" || interactable.objectName == "valueKnob"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+
+            //NASILEMAK
+            //Adding rice
+            else if (prepType == "Adding Rice" && interactable.objectName == "ricePacket")
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Washing rice
+            else if (prepType == "Washing Rice" && interactable.objectName == "tap")
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Cooking rice
+            else if (prepType == "Cooking Rice" && (interactable.objectName == "coconutMilk" || interactable.objectName == "pandan" || interactable.objectName == "cookerButton"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Scooping rice
+            else if (prepType == "Scooping Rice" && (interactable.objectName == "cookedRice"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Adding marinate ingredients (nasi lemak)
+            else if (prepType == "Adding Ingredients" && orders.currentOrder == "NASILEMAK" && (interactable.objectName == "chicken" ||
+    interactable.objectName == "tumericPowder" || interactable.objectName == "mincedGarlic" || interactable.objectName == "saltShaker"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Mixing chicken with marinate
+            else if (prepType == "Mixing Ingredients" && interactable.objectName == "mixingBowl")
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Frying tumeric chicken
+            else if (prepType == "Frying Chicken" && (interactable.objectName == "stovePower" || interactable.objectName == "skillet"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            //Adding sambal ingredients
+            else if (prepType == "Adding Sambal Ingredients" && (interactable.objectName == "chilliPadi" || interactable.objectName == "shallots" || interactable.objectName == "mincedGarlic"
+                || interactable.objectName == "shrimpPaste" || interactable.objectName == "waterCup"))
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            else if (prepType == "Grinding Sambal Ingredients" && interactable.objectName == "mortar")
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+            }
+
+            else if (prepType == "Scooping Sambal" && interactable.objectName == "sambalPaste")
+            {
+                interactable.isCurrentlyRaycastInteractable = true;
+                interactable.GetComponent<Collider>().enabled = true;
+            }
+
+            else if (prepType == "Cooking Sambal" && (interactable.objectName == "skillet" || interactable.objectName == "stovePower" || interactable.objectName == "oilBottle"
+                || interactable.objectName == "anchovyBowl"))
             {
                 interactable.isCurrentlyRaycastInteractable = true;
             }
