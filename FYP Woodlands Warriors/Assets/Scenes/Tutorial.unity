@@ -151,7 +151,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 344282504}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -432,6 +432,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e09fb66a3bb72b41bb7847e5a912a44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controlPanel: {fileID: 1447694314}
   levelLoader: {fileID: 1349749208}
   tutText: {fileID: 419016859}
   panelImage: {fileID: 398501381}
@@ -441,6 +442,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0d019577d46d74341bd64e6d92ebb36f, type: 3}
   - {fileID: 21300000, guid: 5f9427b19a239064d86adf2030e54bbe, type: 3}
   - {fileID: 21300000, guid: 5eca497dffd2a21409354633b03fa364, type: 3}
+  - {fileID: 21300000, guid: ddfc8b338873450489506a1528fecae6, type: 3}
   tutTexts:
   - 'Cookmunication! is a local multiplayer game for two or more players. '
   - You are playing as Leon, the Chef. Your friend(s) will be playing as Luna, the
@@ -450,6 +452,7 @@ MonoBehaviour:
   - The Chef is not allowed to look at the Recipe Book, and the Instructor(s) are
     not allowed to look at the screen.
   - 'The Instructors will able to find the Recipe Book online at: '
+  - You can view these controls in-game by pressing C.
   nextButtonText: {fileID: 1036293065}
 --- !u!114 &344282501
 MonoBehaviour:
@@ -524,11 +527,12 @@ RectTransform:
   m_Children:
   - {fileID: 291341533}
   - {fileID: 294969650}
-  - {fileID: 398501380}
   - {fileID: 63384037}
+  - {fileID: 398501380}
   - {fileID: 949408925}
   - {fileID: 1485045214}
   - {fileID: 419016858}
+  - {fileID: 1447694315}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -567,7 +571,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 344282504}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -592,7 +596,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: ddfc8b338873450489506a1528fecae6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1427,6 +1431,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 246fd6e02b996ff49b7f1510bae3ca9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1447694314
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1447694315}
+  - component: {fileID: 1447694317}
+  - component: {fileID: 1447694316}
+  m_Layer: 5
+  m_Name: controlPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1447694315
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447694314}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 344282504}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 15.140015}
+  m_SizeDelta: {x: -741.3, y: -416.98}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1447694316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447694314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: ddfc8b338873450489506a1528fecae6, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1447694317
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447694314}
+  m_CullTransparentMesh: 0
 --- !u!1 &1485045213
 GameObject:
   m_ObjectHideFlags: 0

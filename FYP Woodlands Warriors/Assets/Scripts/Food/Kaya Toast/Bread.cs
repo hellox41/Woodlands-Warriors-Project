@@ -24,6 +24,11 @@ public class Bread : MonoBehaviour
         }
 
         food = GetComponent<Food>();
+
+        if (GameManagerScript.instance.orders.kayaToastPrep.breadType != "WHOLEWHEAT")
+        {
+            GetComponent<Interactable>().isPickup = true;
+        }
     }
 
     private void Update()
@@ -62,6 +67,7 @@ public class Bread : MonoBehaviour
         {
             GameManagerScript.instance.orders.kayaToastPrep.isBreadCut = true;
             GameManagerScript.instance.orders.kayaToastPrep.cutCanvas.gameObject.SetActive(false);
+            GetComponent<Interactable>().isPickup = true;
         }
 
         else

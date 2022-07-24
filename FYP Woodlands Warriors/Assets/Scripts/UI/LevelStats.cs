@@ -102,7 +102,7 @@ public class LevelStats : MonoBehaviour
     public void NextLevel()
     {
         GameManagerScript.instance.levelNo++;
-        if (GameManagerScript.instance.levelNo < 4)
+        if (GameManagerScript.instance.levelNo < 5)
         {
             levelLoader.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
         }

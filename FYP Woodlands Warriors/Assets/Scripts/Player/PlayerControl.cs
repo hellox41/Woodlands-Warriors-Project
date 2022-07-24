@@ -7,6 +7,7 @@ using TMPro;
 //of comic controls and scrollwheel to change held item. That is handled in Inventory.cs instead.
 public class PlayerControl : MonoBehaviour
 {
+    public GameObject controlPanel;
     public GameObject meowtiToolGO;
     public GameObject radialMenuGO;
     public GameObject raycastActionTooltip;
@@ -16,7 +17,7 @@ public class PlayerControl : MonoBehaviour
 
     public MeowtiTool meowtiTool;
 
-    public CanvasGroup toolCanvas;
+    public Canvas toolCanvas;
     public CanvasGroup UICanvas;
 
     public Transform raycastPointTransform;
@@ -53,6 +54,11 @@ public class PlayerControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            controlPanel.SetActive(!controlPanel.activeInHierarchy);
+        }
+
         //Press R to toggle zoom on meow-ti tool
         if (Input.GetKeyDown(KeyCode.R) && !GameManagerScript.instance.isPreparing && GameManagerScript.instance.playerInventory.currentItemHeld.name == "Meow-ti Tool")  
         {
@@ -65,13 +71,12 @@ public class PlayerControl : MonoBehaviour
                     outline.enabled = false;
                     outline = null;
                 }
+                meowtiTool.TurnOnMeowtiTool();
                 GameManagerScript.instance.isZoomed = true;
                 meowtiToolGO.transform.localPosition = toolZoomPos;
                 meowtiToolGO.transform.localRotation = Quaternion.Euler(toolZoomEuler);
                 playerView.fieldOfView = 45;
-                toolCanvas.interactable = true;
                 UICanvas.gameObject.SetActive(false);
-                meowtiTool.activeCanvas.interactable = true;
                 GameManagerScript.instance.ChangeCursorLockedState(false);
             }
 
@@ -81,12 +86,11 @@ public class PlayerControl : MonoBehaviour
 
                 if (!meowtiTool.isTyping)
                 {
+                    meowtiTool.TurnOffMeowtiTool();
                     meowtiToolGO.transform.localPosition = toolOriginalPos;
                     meowtiToolGO.transform.localRotation = Quaternion.Euler(toolOriginalEuler);
                     playerView.fieldOfView = 70;
-                    toolCanvas.interactable = false;
                     UICanvas.gameObject.SetActive(true);
-                    meowtiTool.activeCanvas.interactable = false;
                     GameManagerScript.instance.ChangeCursorLockedState(true);
                     GameManagerScript.instance.isZoomed = false;
                 }

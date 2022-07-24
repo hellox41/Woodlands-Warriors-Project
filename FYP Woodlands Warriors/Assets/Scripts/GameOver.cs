@@ -33,6 +33,7 @@ public class GameOver : MonoBehaviour
 
     public IEnumerator DisplayGameOver(string reasonForFail)
     {
+        GameManagerScript.instance.playerControl.meowtiTool.toolAudioSource.mute = true;
         GameManagerScript.instance.isShowingGameOver = true;
         Time.timeScale = 0;
         blackOverlay.SetActive(true);

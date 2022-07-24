@@ -130,15 +130,14 @@ public class RadialMenu : MonoBehaviour
         }
 
         if (objectName == "bread")
-        {
-            prepFood = GameManagerScript.instance.interactedFood.GetComponent<Bread>().breadType + " Bread";
-           
+        {  
             if (GameManagerScript.instance.accessedApparatus == "KNIFE")
             {
                 //KAYATOAST
                 //Spreading butter n kaya
                 if (orders.kayaToastPrep.isBreadCut && orders.kayaToastPrep.isBreadToasted)
                 {
+                    prepFood = "Bread";
                     prepType = "Spreading Condiments";
                     GameManagerScript.instance.interactedFood.GetComponent<Interactable>().enabled = true;
                     orders.prepProgressBar.ResetValue();
@@ -153,6 +152,7 @@ public class RadialMenu : MonoBehaviour
                 //Cutting bread
                 else if (!orders.kayaToastPrep.isBreadCut)
                 {
+                    prepFood = "Bread";
                     prepType = "Slicing Edges";
                     GameManagerScript.instance.interactedFood.GetComponent<Interactable>().enabled = false;
                     orders.kayaToastPrep.cutCanvas = GameObject.FindGameObjectWithTag("Canvas").GetComponent<Canvas>();
@@ -172,10 +172,10 @@ public class RadialMenu : MonoBehaviour
 
             //KAYATOAST
             //Toasting bread
-            if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "BREAD")
+            if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "BREAD"
+                && (orders.kayaToastPrep.breadType != "WHOLEWHEAT" || (orders.kayaToastPrep.breadType == "WHOLEWHEAT" && orders.kayaToastPrep.isBreadCut)))
             {
-                stove.isPoweredOn = false;
-                prepFood = stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Bread>().breadType + " Bread";
+                prepFood = "Bread";
                 prepType = "Toasting Bread";
                 camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponentInParent<Stove>().camTransitionTransform1);
                 orders.kayaToastPrep.ToastBread();
@@ -187,7 +187,6 @@ public class RadialMenu : MonoBehaviour
             //Boiling eggs
             if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "pot" && orders.halfBoiledEggsPrep.isPotFilledWithWater)
             {
-                stove.isPoweredOn = false;
                 prepFood = "Pot";
                 prepType = "Boiling Eggs";
                 camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
@@ -202,7 +201,6 @@ public class RadialMenu : MonoBehaviour
             //Frying chicken
             if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "CHICKEN")
             {
-                stove.isPoweredOn = false;
                 prepFood = "Skillet";
                 prepType = "Frying Chicken";
                 camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponentInParent<Stove>().camTransitionTransform1);
@@ -214,7 +212,6 @@ public class RadialMenu : MonoBehaviour
             //Frying sambal
             if (stove.isLaden && stove.ladenItem.GetComponent<Interactable>().objectName == "skillet" && stove.ladenItem.GetComponent<Container>().itemContained.GetComponent<Food>().foodType == "SAMBAL")
             {
-                stove.isPoweredOn = false;
                 prepFood = "Skillet";
                 prepType = "Cooking Sambal";
                 camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponentInParent<Stove>().camTransitionTransform1);
@@ -491,30 +488,27 @@ public class RadialMenu : MonoBehaviour
     public void Place()
     {
         GameObject tempObj = GameManagerScript.instance.playerInventory.currentItemHeld;
-        if (GameManagerScript.instance.container.AddLoad(tempObj.GetComponent<Interactable>().loadValue))
+        GameManagerScript.instance.container.Contain(GameManagerScript.instance.playerInventory.currentItemHeld, GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Interactable>().placeOffset);
+        GameManagerScript.instance.playerInventory.RemoveItem(GameManagerScript.instance.playerInventory.currentItemHeld);
+        tempObj.SetActive(true);
+
+        tempObj.GetComponent<Interactable>().holdingContainer = GameManagerScript.instance.container;
+
+        GameManagerScript.instance.isPlaceable = false;
+
+        if (GameManagerScript.instance.playerControl.stove != null && GameManagerScript.instance.playerControl.stove.ladenItem == null)
         {
-            GameManagerScript.instance.container.Contain(GameManagerScript.instance.playerInventory.currentItemHeld, GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Interactable>().placeOffset);
-            GameManagerScript.instance.playerInventory.RemoveItem(GameManagerScript.instance.playerInventory.currentItemHeld);
-            tempObj.SetActive(true);
+            GameManagerScript.instance.playerControl.stove.isLaden = true;
+            GameManagerScript.instance.playerControl.stove.ladenItem = tempObj;
 
-            tempObj.GetComponent<Interactable>().holdingContainer = GameManagerScript.instance.container;
-
-            GameManagerScript.instance.isPlaceable = false;
-
-            if (GameManagerScript.instance.playerControl.stove != null && GameManagerScript.instance.playerControl.stove.ladenItem == null)
+            if (tempObj.GetComponent<LiquidHolder>() != null)
             {
-                GameManagerScript.instance.playerControl.stove.isLaden = true;
-                GameManagerScript.instance.playerControl.stove.ladenItem = tempObj;
+                GameManagerScript.instance.playerControl.stove.ladenFood = tempObj.GetComponent<LiquidHolder>().liquidGO;
+            }
 
-                if (tempObj.GetComponent<LiquidHolder>() != null)
-                {
-                    GameManagerScript.instance.playerControl.stove.ladenFood = tempObj.GetComponent<LiquidHolder>().liquidGO;
-                }
-
-                if (GameManagerScript.instance.interactedItem == GameManagerScript.instance.playerControl.stove.ladenItem)
-                {
-                    GameManagerScript.instance.playerControl.stove.UpdateLadenFood(GameManagerScript.instance.playerControl.stove.ladenItem);
-                }
+            if (GameManagerScript.instance.interactedItem == GameManagerScript.instance.playerControl.stove.ladenItem)
+            {
+                GameManagerScript.instance.playerControl.stove.UpdateLadenFood(GameManagerScript.instance.playerControl.stove.ladenItem);
             }
         }
     }
@@ -531,7 +525,7 @@ public class RadialMenu : MonoBehaviour
         {
             heldContainer.itemsContained[i].transform.parent = null;
             heldContainer.itemsContained[i].transform.position = otherContainer.placePoint.position + new Vector3(Random.Range(0f, 0.05f), Random.Range(0f, 0.005f), 0f);
-            heldContainer.itemsContained[i].transform.rotation = otherContainer.placePoint.rotation * Quaternion.Euler(90f, 0f, Random.Range(-15f, 15f));
+            heldContainer.itemsContained[i].transform.rotation = otherContainer.placePoint.rotation * Quaternion.Euler(0f, 0f, Random.Range(-15f, 15f));
             heldContainer.itemsContained[i].transform.parent = otherContainer.transform;
 
             GameManagerScript.instance.playerInventory.SetLayerRecursively(heldContainer.itemsContained[i], LayerMask.NameToLayer("Default"));

@@ -721,6 +721,16 @@ public class Orders : MonoBehaviour
         GameManagerScript.instance.isShowcasing = false;
         Destroy(spawnedPrep);
         Destroy(finalFoodShowcased);
+
+        for (int i = 0; i < GameManagerScript.instance.playerInventory.itemsHeld.Count; i++)
+        {
+            if (GameManagerScript.instance.playerInventory.itemsHeld[i].name != "Meow-ti Tool")
+            {
+                GameObject temp = GameManagerScript.instance.playerInventory.itemsHeld[i];
+                GameManagerScript.instance.playerInventory.itemsHeld.Remove(GameManagerScript.instance.playerInventory.itemsHeld[i]);
+                Destroy(temp);
+            }
+        }
         CreateOrder();
         showcaseUI.SetActive(false);
         uiCanvas.SetActive(true);

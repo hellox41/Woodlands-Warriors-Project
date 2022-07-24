@@ -7,6 +7,7 @@ using TMPro;
 
 public class PanelScript : MonoBehaviour
 {
+    public GameObject controlPanel;
     public LevelLoader levelLoader;
     public TMP_Text tutText;
     public Image panelImage;
@@ -29,9 +30,14 @@ public class PanelScript : MonoBehaviour
 
     public void NextButton()
     {
+        if (tutPanels.IndexOf(panelImage.sprite) == tutPanels.Count - 2)
+        {
+            panelImage.enabled = false;
+            controlPanel.SetActive(true);
+        }
+
         if (atLastPanel)
         {
-            Debug.Log("hi");
             levelLoader.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
         }
 
@@ -52,6 +58,12 @@ public class PanelScript : MonoBehaviour
 
     public void PreviousButton()
     {
+        if (atLastPanel)
+        {
+            panelImage.enabled = true;
+            controlPanel.SetActive(false);
+        }
+
         if (tutPanels.IndexOf(panelImage.sprite) > 0)
         {
             panelImage.sprite = tutPanels[tutPanels.IndexOf(panelImage.sprite) - 1];

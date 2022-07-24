@@ -16,12 +16,6 @@ public class ReceiptNouns : MonoBehaviour
         paperText = GetComponent<TMP_Text>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void UpdateText()
     {
         paperText.text = $"<align=center><u>NOUNS</u></align>";

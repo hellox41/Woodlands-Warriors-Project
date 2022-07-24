@@ -19,6 +19,11 @@ public class MeowtiTool : MonoBehaviour
     public GameObject accessedPanel;
     public GameObject inputPanel;
 
+    public Light displayLight;
+    public Light inputLight;
+
+    bool hasTurnedOffAtStart = false;
+
     [Header("Canvases")]
     public CanvasGroup primaryToolCanvas;
     public CanvasGroup f5Canvas;
@@ -36,10 +41,14 @@ public class MeowtiTool : MonoBehaviour
 
     [Header("Audio")]
     public AudioSource toolAudioSource;
+    public AudioSource poweredAudioSource;
     public AudioClip error;
     public AudioClip pawzzleSolved;
     public AudioClip buttonClick;
     public AudioClip extrude;
+    public AudioClip turnOn;
+    public AudioClip turnOff;
+    public AudioClip powered;
 
     [Header("Tool Heads")]
     public GameObject knifeHead;
@@ -96,7 +105,6 @@ public class MeowtiTool : MonoBehaviour
     public string radioWord;
 
     public AudioClip radioAudioClipToPlay;
-    public int audioPlayCount = 0;
     bool isClipPlaying = false;
 
     public TMP_Text radioCafeText;
@@ -202,6 +210,9 @@ public class MeowtiTool : MonoBehaviour
             "\n PESTLE - " + pestleNoun + "\n PADDLE - " + paddleNoun;*/
 
         InitializePawzzle(currentPawzzleType);
+        GameManagerScript.instance.playerControl.toolCanvas = activeCanvas.GetComponent<Canvas>();
+        TurnOffMeowtiTool();
+        hasTurnedOffAtStart = true;
     }
 
     //Generate a random pawzzle, depending on the level's difficulty (1 includes F5, 18Carrot, radioCafe)
@@ -337,6 +348,47 @@ public class MeowtiTool : MonoBehaviour
         }
     }
 
+    public void TurnOnMeowtiTool()
+    {
+        toolAudioSource.PlayOneShot(turnOn);
+        poweredAudioSource.Play();
+        activeCanvas.GetComponent<Canvas>().enabled = true;
+        if (GameManagerScript.instance.accessedApparatus == null)
+        {
+            inputPanel.SetActive(true);
+        }
+
+        else if (GameManagerScript.instance.accessedApparatus != null)
+        {
+            accessedPanel.SetActive(true);
+        }
+        displayLight.enabled = true;
+        inputLight.enabled = true;
+    }
+
+    public void TurnOffMeowtiTool()
+    {
+        if (hasTurnedOffAtStart)
+        {
+            toolAudioSource.PlayOneShot(turnOff);
+        }
+        poweredAudioSource.Stop();
+        activeCanvas.GetComponent<Canvas>().enabled = false;
+
+        if (GameManagerScript.instance.accessedApparatus == null)
+        {
+            inputPanel.SetActive(false);
+        }
+
+        else if (GameManagerScript.instance.accessedApparatus != null)
+        {
+            accessedPanel.SetActive(false);
+        }
+        displayLight.enabled = false;
+        inputLight.enabled = false;
+    }
+
+    //Initializing methods below
     void InitializeF5()
     {
         //Picks a random value of 0 or 1
@@ -1032,9 +1084,7 @@ public class MeowtiTool : MonoBehaviour
     {
         if (!isClipPlaying)
         {
-            toolAudioSource.clip = radioAudioClipToPlay;
-            toolAudioSource.Play();
-            audioPlayCount++;
+            toolAudioSource.PlayOneShot(radioAudioClipToPlay);
 
             StartCoroutine(delayClip());
         }

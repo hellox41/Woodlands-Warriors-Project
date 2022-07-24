@@ -1,15 +1,261 @@
 {
   "Items": [
     {
-      "_comment": "THESE COMMENTS ARE FOR THE COMIC INDEXES, DO NOT USE THEM!! DO NOT USE '//' FOR COMMENTS, WILL BREAK THE JSON FILE!!!! USE _COMMENT INSTEAD   0",
-      "speakerTextString": "Leon",
-      "comicTextString": "Lorem Ipsum Bla Bla Bla"
+      "_comment": "THESE COMMENTS ARE FOR THE COMIC INDEXES, DO NOT USE THEM!! DO NOT USE '//' FOR COMMENTS, WILL BREAK THE JSON FILE!!!! USE _COMMENT INSTEAD   Panel 1",
+      "panelIndex": 0,
+      "speakerTextString": "  ",
+      "comicTextString": "I grew up in a family of chefs. Our usual days were filled with bread-scented rooms and ears dusted with flour."
     },
 
     {
-      "_comment": "1",
-      "speakerTextString": "Luna",
-      "comicTextString": "hallo hello harlo yellow asdadadasdasdas text test"
+      "_comment": "Panel 2 - Narration",
+      "panelIndex": 1,
+      "speakerTextString": "  ",
+      "comicTextString": "Every morning, we would gather to make family breakfast together."
+    },
+
+    {
+      "_comment": "Panel 2 - Young Leon",
+      "panelIndex": 1,
+      "speakerTextString": "Young Leon",
+      "comicTextString": "\"Mom, what are we making today?\""
+    },
+
+    {
+      "_comment": "Panel 2 - Mother",
+      "panelIndex": 1,
+      "speakerTextString": "Mother",
+      "comicTextString": "\"A hearty curry bread breakfast dear. First, we have to knead out the dough for the bread and then...\""
+    },
+    {
+      "_comment": "Panel 3 - Narration",
+      "panelIndex": 2,
+      "speakerTextString": "  ",
+      "comicTextString": "I remember the times my sister and I would wait at the door of our oven for hours on end, fur thoroughly warmed."
+    },
+
+    {
+      "_comment": "Panel 3 - Narration",
+      "panelIndex": 2,
+      "speakerTextString": "  ",
+      "comicTextString": "Waiting and waiting, to pull down the handle and see the freshly golden baked bread, letting its delicious steam puff warm our body and heart."
+    },
+
+    {
+      "_comment": "Panel 3 - Ding",
+      "panelIndex": 2,
+      "speakerTextString": "",
+      "comicTextString": "(Ding!)"
+    },
+
+    {
+      "_comment": "Panel 3 - Young Luna",
+      "panelIndex": 2,
+      "speakerTextString": "Young Luna",
+      "comicTextString": "\"Look, Look, its finally done Leon!\""
+    },
+
+    {
+      "_comment": "Panel 3 - Leon Response",
+      "panelIndex": 2,
+      "speakerTextString": "Young Leon",
+      "comicTextString": "\"Urgh it smells so good, I can't wait to eat it! Luna, want to sneak a just a few bites with me...?\""
+    },
+
+    {
+      "_comment": "Panel 4 - Mother",
+      "panelIndex": 3,
+      "speakerTextString": "Mother",
+      "comicTextString": "\"Gather up, dinner's ready!\""
+    },
+
+    {
+      "_comment": "Panel 4 - Father",
+      "panelIndex": 3,
+      "speakerTextString": "Mother",
+      "comicTextString": "\"What's this, did you two snack on the bread again?\""
+    },
+
+    {
+      "_comment": "Panel 4 - Kids",
+      "panelIndex": 3,
+      "speakerTextString": "Young Leon and Luna",
+      "comicTextString": "\"N-No we did not, we promise!\""
+    },
+
+    {
+      "_comment": "Panel 5 - Narration Start",
+      "panelIndex": 4,
+      "speakerTextString": "  ",
+      "comicTextString": "My parents ran a hawker stall, Meowy Meadows."
+    },
+
+    {
+      "_comment": "Panel 5 - Narration",
+      "panelIndex": 4,
+      "speakerTextString": "  ",
+      "comicTextString": "We served many authentic and fragrant local food, and our customers absolutely love it! The line was always so long and bustling, and Dad welcomes them with a smile all the same."
+    },
+
+    {
+      "_comment": "Panel 5 - Narration",
+      "panelIndex": 4,
+      "speakerTextString": "  ",
+      "comicTextString": "We had many regulars and familiar faces; Dad somehow remembers all their names."
+    },
+
+    {
+      "_comment": "Panel 5 - Narration",
+      "panelIndex": 4,
+      "speakerTextString": "  ",
+      "comicTextString": "Like a kid named little turtie, as my father calls him, who adores our kaya toast and buys them every night."
+    },
+
+    {
+      "_comment": "Panel 5 - Narration",
+      "panelIndex": 4,
+      "speakerTextString": "  ",
+      "comicTextString": "Or Mister Rabbles and Mister Bearnie, who always comes after work for a late dinner."
+    },
+
+    {
+      "_comment": "Panel 5 - Narration Final",
+      "panelIndex": 4,
+      "speakerTextString": "  ",
+      "comicTextString": "But he also remembers a certain guy who wears a scowl whenever my dad was around."
+    },
+
+    {
+      "_comment": "Panel 6 - Narration ",
+      "panelIndex": 5,
+      "speakerTextString": "  ",
+      "comicTextString": "Elliot Wolfgang, owner of Wolfgang Eats. A neighboring stall right opposite of Meowy Meadows."
+    },
+
+    {
+      "_comment": "Panel 7 - Eliott Howl",
+      "panelIndex": 6,
+      "speakerTextString": "Elliot",
+      "comicTextString": "-Howls- \"AWOOO!\""
+    },
+
+    {
+      "_comment": "Panel 7 - Elliot monologue",
+      "panelIndex": 6,
+      "speakerTextString": "Elliot",
+      "comicTextString": "\"Meowy Meadows, let's see how long more you guys can last, Hahaha!\""
+    },
+
+    {
+      "_comment": "Panel 8 - Narration Start",
+      "panelIndex": 7,
+      "speakerTextString": "  ",
+      "comicTextString": "I remember the night when my parents came home from a long day and switched their phone on."
+    },
+
+    {
+      "_comment": "Panel 8 - Narration",
+      "panelIndex": 7,
+      "speakerTextString": "  ",
+      "comicTextString": "They went silent and still, hands lightly trembling. I could see tears welling in mother's eyes, and how both their ears flopped down in a sudden."
+    },
+
+    {
+      "_comment": "Panel 8 - Narration",
+      "panelIndex": 7,
+      "speakerTextString": "  ",
+      "comicTextString": "Something was wrong."
+    },
+
+    {
+      "_comment": "Panel 8 - Narration",
+      "panelIndex": 7,
+      "speakerTextString": "  ",
+      "comicTextString": "Luna tried to shake them out of it, but... nothing."
+    },
+
+    {
+      "_comment": "Panel 8 - Narration End",
+      "panelIndex": 7,
+      "speakerTextString": "  ",
+      "comicTextString": "I tipped toed and leaned over father's elbow to peer at the screen..."
+    },
+
+    {
+      "_comment": "Panel 9 - Narration Start",
+      "panelIndex": 8,
+      "speakerTextString": "Commentor 1",
+      "comicTextString": "\"This place is horrible! The food was bleurgh, the guy there - awful! 0/5 stars!\""
+    },
+
+    {
+      "_comment": "Panel 9 - Narration",
+      "panelIndex": 8,
+      "speakerTextString": "Commentor 2",
+      "comicTextString": "\"Don't ever come here! I can't believe I had to queue for so long for crappy third-rate cat food.\""
+    },
+
+    {
+      "_comment": "Panel 9 - Narration",
+      "panelIndex": 8,
+      "speakerTextString": "Commentor 3",
+      "comicTextString": "\"Honestly, the chef should retire already lah!\""
+    },
+
+    {
+      "_comment": "Panel 9 - Narration",
+      "panelIndex": 8,
+      "speakerTextString": "Commentor 4",
+      "comicTextString": "\"The stall opposite them is way nicer, no idea how meowy meadows get the hype.\""
+    },
+
+    {
+      "_comment": "Panel 9 - Narration End",
+      "panelIndex": 8,
+      "speakerTextString": "",
+      "comicTextString": "The comments were horrible, and that night was spent in tears. Father was trying to comfort mother, and the same way, perhaps he was trying to assure himself."
+    },
+
+    {
+      "_comment": "Panel 10 - Narration Start",
+      "panelIndex": 9,
+      "speakerTextString": "  ",
+      "comicTextString": "For a chef to have their craft that they have poured passion and effort into, criticized, and so harshly at that, is a wound that cuts deeper than any sword."
+    },
+
+    {
+      "_comment": "Panel 10 - Narration",
+      "panelIndex": 9,
+      "speakerTextString": "  ",
+      "comicTextString": "In the next few days, my parents decide to shut the doors to Meowy Meadows."
+    },
+
+    {
+      "_comment": "Panel 10 - Narration End",
+      "panelIndex": 9,
+      "speakerTextString": "  ",
+      "comicTextString": "They lost their beloved stall they spent their youths building. They've lost their joy in cooking. They've lost everything..."
+    },
+
+    {
+      "_comment": "Panel 11 - Black Screen Narration Start",
+      "panelIndex": 10,
+      "speakerTextString": "Young Luna",
+      "comicTextString": "\"No! We can't let this end like this, we just- can't! Mom, dad, they-"
+    },
+
+    {
+      "_comment": "Panel 11 - Black Screen Narration End",
+      "panelIndex": 10,
+      "speakerTextString": "Young Leon",
+      "comicTextString": "\"We have to do something! I know those comments are not true. Luna, come on, we are going to bring back Meowy Meadows!\""
+    },
+
+    {
+      "_comment": "Transition",
+      "panelIndex": 11,
+      "speakerTextString": "Young Leon",
+      "comicTextString": "\"We have to do something! I know those comments are not true. Luna, come on, we are going to bring back Meowy Meadows!\""
     }
   ]
 }

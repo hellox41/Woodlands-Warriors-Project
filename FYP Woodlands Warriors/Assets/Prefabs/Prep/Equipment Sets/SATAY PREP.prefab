@@ -445,6 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08eebd2eb2688464ca4a944c3468ef68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clickSfx: {fileID: 0}
   ovenLight: {fileID: 7684354768178824126}
   coverAnimator: {fileID: 1397070646294592558}
   hasStarted: 0

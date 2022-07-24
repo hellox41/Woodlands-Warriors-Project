@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 //Don't touch if u dunno JSON
@@ -10,6 +12,9 @@ public class ComicHandler : MonoBehaviour
 {
     public TMP_Text comicText;
     public TMP_Text speakerText;
+
+    public List<Sprite> comicSprites = new List<Sprite>();
+    public Image comicSprite;
 
     ScrollingText scrollingText;
 
@@ -21,6 +26,7 @@ public class ComicHandler : MonoBehaviour
     void Start()
     {
         scrollingText = comicText.GetComponent<ScrollingText>();
+        comicSprite.sprite = comicSprites[0];
         UpdateTextJson(currentJsonTextIndex);  
     }
 
@@ -32,6 +38,7 @@ public class ComicHandler : MonoBehaviour
         {
             currentJsonTextIndex++;
 
+            scrollingText.Stop();
             UpdateTextJson(currentJsonTextIndex);
         }
     }
@@ -41,6 +48,12 @@ public class ComicHandler : MonoBehaviour
     {
         public string comicTextString;
         public string speakerTextString;
+        public int panelIndex;
+
+        public void ClearText()
+        {
+            comicTextString = null;
+        }
     }
 
     public void UpdateTextJson(int jsonIndex)
@@ -55,8 +68,21 @@ public class ComicHandler : MonoBehaviour
             levelLoader.LoadLevel(2);
         }
 
-        scrollingText.Show(textClasses[jsonIndex].comicTextString);
-        speakerText.text = textClasses[jsonIndex].speakerTextString;
+        if (textClasses[jsonIndex].panelIndex == 11)
+        {
+            levelLoader.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+
+        if (textClasses[jsonIndex].panelIndex < 11)
+        {
+            scrollingText.Show(textClasses[jsonIndex].comicTextString);
+            speakerText.text = textClasses[jsonIndex].speakerTextString;
+        }
+
+        if (comicSprites.IndexOf(comicSprite.sprite) != textClasses[jsonIndex].panelIndex)
+        {
+            comicSprite.sprite = comicSprites[textClasses[jsonIndex].panelIndex];
+        }
     }
 }
 

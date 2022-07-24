@@ -101,6 +101,11 @@ public class Skillet : MonoBehaviour
                     stove.stoveIndicatorLight.enabled = false;
                     stove.stoveLightMat.DisableKeyword("_EMISSION");
                     stove.stoveLightMat.color = stove.originalColor;
+
+                    if (stove.GetComponentInChildren<Container>().itemContained.GetComponent<Container>().itemContained.GetComponent<Food>() != null)
+                    {
+                        stove.GetComponentInChildren<Container>().itemContained.GetComponent<Container>().itemContained.GetComponent<Food>().isBeingHeated = false;
+                    }
                 }
 
                 if (GameManagerScript.instance.orders.kayaToastPrep.breadType == "WHOLEWHEAT" && GameManagerScript.instance.orders.kayaToastPrep.timesFlippedCorrectly == 3)
@@ -110,6 +115,11 @@ public class Skillet : MonoBehaviour
                     stove.stoveIndicatorLight.enabled = false;
                     stove.stoveLightMat.DisableKeyword("_EMISSION");
                     stove.stoveLightMat.color = stove.originalColor;
+
+                    if (stove.GetComponentInChildren<Container>().itemContained.GetComponent<Container>().itemContained.GetComponent<Food>() != null)
+                    {
+                        stove.GetComponentInChildren<Container>().itemContained.GetComponent<Container>().itemContained.GetComponent<Food>().isBeingHeated = false;
+                    }
                 }
 
                 GameManagerScript.instance.orders.kayaToastPrep.isFlippedOnThisColor = true;
@@ -159,6 +169,10 @@ public class Skillet : MonoBehaviour
                     stove.stoveIndicatorLight.enabled = false;
                     stove.stoveLightMat.DisableKeyword("_EMISSION");
                     stove.stoveLightMat.color = stove.originalColor;
+                    if (stove.GetComponent<Container>().itemContained.GetComponent<Food>() != null)
+                    {
+                        stove.GetComponent<Container>().itemContained.GetComponent<Food>().isBeingHeated = false;
+                    }
 
                     GameManagerScript.instance.orders.CheckIfCooked();
                     Camera.main.GetComponent<CamTransition>().ResetCameraTransform();
