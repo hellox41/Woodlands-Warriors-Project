@@ -23,7 +23,7 @@ public class LevelStats : MonoBehaviour
 
     public IEnumerator UpdateLevelStats()
     {
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSecondsRealtime(0.75f);
         levelLabel.text = GameManagerScript.instance.levelNo.ToString();
         levelLabel.gameObject.SetActive(true);
         
@@ -35,20 +35,20 @@ public class LevelStats : MonoBehaviour
                 dishesPreparedText.text += "\n";
             }
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSecondsRealtime(0.5f);
             dishesLabelText.text += GameManagerScript.instance.dishesPrepared[i];
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSecondsRealtime(0.5f);
             dishesPreparedText.text += GameManagerScript.instance.dishCount[i];
         }
 
         float minutes = Mathf.FloorToInt(GameManagerScript.instance.orders.stageTime / 60);
         float seconds = Mathf.FloorToInt(GameManagerScript.instance.orders.stageTime % 60);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(1f);
         time.text = string.Format("{00}:{1:00}", minutes, seconds);
         time.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(1f);
         stars.text = GameManagerScript.instance.orders.totalStageStars.ToString();
         stars.gameObject.SetActive(true);
 
@@ -92,10 +92,10 @@ public class LevelStats : MonoBehaviour
             gradeImage.sprite = gradeSprites[5];
         }
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSecondsRealtime(2f);
         gradeImage.enabled = true;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSecondsRealtime(1f);
         nextLevelButton.SetActive(true);
     }
 
