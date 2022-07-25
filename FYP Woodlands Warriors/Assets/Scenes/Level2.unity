@@ -4796,8 +4796,8 @@ GameObject:
   m_Component:
   - component: {fileID: 507823037}
   - component: {fileID: 507823035}
-  - component: {fileID: 507823038}
   - component: {fileID: 507823036}
+  - component: {fileID: 507823038}
   - component: {fileID: 507823040}
   - component: {fileID: 507823039}
   m_Layer: 0
@@ -4824,9 +4824,9 @@ MonoBehaviour:
   receiptNouns: {fileID: 1752289656}
   stagesToPrepare: 0
   kayaToastPrep: {fileID: 0}
-  halfBoiledEggsPrep: {fileID: 0}
+  halfBoiledEggsPrep: {fileID: 507823036}
   satayPrep: {fileID: 507823038}
-  nasiLemakPrep: {fileID: 507823036}
+  nasiLemakPrep: {fileID: 0}
   multigrainKayaToast: {fileID: 5937399484905110177, guid: 1814081741a8ee34cbbe614f58546fb0,
     type: 3}
   honeyOatKayaToast: {fileID: 5954118244818423176, guid: f58bc97553680094cb6c800544468ce7,
@@ -4883,7 +4883,7 @@ MonoBehaviour:
   dishQualityBar: {fileID: 1795865595}
   foodShowcaseTrans: {fileID: 732343977}
   camRotationSpeed: 0.12
-  camOffset: {x: 0, y: 0.1, z: -0.3}
+  camOffset: {x: 0, y: 0.2, z: -0.3}
   orderNameText: {fileID: 1901971317}
   orderInfoText: {fileID: 1364448419}
   showcaseNameText: {fileID: 0}
@@ -4904,52 +4904,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 507823034}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da6de9e428356e844869291bed7f4a61, type: 3}
+  m_Script: {fileID: 11500000, guid: 70b3a4d7d5914824789f9bc8b0bffff3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dishTimes: c80000001d01000086010000f4010000
-  riceTypes:
-  - Brown
-  - White
-  riceType: 
-  preparedCount: 0
-  cookedRiceObj: {fileID: 0}
-  cookedChickenObj: {fileID: 0}
-  cookedSambalObj: {fileID: 0}
+  isPotFilledWithWater: 0
+  isHeatingWater: 0
+  isWaterBoiled: 0
+  areEggsBoiling: 0
+  areEggsBoiled: 0
+  eggsInsidePot: 0
+  eggsStrained: 0
   savedFillingWaterProgress: 0
-  savedRiceCookingProgress: 0
-  isRiceInPot: 0
-  isPotFilledWithWater: 1
-  isPotInCooker: 0
-  isRiceCooked: 0
-  isRiceScooped: 0
-  savedAddingProgress: 0
-  savedFryingChickenProgress: 0
-  isMincedGarlicAdded: 0
-  isTumericPowderAdded: 0
-  isChickenAdded: 0
-  isSaltAdded: 0
-  areAllAdded: 0
-  isMarinateMixed: 0
-  mixingBar: {fileID: 276520715}
-  barText: {fileID: 841553469}
-  isFlippedOnThisColor: 0
-  timesChickenFlippedCorrectly: 0
-  isChickenFried: 0
-  savedAddingSambalProgress: 0
-  savedFryingSambalProgress: 0
-  isChilliPadiAdded: 0
-  areShallotsAdded: 0
-  isSambalGarlicAdded: 0
-  isShrimpPasteAdded: 0
-  isWaterAdded: 0
-  isSambalFried: 0
-  areAllSambalAdded: 0
-  isSambalGrinded: 0
-  isSambalAddedToSkillet: 0
-  areAnchoviesAddedToSkillet: 0
-  isOilAddedToSkillet: 0
-  areAllSambalAddedToSkillet: 0
+  savedBoilingEggsProgress: 0
+  preparedCount: 0
+  dishTimes: 3c000000460000005500000064000000
+  eggsCookingTimer: 10
+  eggTypes:
+  - BROWN
+  - WHITE
+  eggsType: 
 --- !u!4 &507823037
 Transform:
   m_ObjectHideFlags: 0

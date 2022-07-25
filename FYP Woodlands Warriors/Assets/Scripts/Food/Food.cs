@@ -52,6 +52,13 @@ public class Food : MonoBehaviour
                 GameManagerScript.instance.orders.halfBoiledEggsPrep.isWaterBoiled = true;
                 GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
                 GameManagerScript.instance.orders.halfBoiledEggsPrep.savedBoilingEggsProgress++;
+
+                GameObject[] eggs = GameObject.FindGameObjectsWithTag("Egg");
+
+                for (int i = 0; i < eggs.Length; i++)
+                {
+                    eggs[i].GetComponent<Interactable>().isCurrentlyRaycastInteractable = true;
+                }
             }
         }
 

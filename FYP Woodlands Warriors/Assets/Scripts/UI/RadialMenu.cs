@@ -191,7 +191,12 @@ public class RadialMenu : MonoBehaviour
                 prepType = "Boiling Eggs";
                 camTransition.MoveCamera(GameManagerScript.instance.interactedItem.GetComponent<Interactable>().camPoint1);
                 orders.halfBoiledEggsPrep.StartBoilingEggs();
-                GameManagerScript.instance.prepStatusText.text = "Boiling: " + Mathf.FloorToInt(stove.ladenItem.GetComponent<LiquidHolder>().liquidGO.GetComponent<Food>().temperature) + "%";
+                float tempToDisplay = stove.ladenItem.GetComponent<LiquidHolder>().liquidGO.GetComponent<Food>().temperature;
+                if (stove.ladenItem.GetComponent<LiquidHolder>().liquidGO.GetComponent<Food>().temperature > 100)
+                {
+                    tempToDisplay = 100;
+                }
+                GameManagerScript.instance.prepStatusText.text = "Boiling: " + Mathf.FloorToInt(tempToDisplay) + "%";
                 ShowPrepUI();
                 prepStatusGO.SetActive(true);
                 CheckItemsInteractibility();
@@ -576,7 +581,7 @@ public class RadialMenu : MonoBehaviour
                 interactable.isCurrentlyRaycastInteractable = true;
             }
 
-            else if (prepType == "Boiling Eggs" && (interactable.objectName == "pot" || interactable.objectName == "egg" || interactable.objectName == "stovePower"))
+            else if (prepType == "Boiling Eggs" && (interactable.objectName == "pot" || interactable.objectName == "stovePower"))
             {
                 interactable.isCurrentlyRaycastInteractable = true;
             }

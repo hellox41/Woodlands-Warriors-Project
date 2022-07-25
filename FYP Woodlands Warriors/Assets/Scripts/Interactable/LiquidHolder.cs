@@ -27,8 +27,11 @@ public class LiquidHolder : MonoBehaviour
 
     public void DropItem(GameObject objToDrop)
     {
-        objToDrop.transform.position = dropPoint.position;
-        objToDrop.GetComponent<Rigidbody>().isKinematic = false;
+        if (objToDrop.GetComponent<Interactable>().isCurrentlyRaycastInteractable)
+        {
+            objToDrop.transform.position = dropPoint.position;
+            objToDrop.GetComponent<Rigidbody>().isKinematic = false;
+        }
     }
 
     public void StrainEggs()

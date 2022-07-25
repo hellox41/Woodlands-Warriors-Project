@@ -4883,7 +4883,7 @@ MonoBehaviour:
   dishQualityBar: {fileID: 1795865595}
   foodShowcaseTrans: {fileID: 732343977}
   camRotationSpeed: 0.12
-  camOffset: {x: 0, y: 0.1, z: -0.3}
+  camOffset: {x: 0, y: 0.2, z: -0.3}
   orderNameText: {fileID: 1901971317}
   orderInfoText: {fileID: 1364448419}
   showcaseNameText: {fileID: 0}

@@ -1661,7 +1661,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Knife Condiment: None'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d7d2233dd4d5cce4db4101968d86a043, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1d608d6d84b5aa24d8e7592d4fc4faeb, type: 2}
   m_sharedMaterial: {fileID: -3810514080919923395, guid: d7d2233dd4d5cce4db4101968d86a043,
     type: 2}
   m_fontSharedMaterials: []
@@ -1670,7 +1670,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1740,7 +1740,7 @@ MonoBehaviour:
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_subTextObjects:
   - {fileID: 0}
   - {fileID: 0}
@@ -2349,7 +2349,7 @@ PrefabInstance:
     - target: {fileID: 285353677791101945, guid: 0a731551fcd309f41b415e8e4552249a,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 285353677917612084, guid: 0a731551fcd309f41b415e8e4552249a,
         type: 3}
@@ -4120,7 +4120,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -644.01, y: 373.4}
+  m_AnchoredPosition: {x: -647.5, y: 363}
   m_SizeDelta: {x: -1433.3, y: -1026.43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &423320223
@@ -4136,7 +4136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.8773585, g: 0.8773585, b: 0.8773585, a: 0.78431374}
+  m_Color: {r: 1, g: 0.99024785, b: 0.6650944, a: 0.78431374}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -4956,7 +4956,7 @@ MonoBehaviour:
   dishQualityBar: {fileID: 1795865595}
   foodShowcaseTrans: {fileID: 732343977}
   camRotationSpeed: 0.12
-  camOffset: {x: 0, y: 0.1, z: -0.3}
+  camOffset: {x: 0, y: 0.2, z: -0.3}
   orderNameText: {fileID: 1901971317}
   orderInfoText: {fileID: 1364448419}
   showcaseNameText: {fileID: 0}
@@ -4967,7 +4967,7 @@ MonoBehaviour:
   isAtShowcaseTrans: 0
   stageRatingGO: {fileID: 1748750840}
   gameOver: {fileID: 844356081}
-  orderTypeOverride: 
+  orderTypeOverride: HALF-BOILEDEGGS
 --- !u!114 &507823036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4990,7 +4990,7 @@ MonoBehaviour:
   savedFillingWaterProgress: 0
   savedBoilingEggsProgress: 0
   preparedCount: 0
-  dishTimes: 3c000000460000005500000064000000
+  dishTimes: b4000000e1000000130100005e010000
   eggsCookingTimer: 10
   eggTypes:
   - BROWN
@@ -7526,7 +7526,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 11
+  m_Intensity: 9
   m_Range: 0.81
   m_SpotAngle: 32
   m_InnerSpotAngle: 12
