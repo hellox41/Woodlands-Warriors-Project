@@ -58,7 +58,7 @@ public class ComicHandler : MonoBehaviour
 
     public void UpdateTextJson(int jsonIndex)
     {
-        string json = File.ReadAllText(Application.dataPath + "/ComicText/comicJson.json");
+        string json = File.ReadAllText(Application.streamingAssetsPath + @"\comicJson.json");
         TextClass[] textClasses = JsonHelper.FromJson<TextClass>(json);
 
         //If reached the end of the comics (from JSON file)
