@@ -106,6 +106,13 @@ public class LevelStats : MonoBehaviour
         {
             levelLoader.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
             Time.timeScale = 1f;
+            GameManagerScript.instance.ChangeCursorLockedState(true);
+        }
+
+        if (GameManagerScript.instance.levelNo == 5)
+        {
+            levelLoader.LoadLevel(6);
+            Time.timeScale = 1f;
         }
     }
 }

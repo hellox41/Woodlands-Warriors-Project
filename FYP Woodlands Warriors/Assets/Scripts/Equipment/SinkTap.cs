@@ -5,6 +5,9 @@ using UnityEngine.EventSystems;
 
 public class SinkTap : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
+    public AudioClip correctSfx;
+    public AudioClip wrongSfx;
+    public AudioClip stallSfx;
     public GameObject tapHandle;
     public Transform pivot;
 
@@ -94,17 +97,24 @@ public class SinkTap : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IE
     {
         if (!sink.isPouringWater)
         {
-            if ((CheckTap() == false) && (isTapTurnedLeft || isTapTurnedRight))
-            {
-                Debug.Log("You turned the tap in the wrong direction!");
-                sink.waterOutputModifier = sink.waterOutputModifier / 2;
-                GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
-            }
-
             if (isTapTurnedLeft || isTapTurnedRight)
             {
+                sink.sinkAudio.Play();
                 sink.isPouringWater = true;
                 sink.waterPour.SetActive(true);
+
+                if (CheckTap())
+                {
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(correctSfx);
+                }
+
+                else if (!CheckTap())
+                {
+                    Debug.Log("You turned the tap in the wrong direction!");
+                    sink.waterOutputModifier = sink.waterOutputModifier / 2;
+                    GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx, 1.2f);
+                }
                 GameManagerScript.instance.tapTurnedCount++;
             }
         }
@@ -195,10 +205,13 @@ public class SinkTap : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IE
         Debug.Log("The tap has stalled!");
         isResetting = true;
 
+        sink.sinkAudio.Stop();
         sink.isPouringWater = false;
         sink.waterPour.SetActive(false);
         isTapTurnedLeft = false;
         isTapTurnedRight = false;
+
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(stallSfx);
 
         timeToNextStall = Random.Range(5, 8);
     }

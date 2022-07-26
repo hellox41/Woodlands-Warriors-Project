@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class Skillet : MonoBehaviour
 {
+    public AudioClip correctSfx;
+    public AudioClip wrongSfx;
+    public AudioSource audioSource;
     Container container;
 
     Stove stove;
+
+    bool hasFried = false;
 
     public GameObject friedChickenAsideObj;
     public GameObject sambalCookedAsideObj;
@@ -16,6 +21,22 @@ public class Skillet : MonoBehaviour
         container = GetComponent<Container>();
 
         stove = GetComponent<Interactable>().holdingContainer.GetComponentInParent<Stove>();
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    private void Update()
+    {
+        if (container.itemContained != null && !hasFried && stove.isPoweredOn)
+        {
+            audioSource.Play();
+            hasFried = true;
+        }
+
+        if ((container.itemContained == null && audioSource.isPlaying) || (audioSource.isPlaying && !stove.isPoweredOn))
+        {
+            audioSource.Stop();
+            hasFried = false;
+        }
     }
 
     public void CheckFlip()
@@ -51,13 +72,14 @@ public class Skillet : MonoBehaviour
                         GameManagerScript.instance.orders.kayaToastPrep.timesFlippedCorrectly++;
                         GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
                         GameManagerScript.instance.orders.kayaToastPrep.savedToastBreadProgress++;
-
+                        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(correctSfx);
                     }
 
                     else
                     {
                         GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
                         GameManagerScript.instance.orders.dishQualityBar.UpdateProgress();
+                        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                     }
                 }
 
@@ -68,12 +90,14 @@ public class Skillet : MonoBehaviour
                         GameManagerScript.instance.orders.kayaToastPrep.timesFlippedCorrectly++;
                         GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
                         GameManagerScript.instance.orders.kayaToastPrep.savedToastBreadProgress++;
+                        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(correctSfx);
                     }
 
                     else
                     {
                         GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
                         GameManagerScript.instance.orders.dishQualityBar.UpdateProgress();
+                        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                     }
                 }
 
@@ -84,12 +108,14 @@ public class Skillet : MonoBehaviour
                         GameManagerScript.instance.orders.kayaToastPrep.timesFlippedCorrectly++;
                         GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
                         GameManagerScript.instance.orders.kayaToastPrep.savedToastBreadProgress++;
+                        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(correctSfx);
                     }
 
                     else
                     {
                         GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
                         GameManagerScript.instance.orders.dishQualityBar.UpdateProgress();
+                        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                     }
                 }
 
@@ -135,6 +161,7 @@ public class Skillet : MonoBehaviour
                     GameManagerScript.instance.orders.nasiLemakPrep.timesChickenFlippedCorrectly++;
                     GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
                     GameManagerScript.instance.orders.nasiLemakPrep.savedFryingChickenProgress++;
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(correctSfx);
                 }
 
                 else if (container.itemContained.GetComponent<Food>().foodType == "SAMBAL" && (stove.stoveLightMat.color == stove.yellowColor))
@@ -142,11 +169,13 @@ public class Skillet : MonoBehaviour
                     GameManagerScript.instance.orders.nasiLemakPrep.timesChickenFlippedCorrectly++;
                     GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
                     GameManagerScript.instance.orders.nasiLemakPrep.savedFryingSambalProgress++;
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(correctSfx);
                 }
 
                 else
                 {
                     GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                 }
 
                 if (GameManagerScript.instance.orders.prepProgressBar.slider.value >= GameManagerScript.instance.orders.prepProgressBar.slider.maxValue)

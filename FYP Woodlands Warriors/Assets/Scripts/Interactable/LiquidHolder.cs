@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class LiquidHolder : MonoBehaviour
 {
+    public AudioSource audioSource;
     public float capacity;
     public float currentLevel;
     public float fullLevelY;
@@ -12,6 +13,7 @@ public class LiquidHolder : MonoBehaviour
     public bool isContainingLiquid = false;
     public bool isBoilable = false;
     public bool isBoiling = false;
+    bool hasBoiled = false;
 
     public string liquidType;
 
@@ -19,10 +21,25 @@ public class LiquidHolder : MonoBehaviour
 
     public Transform dropPoint;
 
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
     // Update is called once per frame
     void Update()
     {
         liquidGO.transform.localPosition = new Vector3(0f, currentLevel / capacity * fullLevelY, 0f);
+
+        if (!hasBoiled && isBoiling)
+        {
+            hasBoiled = true;
+            audioSource.Play();
+        }
+
+        if (!isBoiling && audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
     }
 
     public void DropItem(GameObject objToDrop)

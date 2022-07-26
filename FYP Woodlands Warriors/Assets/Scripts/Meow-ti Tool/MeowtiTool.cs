@@ -464,7 +464,7 @@ public class MeowtiTool : MonoBehaviour
             if (i == 0)
             {
                 vitaminFood1 = vitaminFoods[rng];
-                vitaminImage1.sprite = vitaminImages[rng]; ;
+                vitaminImage1.sprite = vitaminImages[rng];
             }
 
             else if (i == 1)
@@ -553,6 +553,8 @@ public class MeowtiTool : MonoBehaviour
         grains.Add(healthyPlateFoods[10]); //Add cereal
 
         assignableFoods.Clear();
+        selectionRangeFoods.Clear();
+        selectionRangeImages.Clear();
 
         //Then, pick a random category to be the unassigned category
         string[] categories = { "FRUIT & VEGETABLES", "MEAT & OTHERS", "GRAINS" };
@@ -851,6 +853,7 @@ public class MeowtiTool : MonoBehaviour
 
     void InitializeBartending()
     {
+        serveScore = 0;
         currentPawzzleAdjective = null;
         emptyRngCap = 160;
         avaiableDrinkSprites.Clear();
@@ -1105,7 +1108,7 @@ public class MeowtiTool : MonoBehaviour
     //VITAMINS
     void AssignVitaminsAdjective()
     {
-        if (CheckVitamins("Bs", 1))  //Bs absent in either foods
+        if (vitaminFood1 == "SEAWEED"||vitaminFood2 == "SEAWEED")  //Bs absent in either foods
         {
             currentPawzzleAdjective = "WEEDY";
         }

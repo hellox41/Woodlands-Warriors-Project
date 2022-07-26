@@ -44,12 +44,12 @@ public class Food : MonoBehaviour
 
         if (!isBoiling && !isSolid && temperature >= boilingPoint)
         {
-            Debug.Log("Boiled");
             isBoiling = true;
 
             if (GameManagerScript.instance.orders.halfBoiledEggsPrep != null && !GameManagerScript.instance.orders.halfBoiledEggsPrep.isWaterBoiled)
             {
                 GameManagerScript.instance.orders.halfBoiledEggsPrep.isWaterBoiled = true;
+                transform.parent.GetComponent<LiquidHolder>().isBoiling = true;
                 GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
                 GameManagerScript.instance.orders.halfBoiledEggsPrep.savedBoilingEggsProgress++;
 

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Sink : MonoBehaviour
 {
+    public AudioSource sinkAudio;
    public bool isPouringWater = false;
 
     public float waterOutputModifier;
@@ -18,6 +19,7 @@ public class Sink : MonoBehaviour
     void Start()
     {
         sinkContainer = GetComponent<Container>();
+        sinkAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -61,6 +63,7 @@ public class Sink : MonoBehaviour
                     isPouringWater = false;
                     waterPour.SetActive(false);
                     Camera.main.transform.GetComponent<CamTransition>().MoveCamera(GameManagerScript.instance.playerControl.raycastPointTransform);
+                    sinkAudio.Stop();
                 }
             }
 

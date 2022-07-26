@@ -38,7 +38,7 @@ public class MainMenuScript : MonoBehaviour
         }
     }
 
-    public void OpenURL(string url)
+    public void ButtonOpenURL(string url)
     {
         Application.OpenURL(url);
     }

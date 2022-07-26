@@ -36,6 +36,7 @@ public class GameOver : MonoBehaviour
     {
         allAudioSources = FindObjectsOfType(typeof (AudioSource)) as AudioSource[];
 
+        GameManagerScript.instance.ChangeCursorLockedState(false);
         foreach (AudioSource audioSource in allAudioSources)
         {
             audioSource.Stop();

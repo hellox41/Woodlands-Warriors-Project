@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Bread : MonoBehaviour
 {
+    public AudioClip cutSfx;
     public string breadType;
 
     public GameObject cutcanvas;
@@ -11,6 +12,8 @@ public class Bread : MonoBehaviour
     Food food;
 
     public float burningTime = 25f;
+
+    public Spread spread;
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +62,7 @@ public class Bread : MonoBehaviour
 
     public void OnCutButtonPressed(int buttonIndex)
     {
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(cutSfx);
         GameManagerScript.instance.orders.kayaToastPrep.cutButtons[buttonIndex].SetActive(false);
         GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
         GameManagerScript.instance.orders.kayaToastPrep.savedCutBreadProgress++;
@@ -68,6 +72,7 @@ public class Bread : MonoBehaviour
             GameManagerScript.instance.orders.kayaToastPrep.isBreadCut = true;
             GameManagerScript.instance.orders.kayaToastPrep.cutCanvas.gameObject.SetActive(false);
             GetComponent<Interactable>().isPickup = true;
+            Camera.main.GetComponent<CamTransition>().ResetCameraTransform();
         }
 
         else
@@ -78,13 +83,7 @@ public class Bread : MonoBehaviour
 
     public void SpreadBread()
     {
-        Spread spread = GameObject.Find("Spread").GetComponent<Spread>();
-
-        if (!GameManagerScript.instance.orders.kayaToastPrep.isBreadSpreadKaya && !GameManagerScript.instance.orders.kayaToastPrep.isBreadSpreadButter &&
-            (GameManagerScript.instance.orders.kayaToastPrep.isKayaAppliedToKnife || GameManagerScript.instance.orders.kayaToastPrep.isButterAppliedToKnife))
-        {
-            spread.mr.enabled = true;
-        }
+        spread.mr.enabled = true;
 
         if (GameManagerScript.instance.orders.kayaToastPrep.isKayaAppliedToKnife)
         {

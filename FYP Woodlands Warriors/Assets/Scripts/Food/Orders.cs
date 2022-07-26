@@ -324,8 +324,10 @@ public class Orders : MonoBehaviour
             halfBoiledEggsSpawnCount++;
             spawnedPrep = Instantiate(halfBoiledEggsObjects, instancingSpawnPoint.position, instancingSpawnPoint.rotation);
             eggs = GameObject.Find("Eggs");
+           
             halfBoiledEggsPrep.eggsType = halfBoiledEggsPrep.eggTypes[Random.Range(0, halfBoiledEggsPrep.eggTypes.Length)];
             List<MeshRenderer> mrs = new List<MeshRenderer>();
+            mrs.Clear();
             foreach (Transform child in eggs.transform)
             {
                 mrs.Add(child.GetComponent<MeshRenderer>());
@@ -381,8 +383,28 @@ public class Orders : MonoBehaviour
             nasiLemakPrep.riceType = nasiLemakPrep.riceTypes[Random.Range(0, nasiLemakPrep.riceTypes.Length)];
 
             orderInfoText.text = nasiLemakPrep.riceType + " Rice";
-
             spawnedPrep = Instantiate(nasiLemakObjects, instancingSpawnPoint.position, Quaternion.identity);
+
+            nasiLemakPrep.rice = GameObject.Find("rice");
+            nasiLemakPrep.cookedRiceObj = GameObject.Find("cookedRiceAside");
+            nasiLemakPrep.cookedRice = GameObject.Find("cookedrice");
+
+            if (nasiLemakPrep.riceType == "Brown")
+            {
+                nasiLemakPrep.rice.GetComponent<MeshRenderer>().material.color = new Color32(188, 131, 84, 255);
+                nasiLemakPrep.cookedRiceObj.GetComponent<MeshRenderer>().material.color = new Color32(188, 131, 84, 255);
+                nasiLemakPrep.cookedRice.GetComponent<MeshRenderer>().material.color = new Color32(188, 131, 84, 255);
+            }
+
+            else if (nasiLemakPrep.riceType == "White")
+            {
+                nasiLemakPrep.rice.GetComponent<MeshRenderer>().material.color = new Color32(255, 255, 255, 255);
+                nasiLemakPrep.cookedRiceObj.GetComponent<MeshRenderer>().material.color = new Color32(255, 255, 255, 255);
+                nasiLemakPrep.cookedRice.GetComponent<MeshRenderer>().material.color = new Color32(255, 255, 255, 255);
+            }
+            nasiLemakPrep.rice.SetActive(false);
+            nasiLemakPrep.cookedRiceObj.SetActive(false);
+            nasiLemakPrep.cookedRice.SetActive(false);
         }
 
         orderUIGO.SetActive(true);

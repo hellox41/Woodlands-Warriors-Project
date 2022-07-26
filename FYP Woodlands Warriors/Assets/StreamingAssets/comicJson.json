@@ -252,10 +252,31 @@
     },
 
     {
-      "_comment": "Transition",
+      "_comment": "Transition, Panel 12 - Luna MTT",
       "panelIndex": 11,
-      "speakerTextString": "Young Leon",
-      "comicTextString": "\"We have to do something! I know those comments are not true. Luna, come on, we are going to bring back Meowy Meadows!\""
+      "speakerTextString": "  ",
+      "comicTextString": "For the next few years, young Leon and Luna worked tirelessly to fill their parents' shoes."
+    },
+
+    {
+      "_comment": "Transition, Panel 12 - Luna MTT",
+      "panelIndex": 11,
+      "speakerTextString": "  ",
+      "comicTextString": "Luna spent most of her time in her room. Tinkering with her equipment and created her very own masterpiece."
+    },
+
+    {
+      "_comment": "Transition, Panel 12 - Luna MTT",
+      "panelIndex": 11,
+      "speakerTextString": "  ",
+      "comicTextString": "Behold - the Meow-ti Tool!"
+    },
+
+    {
+      "_comment": "Transition, Panel 12 - Luna MTT",
+      "panelIndex": 12,
+      "speakerTextString": "  ",
+      "comicTextString": "Behold - the Meow-ti Tool!"
     }
   ]
 }

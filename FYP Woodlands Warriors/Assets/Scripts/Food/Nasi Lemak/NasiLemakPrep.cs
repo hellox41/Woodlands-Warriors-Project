@@ -5,6 +5,9 @@ using TMPro;
 
 public class NasiLemakPrep : MonoBehaviour
 {
+    public Material riceMat;
+    public GameObject rice;
+    public GameObject cookedRice;
     public int[] dishTimes = { 200, 285, 390, 500 };
 
     public string[] riceTypes = { "Brown", "White" };

@@ -5,6 +5,8 @@ using TMPro;
 
 public class Mortar : MonoBehaviour
 {
+    public AudioClip mix;
+    public AudioClip grind;
     MixingBar mixingBar;
     [SerializeField] float progressToAdd;
 
@@ -24,6 +26,8 @@ public class Mortar : MonoBehaviour
                 mixingBar = GameObject.Find("grindingBar").GetComponent<MixingBar>();
             }
 
+            Debug.Log("hi");
+            GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(grind);
             mixingBar.progressBar.AddProgress(progressToAdd);
         }
     }
@@ -61,6 +65,7 @@ public class Mortar : MonoBehaviour
     {
         if (GameManagerScript.instance.radialMenu.prepType == "Mixing Meat" && GameManagerScript.instance.orders.satayPrep.isMeatInMortar)
         {
+            GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(mix);
             GameManagerScript.instance.orders.satayPrep.isMeatMixed = true;
             GameManagerScript.instance.orders.prepProgressBar.SetProgress(GameManagerScript.instance.orders.prepProgressBar.slider.maxValue);
             GameManagerScript.instance.orders.prepProgressBar.UpdateProgress();

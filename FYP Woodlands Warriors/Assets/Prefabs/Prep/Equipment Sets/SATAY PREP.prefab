@@ -148,6 +148,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 0}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!114 &1397070646294592554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,6 +392,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 7684354768206065049}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!114 &1839055125265372215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,6 +448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clickSfx: {fileID: 8300000, guid: 99b80ce2648724946bb9fed165882146, type: 3}
+  wrongSfx: {fileID: 8300000, guid: 7a9c6e7e0b32d4946938352ca080a878, type: 3}
   ovenLight: {fileID: 7684354768178824126}
   coverAnimator: {fileID: 1397070646294592558}
   hasStarted: 0
@@ -701,6 +704,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 7684354768835231013}
   camPoint2: {fileID: 7684354769012730119}
+  interactAudio: {fileID: 0}
 --- !u!64 &1839055125302921692
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -777,6 +781,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfbcb8fbd0720104890be82fc8d93d9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mix: {fileID: 8300000, guid: 35440e3fa07ebb64fb66e61aa67635b0, type: 3}
+  grind: {fileID: 8300000, guid: 1128a74d98b92be4e9bc09675013e321, type: 3}
   progressToAdd: 0.5
   prepType: 
   meatGO: {fileID: 7684354767219189443}
@@ -907,6 +913,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 0}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!114 &1839055125381221314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1094,6 +1101,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 0}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!114 &1839055125453634941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1375,6 +1383,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 0}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!64 &1839055125674666539
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1670,6 +1679,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 0}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!64 &1839055125717165830
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2611,6 +2621,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 0}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!64 &1839055127048453052
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2899,6 +2910,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 0}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!114 &3974936760250155179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3067,6 +3079,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 0}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!114 &6178679581703641952
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3240,6 +3253,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 0}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!114 &7684354767219189446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3711,6 +3725,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 7684354769012730119}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!114 &7684354767708907010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3838,6 +3853,7 @@ MonoBehaviour:
   placeOffset: {x: 0, y: 0, z: 0}
   camPoint1: {fileID: 0}
   camPoint2: {fileID: 0}
+  interactAudio: {fileID: 0}
 --- !u!65 &7684354767754323826
 BoxCollider:
   m_ObjectHideFlags: 0

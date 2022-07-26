@@ -8,6 +8,7 @@ public class RiceCooker : MonoBehaviour
     AudioSource audioSource;
     public AudioClip beepA;
     public AudioClip beepB;
+    public AudioClip wrongSfx;
 
     Container container;
     Interactable interactable;
@@ -221,6 +222,7 @@ public class RiceCooker : MonoBehaviour
             else if (correctOrWrong == "wrong")
             {
                 GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
+                GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
             }
 
             buttonPressedDur = 0f;

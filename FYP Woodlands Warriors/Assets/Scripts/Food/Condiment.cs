@@ -8,13 +8,13 @@ public class Condiment : MonoBehaviour
     {
         GameManagerScript.instance.orders.kayaToastPrep.isKayaAppliedToKnife = true;
         GameManagerScript.instance.prepStatusText.text = "Knife Condiment: Kaya";
-        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(GetComponent<AudioClip>());
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(GetComponent<Interactable>().interactAudio);
     }
 
     public void ApplyButter()
     {
         GameManagerScript.instance.orders.kayaToastPrep.isButterAppliedToKnife = true;
         GameManagerScript.instance.prepStatusText.text = "Knife Condiment: Butter";
-        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(GetComponent<AudioClip>());
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(GetComponent<Interactable>().interactAudio);
     }
 }

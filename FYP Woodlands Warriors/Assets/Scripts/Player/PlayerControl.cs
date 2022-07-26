@@ -63,7 +63,8 @@ public class PlayerControl : MonoBehaviour
         }
 
         //Press R to toggle zoom on meow-ti tool
-        if (Input.GetKeyDown(KeyCode.R) && !GameManagerScript.instance.isPreparing && GameManagerScript.instance.playerInventory.currentItemHeld.name == "Meow-ti Tool")  
+        if (!GameManagerScript.instance.isPreparing && (Input.GetKeyDown(KeyCode.R) || (Input.GetKeyDown(KeyCode.Escape) && GameManagerScript.instance.isZoomed)) 
+            &&  GameManagerScript.instance.playerInventory.currentItemHeld.name == "Meow-ti Tool")  
         {
             if (!GameManagerScript.instance.isZoomed)
             {

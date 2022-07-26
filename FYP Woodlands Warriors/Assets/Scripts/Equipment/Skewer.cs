@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Skewer : MonoBehaviour
 {
+    public AudioClip threadSfx;
     public Transform[] meatPoints;
 
     public Transform spawnPos;
@@ -19,11 +20,6 @@ public class Skewer : MonoBehaviour
     public GameObject mixedBeef;
     public GameObject mixedChicken;
     public GameObject mixedMutton;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
@@ -58,7 +54,7 @@ public class Skewer : MonoBehaviour
             {
                 threadingMeat = Instantiate(mixedMutton, spawnPos.position, spawnPos.rotation);
             }
-
+            GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(threadSfx);
             meats.Add(threadingMeat);
             isThreading = true;
         }

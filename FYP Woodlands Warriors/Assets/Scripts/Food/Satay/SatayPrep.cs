@@ -6,6 +6,8 @@ using TMPro;
 public class SatayPrep : MonoBehaviour
 {
     public int preparedCount = 0;
+    public AudioClip correctSfx;
+    public AudioClip wrongSfx;
 
     public int[] dishTimes;
     [Header("Meat Type")]
@@ -92,11 +94,13 @@ public class SatayPrep : MonoBehaviour
                 if ((skewersPrepared == 0 || skewersPrepared == 1) && cubesOnSkewer != 3)
                 {
                     GameManagerScript.instance.orders.dishQualityBar.AddProgress(-20f);
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                 }
 
                 if (skewersPrepared == 2 && cubesOnSkewer != 4)
                 {
                     GameManagerScript.instance.orders.dishQualityBar.AddProgress(-20f);
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                 }
             }
 
@@ -106,11 +110,13 @@ public class SatayPrep : MonoBehaviour
                 if (skewersPrepared == 0 && cubesOnSkewer != 5)
                 {
                     GameManagerScript.instance.orders.dishQualityBar.AddProgress(-20f);
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                 }
 
                 if ((skewersPrepared == 1 || skewersPrepared == 2) && cubesOnSkewer != 2)
                 {
                     GameManagerScript.instance.orders.dishQualityBar.AddProgress(-20f);
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                 }
             }
 
@@ -120,16 +126,19 @@ public class SatayPrep : MonoBehaviour
                 if (skewersPrepared == 0 && cubesOnSkewer != 2)
                 {
                     GameManagerScript.instance.orders.dishQualityBar.AddProgress(-20f);
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                 }
 
                 if (skewersPrepared == 1 && cubesOnSkewer != 4)
                 {
                     GameManagerScript.instance.orders.dishQualityBar.AddProgress(-20f);
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                 }
 
                 if (skewersPrepared == 2 && cubesOnSkewer != 5)
                 {
                     GameManagerScript.instance.orders.dishQualityBar.AddProgress(-20f);
+                    GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
                 }
             }
 
@@ -174,8 +183,13 @@ public class SatayPrep : MonoBehaviour
     public void ResetVariables()
     {
         savedGrindingProgress = 0f;
+        areShallotsAdded = false;
+        isTumericPowderAdded = false;
+        isMincedGarlicAdded = false;
+        isChilliPowderAdded = false;
         areAllAdded = false;
         isMixGrinded = false;
+
 
         savedMixingProgress = 0f;
         isMeatInMortar = false;

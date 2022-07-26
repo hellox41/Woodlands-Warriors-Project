@@ -7,6 +7,7 @@ public class Oven : MonoBehaviour
 {
     AudioSource audioSource;
     public AudioClip clickSfx;
+    public AudioClip wrongSfx;
     bool isCoverClosed = false;
     bool hasLockedIn = false;
 
@@ -179,6 +180,7 @@ public class Oven : MonoBehaviour
             ovenProgressBar.UpdateProgress();
             ovenProgressBar.slider.maxValue -= 15;
             hasLockedIn = false;
+            GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(wrongSfx);
         }
     }
 }

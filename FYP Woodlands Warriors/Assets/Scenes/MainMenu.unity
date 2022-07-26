@@ -281,7 +281,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 267014637}
-        m_MethodName: OpenURL
+        m_MethodName: ButtonOpenURL
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

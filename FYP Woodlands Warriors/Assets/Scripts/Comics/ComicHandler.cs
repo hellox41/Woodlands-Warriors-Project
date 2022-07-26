@@ -66,14 +66,15 @@ public class ComicHandler : MonoBehaviour
         {
             //Go to level1
             levelLoader.LoadLevel(2);
+            GameManagerScript.instance.ChangeCursorLockedState(false);
         }
 
-        if (textClasses[jsonIndex].panelIndex == 11)
+        if (textClasses[jsonIndex].panelIndex == 12)
         {
             levelLoader.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
         }
 
-        if (textClasses[jsonIndex].panelIndex < 11)
+        if (textClasses[jsonIndex].panelIndex < 12)
         {
             scrollingText.Show(textClasses[jsonIndex].comicTextString);
             speakerText.text = textClasses[jsonIndex].speakerTextString;
