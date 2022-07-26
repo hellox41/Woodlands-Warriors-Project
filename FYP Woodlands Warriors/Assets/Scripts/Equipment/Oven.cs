@@ -8,6 +8,7 @@ public class Oven : MonoBehaviour
     AudioSource audioSource;
     public AudioClip clickSfx;
     bool isCoverClosed = false;
+    bool hasLockedIn = false;
 
     public Light ovenLight;
 
@@ -42,7 +43,7 @@ public class Oven : MonoBehaviour
             ovenProgressBar.AddProgress(Time.deltaTime);
         }
 
-        if (ovenProgressBar.slider.value >= ovenProgressBar.slider.maxValue)
+        if (ovenProgressBar.slider.value >= ovenProgressBar.slider.maxValue && !hasLockedIn)
         {
             LockIn();
         }
@@ -56,7 +57,7 @@ public class Oven : MonoBehaviour
             hasStarted = true;
         }
 
-        isCoverClosed = !isCoverClosed;
+        isCoverClosed = true;
 
         if (isCoverClosed)
         {
@@ -162,6 +163,7 @@ public class Oven : MonoBehaviour
 
     void LockIn()
     {
+        hasLockedIn = true;
         if ((GameManagerScript.instance.orders.satayPrep.meatType == "Beef" && displayNo == 0956) ||
             (GameManagerScript.instance.orders.satayPrep.meatType == "Chicken" && displayNo == 1777) ||
             (GameManagerScript.instance.orders.satayPrep.meatType == "Mutton" && displayNo == 0155))
@@ -173,9 +175,10 @@ public class Oven : MonoBehaviour
         else
         {
             GameManagerScript.instance.orders.dishQualityBar.AddProgress(-25f);
+            ovenProgressBar.SetProgress(0);
+            ovenProgressBar.UpdateProgress();
+            ovenProgressBar.slider.maxValue -= 15;
+            hasLockedIn = false;
         }
-
-        ovenProgressBar.SetProgress(0);
-        ovenProgressBar.UpdateProgress();
     }
 }

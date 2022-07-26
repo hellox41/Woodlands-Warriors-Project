@@ -32,6 +32,9 @@ public class RadialMenu : MonoBehaviour
     private string prepFood;
     public string prepType;
 
+    [Header("Audio")]
+    public AudioClip buttonPress;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -93,6 +96,7 @@ public class RadialMenu : MonoBehaviour
 
     public void RadialMenuButtonClicked(string buttonType)
     {
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(buttonPress);
         if (buttonType == "PREPARE")
         {
             PrepSetup();

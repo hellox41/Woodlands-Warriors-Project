@@ -4,27 +4,17 @@ using UnityEngine;
 
 public class Condiment : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void ApplyKaya()
     {
         GameManagerScript.instance.orders.kayaToastPrep.isKayaAppliedToKnife = true;
         GameManagerScript.instance.prepStatusText.text = "Knife Condiment: Kaya";
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(GetComponent<AudioClip>());
     }
 
     public void ApplyButter()
     {
         GameManagerScript.instance.orders.kayaToastPrep.isButterAppliedToKnife = true;
         GameManagerScript.instance.prepStatusText.text = "Knife Condiment: Butter";
+        GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(GetComponent<AudioClip>());
     }
 }

@@ -33,6 +33,8 @@ public class MixingBar : MonoBehaviour
             {
                 GameManagerScript.instance.orders.satayPrep.isMixGrinded = true;
                 GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
+
+                GameManagerScript.instance.orders.satayPrep.mixingBar.SetActive(false);
             }
 
             //Mixing in mixing bowl for nasilemak
@@ -43,6 +45,8 @@ public class MixingBar : MonoBehaviour
                     GameManagerScript.instance.orders.nasiLemakPrep.isMarinateMixed = true;
                     GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
                 }
+
+                GameManagerScript.instance.orders.nasiLemakPrep.mixingBar.SetActive(false);
             }
 
             //Grinding sambal mix in mortar for nasilemak
@@ -53,9 +57,9 @@ public class MixingBar : MonoBehaviour
                     GameManagerScript.instance.orders.nasiLemakPrep.isSambalGrinded = true;
                     GameManagerScript.instance.orders.prepProgressBar.AddProgress(1);
                 }
-            }
 
-            GameManagerScript.instance.orders.nasiLemakPrep.mixingBar.SetActive(false);
+                GameManagerScript.instance.orders.nasiLemakPrep.mixingBar.SetActive(false);
+            }
             Camera.main.GetComponent<CamTransition>().ResetCameraTransform();
         }
     }

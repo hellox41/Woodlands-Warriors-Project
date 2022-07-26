@@ -105,7 +105,7 @@ public class LevelStats : MonoBehaviour
         if (GameManagerScript.instance.levelNo < 5)
         {
             levelLoader.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
+            Time.timeScale = 1f;
         }
-
     }
 }

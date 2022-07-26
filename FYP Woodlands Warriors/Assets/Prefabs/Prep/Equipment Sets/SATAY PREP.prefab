@@ -445,7 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08eebd2eb2688464ca4a944c3468ef68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clickSfx: {fileID: 0}
+  clickSfx: {fileID: 8300000, guid: 99b80ce2648724946bb9fed165882146, type: 3}
   ovenLight: {fileID: 7684354768178824126}
   coverAnimator: {fileID: 1397070646294592558}
   hasStarted: 0
@@ -480,7 +480,8 @@ AudioSource:
   m_GameObject: {fileID: 1839055125265372209}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 7168543217786770823, guid: 23fba4ef57bc5ab45b0fc52e4063e177,
+    type: 2}
   m_audioClip: {fileID: 8300000, guid: 2b01af33105e2834f89acba1e4c4eaea, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.3
@@ -4136,7 +4137,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0.64591235, b: 0, a: 1}
-  m_Intensity: 10
+  m_Intensity: 4
   m_Range: 0.5
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -4788,13 +4789,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7684354769119658797}
-  m_LocalRotation: {x: 1, y: -0, z: -0, w: 0.0000029653306}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0.063, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3449470601818836845}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 180, y: -0.000015258789, z: -0.000015258789}
+  m_LocalEulerAnglesHint: {x: 90, y: -0.000015258789, z: -0.000015258789}
 --- !u!1 &7684354769150970882
 GameObject:
   m_ObjectHideFlags: 0

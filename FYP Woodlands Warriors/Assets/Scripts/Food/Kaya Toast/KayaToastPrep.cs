@@ -75,6 +75,7 @@ public class KayaToastPrep : MonoBehaviour
         isBreadToasted = false;
         isBreadSpreadButter = false;
         isBreadSpreadKaya = false;
+        timesFlippedCorrectly = 0;
 
         savedCutBreadProgress = 0;
         savedToastBreadProgress = 0;

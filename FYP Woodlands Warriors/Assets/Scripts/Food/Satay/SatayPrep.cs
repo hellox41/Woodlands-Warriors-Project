@@ -174,6 +174,7 @@ public class SatayPrep : MonoBehaviour
     public void ResetVariables()
     {
         savedGrindingProgress = 0f;
+        areAllAdded = false;
         isMixGrinded = false;
 
         savedMixingProgress = 0f;

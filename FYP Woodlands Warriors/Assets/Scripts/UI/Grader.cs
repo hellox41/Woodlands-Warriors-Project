@@ -39,6 +39,11 @@ public class Grader : MonoBehaviour
             showcaseNameText.text = "Satay";
         }
 
+        if (GameManagerScript.instance.orders.currentOrder == "NASILEMAK")
+        {
+            showcaseNameText.text = "Nasi Lemak";
+        }
+
         gradingText.text = "Time: " + timeStars + " Stars" + "\n" + 
             "Quality: " + qualityStars + " Stars" + "\n \n" +
             "Rating: " + finalDishRating;

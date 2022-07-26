@@ -45,6 +45,9 @@ public class PlayerControl : MonoBehaviour
 
     public Stove stove;
 
+    [Header("Audio")]
+    public AudioClip radialMenuUp;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -150,7 +153,8 @@ public class PlayerControl : MonoBehaviour
                     if ((GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>() == null &&
                         GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Interactable>().isPickup) ||
                         (GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>() != null && 
-                        normalRaycastHit.transform.GetComponent<Container>().canContainContainers))
+                        normalRaycastHit.transform.GetComponent<Container>().canContainContainers)
+                        && normalRaycastHit.transform.GetComponent<Interactable>().objectName != "metalRack")
                     {
                         GameManagerScript.instance.container.ShowPreview();
                         GameManagerScript.instance.isPlaceable = true;
@@ -158,7 +162,8 @@ public class PlayerControl : MonoBehaviour
 
                     //Enable isTransferable if holding a container which is containing food, and looking at another empty container 
                     if (GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>() != null &&
-                        GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>().isContainingItem)
+                        GameManagerScript.instance.playerInventory.currentItemHeld.GetComponent<Container>().isContainingItem &&
+                        normalRaycastHit.transform.GetComponent<Interactable>().objectName != "oven")
                     {
                         GameManagerScript.instance.isTransferable = true;
                     }
@@ -276,6 +281,7 @@ public class PlayerControl : MonoBehaviour
                 radialMenu.CheckPlaceButton(GameManagerScript.instance.isPlaceable);
                 radialMenu.CheckTransferButton(GameManagerScript.instance.isTransferable);
 
+                GameManagerScript.instance.orders.sfxAudioSource.PlayOneShot(radialMenuUp);
                 radialMenuGO.SetActive(true);
             }
 

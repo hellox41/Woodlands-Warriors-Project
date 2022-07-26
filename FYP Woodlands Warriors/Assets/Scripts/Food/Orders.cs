@@ -51,6 +51,10 @@ public class Orders : MonoBehaviour
     public GameObject beefCubes;
     public GameObject chickenCubes;
     public GameObject muttonCubes;
+    public int kayaToastSpawnCount = 0;
+    public int halfBoiledEggsSpawnCount = 0;
+    public int sataySpawnCount = 0;
+    public int nasiLemakSpawnCount = 0;
 
     [Header("Timer Values")]
     public float stageTime;
@@ -81,6 +85,9 @@ public class Orders : MonoBehaviour
     public AudioSource sfxAudioSource;
     public AudioSource musicAudioSource;
 
+    public AudioClip dishComplete;
+    public AudioClip[] musicTracks;
+
     [Header("Extra")]
     public ProgressBar prepProgressBar;
     public ProgressBar dishQualityBar;
@@ -107,6 +114,9 @@ public class Orders : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        musicAudioSource.clip = musicTracks[Random.Range(0, musicTracks.Length)];
+        musicAudioSource.Play();
+
         orderUIGO.SetActive(false);
         ordersDone = 0;
         if (orderTypeOverride == null || orderTypeOverride == "")
@@ -201,13 +211,47 @@ public class Orders : MonoBehaviour
         if (GameManagerScript.instance.levelNo == 1)
         {
             currentOrder = GameManagerScript.instance.orderTypes[Random.Range(0, 2)];
+
+            if (ordersDone == 2)
+            {
+                if (kayaToastSpawnCount == 0)
+                {
+                    currentOrder = "KAYATOAST";
+                }
+
+                else if (halfBoiledEggsSpawnCount == 0)
+                {
+                    currentOrder = "HALF-BOILEDEGGS";
+                }
+            }
         }
 
         //If second stage, restrict possible dishes to eggs and satay
         if (GameManagerScript.instance.levelNo == 2)
         {
-            currentOrder = GameManagerScript.instance.orderTypes[Random.Range(1, 3)];
+            int rng = Random.Range(0, 2);
+            if (rng == 0)
+            {
+                currentOrder = "KAYATOAST";
+            }
 
+            else if (rng == 1)
+            {
+                currentOrder = "SATAY";
+            }
+
+            if (ordersDone == 2)
+            {
+                if (kayaToastSpawnCount == 0)
+                {
+                    currentOrder = "KAYATOAST";
+                }
+
+                else if (sataySpawnCount == 0)
+                {
+                    currentOrder = "SATAY";
+                }
+            }
         }
 
         //If third stage, restrict possible dishes to satay and nasilemak
@@ -215,6 +259,18 @@ public class Orders : MonoBehaviour
         {
             currentOrder = GameManagerScript.instance.orderTypes[Random.Range(2, 4)];
 
+            if (ordersDone == 1)
+            {
+                if (sataySpawnCount == 0)
+                {
+                    currentOrder = "SATAY";
+                }
+
+                else if (nasiLemakSpawnCount == 0)
+                {
+                    currentOrder = "NASILEMAK";
+                }
+            }
         }
 
         Debug.Log(currentOrder + " order recieved!");
@@ -236,6 +292,7 @@ public class Orders : MonoBehaviour
     {
         if (currentOrder == "KAYATOAST")  //Random ingredient generation for kaya toast
         {
+            kayaToastSpawnCount++;
             kayaToastPrep.breadType = kayaToastPrep.breadTypes[Random.Range(0, kayaToastPrep.breadTypes.Length)];  //Random bread type
 
             if (kayaToastPrep.breadType == "MULTIGRAIN" || kayaToastPrep.breadType == "HONEYOAT")
@@ -264,6 +321,7 @@ public class Orders : MonoBehaviour
 
         if (currentOrder == "HALF-BOILEDEGGS")
         {
+            halfBoiledEggsSpawnCount++;
             spawnedPrep = Instantiate(halfBoiledEggsObjects, instancingSpawnPoint.position, instancingSpawnPoint.rotation);
             eggs = GameObject.Find("Eggs");
             halfBoiledEggsPrep.eggsType = halfBoiledEggsPrep.eggTypes[Random.Range(0, halfBoiledEggsPrep.eggTypes.Length)];
@@ -296,6 +354,7 @@ public class Orders : MonoBehaviour
 
         if (currentOrder == "SATAY")
         {
+            sataySpawnCount++;
             satayPrep.meatType = satayPrep.meatTypes[Random.Range(0, satayPrep.meatTypes.Length)];
 
             if (satayPrep.meatType == "Beef")
@@ -318,6 +377,7 @@ public class Orders : MonoBehaviour
 
         if (currentOrder == "NASILEMAK")
         {
+            nasiLemakSpawnCount++;
             nasiLemakPrep.riceType = nasiLemakPrep.riceTypes[Random.Range(0, nasiLemakPrep.riceTypes.Length)];
 
             orderInfoText.text = nasiLemakPrep.riceType + " Rice";
@@ -422,6 +482,7 @@ public class Orders : MonoBehaviour
     //Instantiate the showcase and start the turnaround
     void ShowcaseFinishedDish()
     {
+        sfxAudioSource.PlayOneShot(dishComplete);
         Debug.Log("You completed a dish!");
         if (currentOrder == "KAYATOAST")
         {
@@ -710,7 +771,7 @@ public class Orders : MonoBehaviour
     {
         ordersDone++;
 
-        if (ordersDone == 3)
+        if (ordersDone == 3 && (GameManagerScript.instance.levelNo == 1 || GameManagerScript.instance.levelNo == 2) || (ordersDone == 2 && GameManagerScript.instance.levelNo == 3))
         {
             Time.timeScale = 0f;
             levelStats.gameObject.SetActive(true);
@@ -749,6 +810,9 @@ public class Orders : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha6))
         {
+            GameManagerScript.instance.ChangeCursorLockedState(false);
+            Time.timeScale = 0f;
+            levelStats.gameObject.SetActive(true);
             StartCoroutine(levelStats.UpdateLevelStats());
         }
     }

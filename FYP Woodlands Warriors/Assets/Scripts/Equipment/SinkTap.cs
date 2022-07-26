@@ -92,17 +92,21 @@ public class SinkTap : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IE
     //Check the tap turned status when stopping the dragging
     public void OnEndDrag(PointerEventData eventData)
     {
-        if ((CheckTap() == false) && (isTapTurnedLeft || isTapTurnedRight))
+        if (!sink.isPouringWater)
         {
-            Debug.Log("You turned the tap in the wrong direction!");
-            sink.waterOutputModifier = sink.waterOutputModifier / 2;
-        }
+            if ((CheckTap() == false) && (isTapTurnedLeft || isTapTurnedRight))
+            {
+                Debug.Log("You turned the tap in the wrong direction!");
+                sink.waterOutputModifier = sink.waterOutputModifier / 2;
+                GameManagerScript.instance.orders.dishQualityBar.AddProgress(-15f);
+            }
 
-        if (isTapTurnedLeft || isTapTurnedRight)
-        {
-            sink.isPouringWater = true;
-            sink.waterPour.SetActive(true);
-            GameManagerScript.instance.tapTurnedCount++;
+            if (isTapTurnedLeft || isTapTurnedRight)
+            {
+                sink.isPouringWater = true;
+                sink.waterPour.SetActive(true);
+                GameManagerScript.instance.tapTurnedCount++;
+            }
         }
     }
 

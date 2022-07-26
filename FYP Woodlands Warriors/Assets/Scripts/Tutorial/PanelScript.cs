@@ -8,6 +8,7 @@ using TMPro;
 public class PanelScript : MonoBehaviour
 {
     public GameObject controlPanel;
+    public GameObject urlButton;
     public LevelLoader levelLoader;
     public TMP_Text tutText;
     public Image panelImage;
@@ -30,6 +31,16 @@ public class PanelScript : MonoBehaviour
 
     public void NextButton()
     {
+        if (tutPanels.IndexOf(panelImage.sprite) == tutPanels.Count - 3)
+        {
+            urlButton.SetActive(true);
+        }
+
+        else
+        {
+            urlButton.SetActive(false);
+        }
+
         if (tutPanels.IndexOf(panelImage.sprite) == tutPanels.Count - 2)
         {
             panelImage.enabled = false;
@@ -76,6 +87,21 @@ public class PanelScript : MonoBehaviour
                 nextButtonText.text = "NEXT";
                 nextButtonText.color = originalTextCol;
             }
+
+            if (tutPanels.IndexOf(panelImage.sprite) == tutPanels.Count - 2)
+            {
+                urlButton.SetActive(true);
+            }
+
+            else
+            {
+                urlButton.SetActive(false);
+            }
         }
+    }
+
+    public void OpenURL(string url)
+    {
+        Application.OpenURL(url);
     }
 }

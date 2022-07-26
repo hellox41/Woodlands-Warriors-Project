@@ -1248,7 +1248,6 @@ MonoBehaviour:
   pivot: {fileID: 3980652784546266105}
   isTapTurnedLeft: 0
   isTapTurnedRight: 0
-  timesPreviouslyTurned: 0
   timeToNextStall: 0
 --- !u!1 &3980652782921775444
 GameObject:
@@ -1466,148 +1465,6 @@ MonoBehaviour:
   camTransitionTransform2: {fileID: 0}
   camTransitionTransform3: {fileID: 0}
   camTransitionTransform4: {fileID: 0}
---- !u!65 &3980652783476904940
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4908909900727372512}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 4.0734386, y: 0.30845934, z: 3.8850603}
-  m_Center: {x: 0.0035670397, y: 0.8780159, z: -0.08187338}
---- !u!64 &3980652783476904951
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4908909900727372512}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -3166298488906009645, guid: 0c19872daa5583445bc3a2780e4fd888, type: 3}
---- !u!114 &3980652783476904942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4908909900727372512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b08535f8914f86429f3dedf5b7cb972, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectName: pot
-  raycastAction: Strain Eggs (Requires Strainer)
-  isPreparable: 0
-  isPickup: 1
-  isRaycastButton: 1
-  isInInventory: 0
-  isCurrentlyRaycastInteractable: 0
-  loadValue: 3
-  holdingContainer: {fileID: 0}
-  holdingPos: {x: 0.289, y: -0.247, z: 0.439}
-  holdingRot: {x: 4.601, y: -89.67001, z: 4.105}
-  placeOffset: {x: 0, y: 0.11, z: 0}
-  camPoint1: {fileID: 0}
-  camPoint2: {fileID: 0}
---- !u!114 &3980652783476904941
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4908909900727372512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 1, g: 0, b: 0, a: 1}
-  outlineWidth: 10
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
---- !u!114 &3980652783476904947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4908909900727372512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e095789469cc6e743a1cd79a234cccaf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  capacity: 1500
-  currentLevel: 0
-  fullLevelY: 1.1
-  isContainingLiquid: 0
-  isBoilable: 0
-  isBoiling: 0
-  liquidType: 
-  liquidGO: {fileID: 3980652783419010521}
-  dropPoint: {fileID: 3980652783926637423}
---- !u!114 &3980652783476904946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4908909900727372512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02d6e7f7e177554449829f79f86e72f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  placePoint: {fileID: 3980652784386472229}
-  isContainingItem: 0
-  isShowingPreview: 0
-  canContainContainers: 0
-  capacity: 2
-  load: 0
-  isFull: 0
-  itemContained: {fileID: 0}
-  previewAlpha: 0.5
-  previewedFood: {fileID: 0}
---- !u!114 &3980652783476904945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4908909900727372512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 3980652783476904947}
-          m_MethodName: StrainEggs
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!1 &3980652783660383819
 GameObject:
   m_ObjectHideFlags: 0
@@ -2101,6 +1958,8 @@ MonoBehaviour:
   load: 0
   isFull: 0
   itemContained: {fileID: 0}
+  itemsContained: []
+  placeOffset: {x: 0, y: 0, z: 0}
   previewAlpha: 0.5
   previewedFood: {fileID: 0}
 --- !u!114 &4645796297848089715
@@ -2133,6 +1992,150 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 3133908203475179039, guid: 84ed32f908382c94e99d7faf2ad4171c, type: 3}
+--- !u!65 &3980652783476904940
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908909900727372512}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4.0734386, y: 0.30845934, z: 3.8850603}
+  m_Center: {x: 0.0035670397, y: 0.8780159, z: -0.08187338}
+--- !u!64 &3980652783476904951
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908909900727372512}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3166298488906009645, guid: 0c19872daa5583445bc3a2780e4fd888, type: 3}
+--- !u!114 &3980652783476904941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908909900727372512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 0, b: 0, a: 1}
+  outlineWidth: 10
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
+--- !u!114 &3980652783476904942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908909900727372512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b08535f8914f86429f3dedf5b7cb972, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectName: pot
+  raycastAction: Strain Eggs (Requires Strainer)
+  isPreparable: 0
+  isPickup: 1
+  isRaycastButton: 1
+  isInInventory: 0
+  isCurrentlyRaycastInteractable: 0
+  loadValue: 3
+  holdingContainer: {fileID: 0}
+  holdingPos: {x: 0.289, y: -0.247, z: 0.439}
+  holdingRot: {x: 4.601, y: -89.67001, z: 4.105}
+  placeOffset: {x: 0, y: 0.11, z: 0}
+  camPoint1: {fileID: 0}
+  camPoint2: {fileID: 0}
+--- !u!114 &3980652783476904945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908909900727372512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3980652783476904947}
+          m_MethodName: StrainEggs
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &3980652783476904946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908909900727372512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02d6e7f7e177554449829f79f86e72f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  placePoint: {fileID: 3980652784386472229}
+  isContainingItem: 0
+  isShowingPreview: 0
+  canContainContainers: 0
+  capacity: 2
+  load: 0
+  isFull: 0
+  itemContained: {fileID: 0}
+  itemsContained: []
+  placeOffset: {x: 0, y: 0, z: 0}
+  previewAlpha: 0.5
+  previewedFood: {fileID: 0}
+--- !u!114 &3980652783476904947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908909900727372512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e095789469cc6e743a1cd79a234cccaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capacity: 1500
+  currentLevel: 0
+  fullLevelY: 1.1
+  isContainingLiquid: 0
+  isBoilable: 0
+  isBoiling: 0
+  liquidType: 
+  liquidGO: {fileID: 3980652783419010521}
+  dropPoint: {fileID: 3980652783926637423}
 --- !u!1 &4908909900890088036
 GameObject:
   m_ObjectHideFlags: 0
@@ -2502,6 +2505,8 @@ MonoBehaviour:
   load: 0
   isFull: 0
   itemContained: {fileID: 0}
+  itemsContained: []
+  placeOffset: {x: 0, y: 0, z: 0}
   previewAlpha: 0.5
   previewedFood: {fileID: 0}
 --- !u!1 &5848476779633381471
@@ -2761,6 +2766,18 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 3622160682173938126}
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 99b80ce2648724946bb9fed165882146,
+              type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
@@ -3336,6 +3353,7 @@ GameObject:
   - component: {fileID: 5403938312892121177}
   - component: {fileID: 8981862775711724104}
   - component: {fileID: 8981862775711724107}
+  - component: {fileID: 3622160682173938126}
   m_Layer: 2
   m_Name: Stove
   m_TagString: Untagged
@@ -3385,17 +3403,20 @@ MonoBehaviour:
   stoveContainer: {fileID: 5830707410357948662}
   isPoweredOn: 0
   timeTillNextColorChange: 6
+  minTimeTillNextChange: 0
+  maxTimeTillNextChange: 0
   heatingMultiplier: 6
   stoveLightMat: {fileID: 2100000, guid: 882b77c2ae684ba43866d276c610199a, type: 2}
   stoveIndicatorLight: {fileID: 3774904293863033192}
-  stoveLightColor:
-  - Purple
-  - Pink
-  - Red
+  kayaToastStoveLightColors: []
+  nasiLemakStoveLightColors: []
   currentStoveLightColorName: 
+  originalColor: {r: 0.21960786, g: 0.23529413, b: 0.25882354, a: 0}
   purpleColor: {r: 0.45065117, g: 0, b: 1, a: 0}
   pinkColor: {r: 1, g: 0.043137252, b: 0.5703623, a: 0}
-  originalColor: {r: 0.21960786, g: 0.23529413, b: 0.25882354, a: 0}
+  orangeColor: {r: 0, g: 0, b: 0, a: 0}
+  yellowColor: {r: 0, g: 0, b: 0, a: 0}
+  greenColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!65 &8981862775711724107
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3409,6 +3430,102 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.0057175, y: 0.64373595, z: 1.9889921}
   m_Center: {x: 0.004320398, y: 0.60605645, z: -0.0069199465}
+--- !u!82 &3622160682173938126
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8981862775711724106}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &3980652783476904937
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3508,15 +3625,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c19872daa5583445bc3a2780e4fd888, type: 3}
---- !u!4 &8233893293219789043 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 0c19872daa5583445bc3a2780e4fd888,
-    type: 3}
-  m_PrefabInstance: {fileID: 3980652783476904937}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4908909900727372512 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 0c19872daa5583445bc3a2780e4fd888,
+    type: 3}
+  m_PrefabInstance: {fileID: 3980652783476904937}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8233893293219789043 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 0c19872daa5583445bc3a2780e4fd888,
     type: 3}
   m_PrefabInstance: {fileID: 3980652783476904937}
   m_PrefabAsset: {fileID: 0}

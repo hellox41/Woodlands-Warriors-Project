@@ -8,7 +8,7 @@ public class Settings : MonoBehaviour
     public AudioMixer audioMixer;
     private void Start()
     {
-        audioMixer.SetFloat("musicVolume", -20);
+        audioMixer.SetFloat("musicVolume", -10);
     }
     public void SetMasterVolume(float volume)
     {
@@ -18,10 +18,20 @@ public class Settings : MonoBehaviour
     public void SetMusicVolume(float volume)
     {
         audioMixer.SetFloat("musicVolume", volume);
+
+        if (volume <= -40)
+        {
+            audioMixer.SetFloat("musicVolume", -80);
+        }
     }
 
     public void SetSFXVolume(float volume)
     {
         audioMixer.SetFloat("sfxVolume", volume);
+
+        if (volume <= -40)
+        {
+            audioMixer.SetFloat("sfxVolume", -80);
+        }
     }
 }

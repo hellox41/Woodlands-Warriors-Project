@@ -66,10 +66,6 @@ public class MeowtiTool : MonoBehaviour
     [Header("Debug")]
     public string pawzzleTypeOverride;
 
-    [Header("Apparatus Nouns")]
-
-    public TMP_Text apparatusNounsText;
-
     [Header("F5")]
     //validF5Foods = { "ZUCCHINI", "SHALLOT", "PEACH", "BELL PEPPER", "DURIAN" };
     //invalidF5Foods = { "CUCUMBER", "ONION", "NECTARINE", "JALAPENO", "JACKFRUIT" };
@@ -206,8 +202,6 @@ public class MeowtiTool : MonoBehaviour
             InitializeNoun(i);
         }
         GameManagerScript.instance.orders.receiptNouns.UpdateText();
-        /*apparatusNounsText.text = "APPARATUS NOUNS \n \n KNIFE - " + knifeNoun + "\n SPATULA - " + spatulaNoun + "\n STRAINER - " + strainerNoun +
-            "\n PESTLE - " + pestleNoun + "\n PADDLE - " + paddleNoun;*/
 
         InitializePawzzle(currentPawzzleType);
         GameManagerScript.instance.playerControl.toolCanvas = activeCanvas.GetComponent<Canvas>();
@@ -250,7 +244,8 @@ public class MeowtiTool : MonoBehaviour
 
     void InitializeNoun(int apparatusIndex)  //Create nouns for the kitchen apparatus on level start
     {
-        int rng = Random.Range(0, GameManagerScript.instance.possibleApparatusNouns.Length);
+
+        int rng = Random.Range(0, GameManagerScript.instance.possibleApparatusNouns.Count);
 
         if (apparatusIndex == 0)
         {
@@ -278,7 +273,7 @@ public class MeowtiTool : MonoBehaviour
         }
 
         GameManagerScript.instance.apparatusNouns.Add(GameManagerScript.instance.possibleApparatusNouns[rng]);
-        RemoveElement(ref GameManagerScript.instance.possibleApparatusNouns, rng);
+        GameManagerScript.instance.possibleApparatusNouns.Remove(GameManagerScript.instance.possibleApparatusNouns[rng]);
     }
 
     void InitializePawzzle(string PawzzleType)  //Activate the pawzzle's respective canvas and pick a random answer for them
@@ -877,6 +872,7 @@ public class MeowtiTool : MonoBehaviour
 
     public void SubmitInput()  //Player presses the submit button for primary pawzzle
     {
+        toolAudioSource.PlayOneShot(buttonClick);
         bool isSolved = false;
         for (int i = 0; i < GameManagerScript.instance.apparatusNouns.Count; i++)
         {
@@ -991,6 +987,7 @@ public class MeowtiTool : MonoBehaviour
     //This method is called from Revert Button in Input and Access (in Meow-ti Tool gameObject)
     public void RevertApparatus()
     {
+        toolAudioSource.PlayOneShot(buttonClick);
         StartCoroutine(PlayRevertAnim());
 
         GameManagerScript.instance.accessedApparatus = null;

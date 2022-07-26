@@ -17,9 +17,11 @@ public class GameManagerScript : MonoBehaviour
 
     public string[] PrimaryPawzzles = { "F5", "18CARROT", "RADIOCAFE", "VITAMINS", "HEALTHYPLATE" };
 
-    public string[] orderTypes = { "KAYATOAST", "HALF-BOILEDEGGS" };
+    public string[] orderTypes = { "KAYATOAST", "HALF-BOILEDEGGS", "SATAY", "NASILEMAK" };
 
-    public string[] possibleApparatusNouns = { "MONKEY", "CARROT", "GRANDMA", "CHICKEN", "BANANA", "POTATO", "SOTONG" };
+    public string[] staticApparatusNouns = { "MONKEY", "CARROT", "GRANDMA", "CHICKEN", "BANANA", "POTATO", "SOTONG" };
+
+    public List<string> possibleApparatusNouns = new List<string>();
     public List<string> apparatusNouns = new List<string>();
     public string knifeNoun;   //index 0
     public string spatulaNoun; //index 1
@@ -85,8 +87,7 @@ public class GameManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pawzzleDifficulty = levelNo;
-        waterMat.color = new Color32(170, 243, 250, 127);
+        ResetVariablesOnLoad();
     }
 
     //Assign variables on level load
@@ -98,7 +99,6 @@ public class GameManagerScript : MonoBehaviour
         playerControl = player.GetComponent<PlayerControl>();
         playerInventory = player.GetComponent<Inventory>();
         radialMenu = playerControl.radialMenu;
-        prepStatusText = radialMenu.prepTypeText;
         levelLoader = GameObject.Find("LevelLoader").GetComponent<LevelLoader>();
 
         strikeImages[0] = GameObject.Find("strikeImage1").GetComponent<Image>();
@@ -198,43 +198,54 @@ public class GameManagerScript : MonoBehaviour
 
     IEnumerator FlashStrike()
     {
-        isFlashing = true;
-        Color tmpRed = strikeImages[strikes - 1].color;
-        tmpRed = Color.red;
-        strikeImages[strikes - 1].color = tmpRed;
+        if (strikes < 3)
+        {
+            isFlashing = true;
+            Color tmpRed = strikeImages[strikes - 1].color;
+            tmpRed = Color.red;
+            strikeImages[strikes - 1].color = tmpRed;
 
-        yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.5f);
 
-        tmpRed.a = 0.3f;
-        strikeImages[strikes - 1].color = tmpRed;
+            tmpRed.a = 0.3f;
+            strikeImages[strikes - 1].color = tmpRed;
 
-        yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.5f);
 
-        tmpRed.a = 1f;
-        strikeImages[strikes - 1].color = tmpRed;
+            tmpRed.a = 1f;
+            strikeImages[strikes - 1].color = tmpRed;
 
-        yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.5f);
 
-        tmpRed.a = 0.3f;
-        strikeImages[strikes - 1].color = tmpRed;
+            tmpRed.a = 0.3f;
+            strikeImages[strikes - 1].color = tmpRed;
 
-        yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.5f);
 
-        tmpRed.a = 1f;
-        strikeImages[strikes - 1].color = tmpRed;
-        isFlashing = false;
+            tmpRed.a = 1f;
+            strikeImages[strikes - 1].color = tmpRed;
+            isFlashing = false;
+        }
     }
 
     void ResetVariablesOnLoad()
     {
         strikes = 0;
+        isShowingGameOver = false;
         isZoomed = false;
         isInteracting = false;
         isPreparing = false;
         isCamTransitioning = false;
+        isShowcasing = false;
         isOrderUIShrunk = false;
         waterMat.color = new Color32(170, 243, 250, 127);
         dishesPrepared.Clear();
         dishCount.Clear();
+        possibleApparatusNouns.Clear();
+
+        for (int i = 0; i < staticApparatusNouns.Length; i++)
+        {
+            possibleApparatusNouns.Add(staticApparatusNouns[i]);
+        }
     }
 }

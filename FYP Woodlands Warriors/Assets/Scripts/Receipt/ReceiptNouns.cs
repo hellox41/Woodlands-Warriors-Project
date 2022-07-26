@@ -27,10 +27,10 @@ public class ReceiptNouns : MonoBehaviour
             paperText.text += $"\n<align=left>STRAINER: " + $"<size=80%>{GameManagerScript.instance.strainerNoun}</size>";
         }
 
-        else if (GameManagerScript.instance.levelNo == 2)  //apparatus for eggs and satay
+        else if (GameManagerScript.instance.levelNo == 2)  //apparatus for kaya toast and satay
         {
+            paperText.text += $"\n<align=left>KNIFE: " + $"<size=80%>{GameManagerScript.instance.knifeNoun}</size>";
             paperText.text += $"\n<align=left>SPATULA: " + $"<size=80%>{GameManagerScript.instance.spatulaNoun}</size>";
-            paperText.text += $"\n<align=left>STRAINER: " + $"<size=80%>{GameManagerScript.instance.strainerNoun}</size>";
             paperText.text += $"\n<align=left>PESTLE: " + $"<size=80%>{GameManagerScript.instance.pestleNoun}</size>";
         }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 public class MainMenuScript : MonoBehaviour
 {
     public GameObject settingsObj;
+    public GameObject creditsObj;
 
     public void QuitGame()
     {
@@ -17,6 +18,11 @@ public class MainMenuScript : MonoBehaviour
         {
             settingsObj.SetActive(true);
         }
+
+        if (buttonType == "CREDITS")
+        {
+            creditsObj.SetActive(true);
+        }
     }
 
     public void CloseUI(string buttonType)
@@ -25,5 +31,15 @@ public class MainMenuScript : MonoBehaviour
         {
             settingsObj.SetActive(false);
         }
+
+        if (buttonType == "CREDITS")
+        {
+            creditsObj.SetActive(false);
+        }
+    }
+
+    public void OpenURL(string url)
+    {
+        Application.OpenURL(url);
     }
 }

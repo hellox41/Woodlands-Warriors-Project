@@ -8,6 +8,7 @@ public class GameOver : MonoBehaviour
 {
     [Header("SFX")]
     public AudioClip mttExplosion;
+    private AudioSource[] allAudioSources;
 
     [Header("Game Over")]
     public CanvasGroup persistentCanvas;
@@ -33,7 +34,12 @@ public class GameOver : MonoBehaviour
 
     public IEnumerator DisplayGameOver(string reasonForFail)
     {
-        GameManagerScript.instance.playerControl.meowtiTool.toolAudioSource.mute = true;
+        allAudioSources = FindObjectsOfType(typeof (AudioSource)) as AudioSource[];
+
+        foreach (AudioSource audioSource in allAudioSources)
+        {
+            audioSource.Stop();
+        }
         GameManagerScript.instance.isShowingGameOver = true;
         Time.timeScale = 0;
         blackOverlay.SetActive(true);
@@ -47,6 +53,7 @@ public class GameOver : MonoBehaviour
             if (uiObj.name == "GameOverPanel")
             {
                 uiObj.gameObject.SetActive(true);
+                uiObj.GetComponent<CanvasGroup>().blocksRaycasts = true;
             }    
         }
 
@@ -97,6 +104,7 @@ public class GameOver : MonoBehaviour
 
     public void Retry()
     {
+        GameManagerScript.instance.StopAllCoroutines();
         GameManagerScript.instance.levelLoader.LoadLevel(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1;
     }
