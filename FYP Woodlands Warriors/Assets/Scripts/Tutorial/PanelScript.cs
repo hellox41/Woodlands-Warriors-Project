@@ -7,10 +7,20 @@ using TMPro;
 
 public class PanelScript : MonoBehaviour
 {
+    public AudioClip correctSfx;
+    public AudioClip wrongSfx;
+
+    public AudioSource sfxAudioSource;
+
+    public string correctInput;
+    public GameObject advicePanel;
+    public List<Sprite> shapeSprites = new List<Sprite>();
+    public Image shapeImage;
     public GameObject controlPanel;
     public GameObject urlButton;
     public LevelLoader levelLoader;
     public TMP_Text tutText;
+    public TMP_InputField inputField;
     public Image panelImage;
     public List<Sprite> tutPanels = new List<Sprite>();
     public List<string> tutTexts = new List<string>();
@@ -49,7 +59,19 @@ public class PanelScript : MonoBehaviour
 
         if (atLastPanel)
         {
-            levelLoader.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
+            advicePanel.SetActive(true);
+            int rng = Random.Range(0, 2);
+            if (rng == 0)  //triangle
+            {
+                shapeImage.sprite = shapeSprites[0];
+                correctInput = "619";
+            }
+
+            else if (rng == 1) //star
+            {
+                shapeImage.sprite = shapeSprites[1];
+                correctInput = "707";
+            }
         }
 
         if (tutPanels.IndexOf(panelImage.sprite) < tutPanels.Count - 1)
@@ -103,5 +125,24 @@ public class PanelScript : MonoBehaviour
     public void ButtonOpenURL(string url)
     {
         Application.OpenURL(url);
+    }
+
+    public void CheckInputField()
+    {
+        if (inputField.text == correctInput)
+        {
+            sfxAudioSource.PlayOneShot(correctSfx, 10f);
+            levelLoader.LoadLevel(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+
+        else
+        {
+            sfxAudioSource.PlayOneShot(wrongSfx, 6f);
+        }
+    }
+
+    public void CloseAdvice()
+    {
+        advicePanel.SetActive(false);
     }
 }
