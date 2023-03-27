@@ -51,6 +51,7 @@ public class GameManagerScript : MonoBehaviour
     public bool isOrderUIShrunk = false;
     bool isFlashing = false;
     public bool isShowingGameOver = false;
+    public bool isShowingInGameMenu = false;
 
     public Food interactedFood;
 

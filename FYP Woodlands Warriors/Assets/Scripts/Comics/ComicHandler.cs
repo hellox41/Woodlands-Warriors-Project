@@ -41,6 +41,15 @@ public class ComicHandler : MonoBehaviour
             scrollingText.Stop();
             UpdateTextJson(currentJsonTextIndex);
         }
+
+        //Right click to revert panel
+        if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Backspace)) && currentJsonTextIndex > 0)
+        {
+            currentJsonTextIndex--;
+
+            scrollingText.Stop();
+            UpdateTextJson(currentJsonTextIndex);
+        }
     }
 
     [Serializable]

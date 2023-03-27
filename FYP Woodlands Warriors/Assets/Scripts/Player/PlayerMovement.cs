@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!GameManagerScript.instance.isZoomed && !GameManagerScript.instance.isPreparing)
+        if (!GameManagerScript.instance.isZoomed && !GameManagerScript.instance.isPreparing && !GameManagerScript.instance.isShowingInGameMenu)
         {
             float x = Input.GetAxis("Horizontal");
             float z = Input.GetAxis("Vertical");
