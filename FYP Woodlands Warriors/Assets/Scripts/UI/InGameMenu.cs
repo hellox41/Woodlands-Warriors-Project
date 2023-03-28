@@ -12,8 +12,8 @@ public class InGameMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Bring up the menu by pressing Escape
-        if (Input.GetKeyDown(KeyCode.Escape))
+        //Bring up the menu by pressing F1
+        if (Input.GetKeyDown(KeyCode.F1))
         {
             inGameMenuObj.SetActive(!inGameMenuObj.activeInHierarchy);
             if (GameManagerScript.instance.isShowingInGameMenu == false)
@@ -77,6 +77,7 @@ public class InGameMenu : MonoBehaviour
     {
         GameManagerScript.instance.levelLoader.LoadLevel(0);
         Time.timeScale = 1;
+        GameManagerScript.instance.isShowingInGameMenu = false;
     }
 
     public void QuitToDesktop()

@@ -50,6 +50,12 @@ public class ComicHandler : MonoBehaviour
             scrollingText.Stop();
             UpdateTextJson(currentJsonTextIndex);
         }
+
+        //Press F1 to skip to Level1
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            levelLoader.LoadLevel(3);
+        }
     }
 
     [Serializable]

@@ -6862,7 +6862,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: PRESS ESC TO TOGGLE MENU
+  m_text: PRESS F1 TO TOGGLE MENU
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1d608d6d84b5aa24d8e7592d4fc4faeb, type: 2}
   m_sharedMaterial: {fileID: -6896174749425652357, guid: 1d608d6d84b5aa24d8e7592d4fc4faeb,
@@ -6932,7 +6932,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 699409712}
-    characterCount: 24
+    characterCount: 23
     spriteCount: 0
     spaceCount: 4
     wordCount: 5
